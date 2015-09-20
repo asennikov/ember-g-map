@@ -1,7 +1,7 @@
 {
   "name": "ember-g-map",
   "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "An ember-cli addon for integration with google maps.",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -15,7 +15,7 @@
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "",
+  "author": "Alexander Sennikov (gseno88@gmail.com)",
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.1.2",
@@ -38,7 +38,13 @@
     "ember-try": "0.0.6"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "ember-g-map",
+    "google-map",
+    "google-maps",
+    "google",
+    "map",
+    "maps"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.3"
