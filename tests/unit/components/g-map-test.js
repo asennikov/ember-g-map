@@ -13,9 +13,11 @@ moduleForComponent('g-map', 'Unit | Component | g map', {
   // Specify the other units that are required for this test
   // needs: ['component:foo', 'helper:bar'],
   unit: true,
+
   beforeEach() {
     sinon.stub(google.maps, 'Map').returns(fakeMapObject);
   },
+  
   afterEach() {
     google.maps.Map.restore();
   }
@@ -29,7 +31,7 @@ test('it should construct new `Map` object after render', function(assert) {
   assert.equal(component.get('map'), fakeMapObject);
 });
 
-test('new `Map` shouldn\'t constructed if it already present in component', function(assert) {
+test('new `Map` shouldn\'t be constructed if it already present in component', function(assert) {
   this.subject({
     map: fakeMapObject
   });
