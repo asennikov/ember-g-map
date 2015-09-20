@@ -65,6 +65,36 @@ test('it should trigger `setZoom` on `zoom` change', function(assert) {
   assert.ok(component.setZoom.calledOnce);
 });
 
+test('it should trigger `setCenter` on `lat` change', function(assert) {
+  let component = this.subject();
+  this.render();
+
+  component.setCenter = sinon.spy();
+  run(() => component.set('lat', 14));
+  assert.ok(component.setCenter.calledOnce);
+});
+
+test('it should trigger `setCenter` on `lng` change', function(assert) {
+  let component = this.subject();
+  this.render();
+
+  component.setCenter = sinon.spy();
+  run(() => component.set('lng', 21));
+  assert.ok(component.setCenter.calledOnce);
+});
+
+test('it should trigger `setCenter` only once on `lat` and `lng` change', function(assert) {
+  let component = this.subject();
+  this.render();
+
+  component.setCenter = sinon.spy();
+  run(() => component.setProperties({
+    lng: 1,
+    lat: 11
+  }));
+  assert.ok(component.setCenter.calledOnce);
+});
+
 test('it should call `setCenter` of google map on `setCenter` with lat/lng present', function(assert) {
   let component = this.subject({
     lat: 10,
