@@ -73,8 +73,12 @@ test('it should call `setCenter` of google map on `setCenter` with lat/lng prese
   this.render();
 
   fakeMapObject.setCenter = sinon.stub();
+  let point = {};
+  sinon.stub(google.maps, 'LatLng').returns(point);
   run(() => component.setCenter());
   assert.ok(fakeMapObject.setCenter.calledOnce);
+  assert.ok(fakeMapObject.setCenter.calledWith(point));
+  google.maps.LatLng.restore();
 });
 
 test('it should call `setZoom` of google map on `setZoom` with zoom present', function(assert) {
@@ -86,6 +90,7 @@ test('it should call `setZoom` of google map on `setZoom` with zoom present', fu
   fakeMapObject.setZoom = sinon.stub();
   run(() => component.setZoom());
   assert.ok(fakeMapObject.setZoom.calledOnce);
+  assert.ok(fakeMapObject.setZoom.calledWith(14));
 });
 
 test('it should not call `setCenter` of google map on `setCenter` when no lat present', function(assert) {
