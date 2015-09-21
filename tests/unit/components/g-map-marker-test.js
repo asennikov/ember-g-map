@@ -8,7 +8,8 @@ const { run } = Ember;
 const fakeMarkerObject = {
   setPosition: sinon.stub(),
   setIcon: sinon.stub(),
-  setMap: sinon.stub()
+  setMap: sinon.stub(),
+  addListener: sinon.stub()
 };
 
 let component;
@@ -116,11 +117,12 @@ test('it should trigger `setPosition` only once on `lat` and `lng` change', func
 });
 
 test('it should call `setPosition` of google marker on `setPosition` with lat/lng present', function(assert) {
+  this.render();
+
   run(() => component.setProperties({
     lat: 10,
     lng: 100
   }));
-  this.render();
 
   fakeMarkerObject.setPosition = sinon.stub();
   let point = {};
@@ -132,8 +134,9 @@ test('it should call `setPosition` of google marker on `setPosition` with lat/ln
 });
 
 test('it should not call `setPosition` of google marker on `setPosition` when no lat present', function(assert) {
-  run(() => component.set('lat', 10));
   this.render();
+
+  run(() => component.set('lat', 10));
 
   fakeMarkerObject.setPosition = sinon.stub();
   run(() => component.setPosition());
@@ -141,8 +144,9 @@ test('it should not call `setPosition` of google marker on `setPosition` when no
 });
 
 test('it should not call `setPosition` of google marker on `setPosition` when no lng present', function(assert) {
-  run(() => component.set('lng', 10));
   this.render();
+
+  run(() => component.set('lng', 10));
 
   fakeMarkerObject.setPosition = sinon.stub();
   run(() => component.setPosition());
@@ -202,4 +206,64 @@ test('it should not call `setIcon` of google marker on `setIcon` when no icon pr
   fakeMarkerObject.setIcon = sinon.stub();
   run(() => component.setIcon());
   assert.equal(fakeMarkerObject.setIcon.callCount, 0);
+});
+
+test('it should call `setInfowindow` on `setMap` when `withInfowindow` is true', function(assert) {
+  this.render();
+
+  run(() => component.set('map', {}));
+  run(() => component.set('withInfowindow', true));
+
+  component.setInfowindow = sinon.stub();
+  run(() => component.setMap());
+  assert.ok(component.setInfowindow.calledOnce);
+});
+
+test('it should not call `setInfowindow` on `setMap` when `withInfowindow` is not true', function(assert) {
+  this.render();
+
+  run(() => component.set('map', {}));
+  run(() => component.set('withInfowindow', undefined));
+
+  component.setInfowindow = sinon.stub();
+  run(() => component.setMap());
+  assert.equal(component.setInfowindow.callCount, 0);
+});
+
+test('it should construct new `Infowindow` on `setInfowindow` with `map` set', function(assert) {
+  this.render();
+
+  run(() => component.set('map', {}));
+
+  let infowindow = {
+    open: sinon.stub()
+  };
+  sinon.stub(google.maps, 'InfoWindow').returns(infowindow);
+
+  run(() => component.setInfowindow());
+  assert.ok(google.maps.InfoWindow.calledOnce);
+  assert.ok(google.maps.InfoWindow.calledWith({ content: component.get('element') }));
+  google.maps.InfoWindow.restore();
+});
+
+test('new `Infowindow` shouldn\'t be constructed if no map is set', function(assert) {
+  this.render();
+
+  run(() => component.set('map', undefined));
+
+  sinon.stub(google.maps, 'InfoWindow');
+  run(() => component.setInfowindow());
+  assert.equal(google.maps.InfoWindow.callCount, 0);
+  google.maps.InfoWindow.restore();
+});
+
+test('new `Infowindow` shouldn\'t be constructed if no marker is set', function(assert) {
+  this.render();
+
+  run(() => component.set('marker', undefined));
+
+  sinon.stub(google.maps, 'InfoWindow');
+  run(() => component.setInfowindow());
+  assert.equal(google.maps.InfoWindow.callCount, 0);
+  google.maps.InfoWindow.restore();
 });

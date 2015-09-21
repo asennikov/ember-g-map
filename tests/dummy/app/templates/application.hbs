@@ -2,7 +2,10 @@
 
 {{outlet}}
 
-{{!-- {{#g-map lat=37.7833 lng=-122.4167 zoom=12}}
+{{#g-map lat=37.7833 lng=-122.4167 zoom=12}}
   {{g-map-marker lat=37.7933 lng=-122.4167}}
-  {{g-map-marker lat=37.7733 lng=-122.4167}}
-{{/g-map}} --}}
+  {{#g-map-marker lat=37.7733 lng=-122.4167 withInfowindow=true}}
+    <h1>Pretty Infowindow!</h1>
+    <p>It can have bound variables and elements with actions.</p>
+  {{/g-map-marker}}
+{{/g-map}}

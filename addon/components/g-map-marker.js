@@ -13,8 +13,13 @@ export default Ember.Component.extend({
 
   init() {
     this._super(arguments);
+
     let parent = this.get('parentView');
     assert('Must be inside {{#g-map}} component', parent instanceof GMapComponent);
+
+    if (isEmpty(this.get('withInfowindow'))) {
+      this.set('withInfowindow', false);
+    }
   },
 
   didInsertElement() {
@@ -45,6 +50,23 @@ export default Ember.Component.extend({
 
     if (isPresent(marker) && isPresent(map)) {
       marker.setMap(map);
+      if (this.get('withInfowindow')) {
+        this.setInfowindow();
+      }
+    }
+  },
+
+  setInfowindow() {
+    let map = this.get('map');
+    let marker = this.get('marker');
+    
+    if (isPresent(marker) && isPresent(map)) {
+      let infowindow = new google.maps.InfoWindow({
+        content: this.get('element')
+      });
+      marker.addListener('click', function() {
+        infowindow.open(map, marker);
+      });
     }
   },
 
