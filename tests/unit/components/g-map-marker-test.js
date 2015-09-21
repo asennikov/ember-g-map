@@ -31,21 +31,21 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
   }
 });
 
-test('it should construct new `Marker` object after render', function(assert) {
+test('it constructs new `Marker` object after render', function(assert) {
   this.render();
 
   sinon.assert.calledOnce(google.maps.Marker);
   assert.equal(component.get('marker'), fakeMarkerObject);
 });
 
-test('new `Marker` shouldn\'t be constructed if it already present in component', function() {
+test('new `Marker` isn\'t constructed if it already present in component', function() {
   run(() => component.set('marker', fakeMarkerObject));
   this.render();
 
   sinon.assert.notCalled(google.maps.Marker);
 });
 
-test('it should trigger `setMap` on `didInsertElement` event', function() {
+test('it triggers `setMap` on `didInsertElement` event', function() {
   this.render();
 
   component.setMap = sinon.spy();
@@ -53,7 +53,7 @@ test('it should trigger `setMap` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setMap);
 });
 
-test('it should trigger `setMap` of marker with null on `willDestroyElement` event if marker is set', function() {
+test('it triggers `setMap` of marker with null on `willDestroyElement` event if marker is set', function() {
   run(() => component.set('marker', fakeMarkerObject));
   this.render();
 
@@ -63,7 +63,7 @@ test('it should trigger `setMap` of marker with null on `willDestroyElement` eve
   sinon.assert.calledWith(fakeMarkerObject.setMap, null);
 });
 
-test('it should not trigger `setMap` of marker on `willDestroyElement` event if there is no marker', function() {
+test('it doesn\'t trigger `setMap` of marker on `willDestroyElement` event if there is no marker', function() {
   this.render();
 
   run(() => component.set('marker', undefined));
@@ -72,7 +72,7 @@ test('it should not trigger `setMap` of marker on `willDestroyElement` event if 
   sinon.assert.notCalled(fakeMarkerObject.setMap);
 });
 
-test('it should trigger `setMap` on `parentView.map` change', function() {
+test('it triggers `setMap` on `parentView.map` change', function() {
   run(() => component.set('parentView', { map: '' }));
   this.render();
 
@@ -81,7 +81,7 @@ test('it should trigger `setMap` on `parentView.map` change', function() {
   sinon.assert.calledOnce(component.setMap);
 });
 
-test('it should trigger `setPosition` on `didInsertElement` event', function() {
+test('it triggers `setPosition` on `didInsertElement` event', function() {
   this.render();
 
   component.setPosition = sinon.spy();
@@ -89,7 +89,7 @@ test('it should trigger `setPosition` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setPosition);
 });
 
-test('it should trigger `setPosition` on `lat` change', function() {
+test('it triggers `setPosition` on `lat` change', function() {
   this.render();
 
   component.setPosition = sinon.spy();
@@ -97,7 +97,7 @@ test('it should trigger `setPosition` on `lat` change', function() {
   sinon.assert.calledOnce(component.setPosition);
 });
 
-test('it should trigger `setPosition` on `lng` change', function() {
+test('it triggers `setPosition` on `lng` change', function() {
   this.render();
 
   component.setPosition = sinon.spy();
@@ -105,7 +105,7 @@ test('it should trigger `setPosition` on `lng` change', function() {
   sinon.assert.calledOnce(component.setPosition);
 });
 
-test('it should trigger `setPosition` only once on `lat` and `lng` change', function() {
+test('it triggers `setPosition` only once on `lat` and `lng` change', function() {
   this.render();
 
   component.setPosition = sinon.spy();
@@ -116,7 +116,7 @@ test('it should trigger `setPosition` only once on `lat` and `lng` change', func
   sinon.assert.calledOnce(component.setPosition);
 });
 
-test('it should call `setPosition` of google marker on `setPosition` with lat/lng present', function() {
+test('it calls `setPosition` of google marker on `setPosition` with lat/lng present', function() {
   this.render();
 
   run(() => component.setProperties({
@@ -133,7 +133,7 @@ test('it should call `setPosition` of google marker on `setPosition` with lat/ln
   google.maps.LatLng.restore();
 });
 
-test('it should not call `setPosition` of google marker on `setPosition` when no lat present', function() {
+test('it doesn\'t call `setPosition` of google marker on `setPosition` when no lat present', function() {
   this.render();
 
   run(() => component.set('lat', 10));
@@ -143,7 +143,7 @@ test('it should not call `setPosition` of google marker on `setPosition` when no
   sinon.assert.notCalled(fakeMarkerObject.setPosition);
 });
 
-test('it should not call `setPosition` of google marker on `setPosition` when no lng present', function() {
+test('it doesn\'t call `setPosition` of google marker on `setPosition` when no lng present', function() {
   this.render();
 
   run(() => component.set('lng', 10));
@@ -153,7 +153,7 @@ test('it should not call `setPosition` of google marker on `setPosition` when no
   sinon.assert.notCalled(fakeMarkerObject.setPosition);
 });
 
-test('it should call `setMap` of google marker on `setMap` with `map` present', function() {
+test('it calls `setMap` of google marker on `setMap` with `map` present', function() {
   this.render();
 
   let mapObject = {};
@@ -165,7 +165,7 @@ test('it should call `setMap` of google marker on `setMap` with `map` present', 
   sinon.assert.calledWith(fakeMarkerObject.setMap, mapObject);
 });
 
-test('it should not call `setMap` of google marker on `setMap` when no `map` present', function() {
+test('it doesn\'t call `setMap` of google marker on `setMap` when no `map` present', function() {
   this.render();
 
   fakeMarkerObject.setMap = sinon.stub();
@@ -173,7 +173,7 @@ test('it should not call `setMap` of google marker on `setMap` when no `map` pre
   sinon.assert.notCalled(fakeMarkerObject.setMap);
 });
 
-test('it should trigger `setIcon` on `didInsertElement` event', function() {
+test('it triggers `setIcon` on `didInsertElement` event', function() {
   this.render();
 
   component.setIcon = sinon.spy();
@@ -181,7 +181,7 @@ test('it should trigger `setIcon` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setIcon);
 });
 
-test('it should trigger `setIcon` on `icon` change', function() {
+test('it triggers `setIcon` on `icon` change', function() {
   this.render();
 
   component.setIcon = sinon.spy();
@@ -189,7 +189,7 @@ test('it should trigger `setIcon` on `icon` change', function() {
   sinon.assert.calledOnce(component.setIcon);
 });
 
-test('it should call `setIcon` of google marker on `setIcon` with icon present', function() {
+test('it calls `setIcon` of google marker on `setIcon` with icon present', function() {
   run(() => component.set('icon', 'image-src'));
   this.render();
 
@@ -199,7 +199,7 @@ test('it should call `setIcon` of google marker on `setIcon` with icon present',
   sinon.assert.calledWith(fakeMarkerObject.setIcon, 'image-src');
 });
 
-test('it should not call `setIcon` of google marker on `setIcon` when no icon present', function() {
+test('it doesn\'t call `setIcon` of google marker on `setIcon` when no icon present', function() {
   run(() => component.set('icon', undefined));
   this.render();
 
@@ -208,7 +208,7 @@ test('it should not call `setIcon` of google marker on `setIcon` when no icon pr
   sinon.assert.notCalled(fakeMarkerObject.setIcon);
 });
 
-test('it should call `setInfowindow` on `setMap` when `withInfowindow` is true', function() {
+test('it calls `setInfowindow` on `setMap` when `withInfowindow` is true', function() {
   this.render();
 
   run(() => component.set('map', {}));
@@ -219,7 +219,7 @@ test('it should call `setInfowindow` on `setMap` when `withInfowindow` is true',
   sinon.assert.calledOnce(component.setInfowindow);
 });
 
-test('it should not call `setInfowindow` on `setMap` when `withInfowindow` is not true', function() {
+test('it doesn\'t call `setInfowindow` on `setMap` when `withInfowindow` is not true', function() {
   this.render();
 
   run(() => component.set('map', {}));
@@ -230,7 +230,7 @@ test('it should not call `setInfowindow` on `setMap` when `withInfowindow` is no
   sinon.assert.notCalled(component.setInfowindow);
 });
 
-test('it should construct new `Infowindow` on `setInfowindow` with `map` set', function() {
+test('it constructs new `Infowindow` on `setInfowindow` with `map` set', function() {
   this.render();
 
   run(() => component.set('map', {}));
@@ -250,7 +250,7 @@ test('it should construct new `Infowindow` on `setInfowindow` with `map` set', f
   google.maps.InfoWindow.restore();
 });
 
-test('new `Infowindow` shouldn\'t be constructed if no map is set', function() {
+test('new `Infowindow` isn\'t constructed if no map is set', function() {
   this.render();
 
   run(() => component.set('map', undefined));
@@ -263,7 +263,7 @@ test('new `Infowindow` shouldn\'t be constructed if no map is set', function() {
   google.maps.InfoWindow.restore();
 });
 
-test('new `Infowindow` shouldn\'t be constructed if no marker is set', function() {
+test('new `Infowindow` isn\'t constructed if no marker is set', function() {
   this.render();
 
   run(() => component.set('marker', undefined));

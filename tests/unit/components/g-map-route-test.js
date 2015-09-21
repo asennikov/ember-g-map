@@ -35,14 +35,14 @@ moduleForComponent('g-map-route', 'Unit | Component | g map route', {
   }
 });
 
-test('it should call `initDirectionsService` after render', function() {
+test('it calls `initDirectionsService` after render', function() {
   component.initDirectionsService = sinon.stub();
   this.render();
 
   sinon.assert.calledOnce(component.initDirectionsService);
 });
 
-test('it should trigger `setMap` of renderer with null on `willDestroyElement` event if renderer is set', function() {
+test('it triggers `setMap` of renderer with null on `willDestroyElement` event if renderer is set', function() {
   run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
   this.render();
 
@@ -51,7 +51,7 @@ test('it should trigger `setMap` of renderer with null on `willDestroyElement` e
   sinon.assert.calledWith(fakeDirectionsRenderer.setMap, null);
 });
 
-test('it should not trigger `setMap` of renderer on `willDestroyElement` event if there is no renderer', function() {
+test('it doesn\'t trigger `setMap` of renderer on `willDestroyElement` event if there is no renderer', function() {
   this.render();
 
   run(() => component.set('directionsRenderer', undefined));
@@ -60,7 +60,7 @@ test('it should not trigger `setMap` of renderer on `willDestroyElement` event i
   sinon.assert.notCalled(fakeDirectionsRenderer.setMap);
 });
 
-test('it should construct new `DirectionsRenderer` on `initDirectionsService` call', function(assert) {
+test('it constructs new `DirectionsRenderer` on `initDirectionsService` call', function(assert) {
   this.render();
 
   let mapObject = {};
@@ -78,7 +78,7 @@ test('it should construct new `DirectionsRenderer` on `initDirectionsService` ca
   assert.equal(component.get('directionsRenderer'), fakeDirectionsRenderer);
 });
 
-test('it should construct new `DirectionsService` on `initDirectionsService` call', function(assert) {
+test('it constructs new `DirectionsService` on `initDirectionsService` call', function(assert) {
   this.render();
 
   run(() => component.set('map', {}));
@@ -88,7 +88,7 @@ test('it should construct new `DirectionsService` on `initDirectionsService` cal
   assert.equal(component.get('directionsService'), fakeDirectionsService);
 });
 
-test('new `DirectionsService` and `DirectionsRenderer` shouldn\'t be constructed if they already present in component', function() {
+test('new `DirectionsService` and `DirectionsRenderer` isn\'t being constructed if they already present in component', function() {
   this.render();
 
   run(() => component.set('directionsService', fakeDirectionsService));
@@ -100,7 +100,7 @@ test('new `DirectionsService` and `DirectionsRenderer` shouldn\'t be constructed
   sinon.assert.notCalled(google.maps.DirectionsRenderer);
 });
 
-test('it should trigger `initDirectionsService` on `parentView.map` change', function() {
+test('it triggers `initDirectionsService` on `parentView.map` change', function() {
   run(() => component.set('parentView', { map: '' }));
   this.render();
 
@@ -109,7 +109,7 @@ test('it should trigger `initDirectionsService` on `parentView.map` change', fun
   sinon.assert.calledOnce(component.initDirectionsService);
 });
 
-test('it should trigger `updateRoute` on `initDirectionsService` call', function() {
+test('it triggers `updateRoute` on `initDirectionsService` call', function() {
   this.render();
 
   component.updateRoute = sinon.spy();
@@ -120,7 +120,7 @@ test('it should trigger `updateRoute` on `initDirectionsService` call', function
   sinon.assert.calledOnce(component.updateRoute);
 });
 
-test('it should trigger `updateRoute` on `originLat` change', function() {
+test('it triggers `updateRoute` on `originLat` change', function() {
   this.render();
 
   component.updateRoute = sinon.spy();
@@ -128,7 +128,7 @@ test('it should trigger `updateRoute` on `originLat` change', function() {
   sinon.assert.calledOnce(component.updateRoute);
 });
 
-test('it should trigger `updateRoute` on `originLng` change', function() {
+test('it triggers `updateRoute` on `originLng` change', function() {
   this.render();
 
   component.updateRoute = sinon.spy();
@@ -136,7 +136,7 @@ test('it should trigger `updateRoute` on `originLng` change', function() {
   sinon.assert.calledOnce(component.updateRoute);
 });
 
-test('it should trigger `updateRoute` on `destinationLat` change', function() {
+test('it triggers `updateRoute` on `destinationLat` change', function() {
   this.render();
 
   component.updateRoute = sinon.spy();
@@ -144,7 +144,7 @@ test('it should trigger `updateRoute` on `destinationLat` change', function() {
   sinon.assert.calledOnce(component.updateRoute);
 });
 
-test('it should trigger `updateRoute` on `destinationLng` change', function() {
+test('it triggers `updateRoute` on `destinationLng` change', function() {
   this.render();
 
   component.updateRoute = sinon.spy();
@@ -152,7 +152,7 @@ test('it should trigger `updateRoute` on `destinationLng` change', function() {
   sinon.assert.calledOnce(component.updateRoute);
 });
 
-test('it should trigger `updateRoute` only once on several lat/lng changes', function() {
+test('it triggers `updateRoute` only once on several lat/lng changes', function() {
   this.render();
 
   component.updateRoute = sinon.spy();
@@ -164,7 +164,7 @@ test('it should trigger `updateRoute` only once on several lat/lng changes', fun
   sinon.assert.calledOnce(component.updateRoute);
 });
 
-test('it should call `route` of directionsService on `updateRoute`', function() {
+test('it calls `route` of directionsService on `updateRoute`', function() {
   this.render();
 
   run(() => component.setProperties({
@@ -197,7 +197,7 @@ test('it should call `route` of directionsService on `updateRoute`', function() 
   google.maps.LatLng.restore();
 });
 
-test('it should call `setDirections` of directionsRenderer on `updateRoute`', function() {
+test('it calls `setDirections` of directionsRenderer on `updateRoute`', function() {
   this.render();
 
   let response = {};
