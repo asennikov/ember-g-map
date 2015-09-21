@@ -7,6 +7,11 @@ export default Ember.Component.extend({
   layout: layout,
   classNames: ['g-map'],
 
+  init() {
+    this._super();
+    this.markers = [];
+  },
+
   didInsertElement() {
     this._super();
     if (isEmpty(this.get('map'))) {
@@ -15,6 +20,9 @@ export default Ember.Component.extend({
     }
     this.setZoom();
     this.setCenter();
+    if (this.get('shouldFit')) {
+      this.fitToMarkers();
+    }
   },
 
   zoomChanged: observer('zoom', function() {
@@ -42,5 +50,17 @@ export default Ember.Component.extend({
       let center = new google.maps.LatLng(lat, lng);
       map.setCenter(center);
     }
+  },
+
+  fitToMarkers() {
+    let map = this.get('map');
+    let markers = this.get('markers');
+    let bounds = new google.maps.LatLngBounds();
+    let points = markers.map((marker) => {
+      return new google.maps.LatLng(marker.get('lat'), marker.get('lng'));
+    });
+
+    points.forEach((point) => bounds.extend(point));
+    map.fitBounds(bounds);
   }
 });

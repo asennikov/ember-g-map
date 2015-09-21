@@ -21,7 +21,7 @@ Simply add something similar to this to your styles:
 }
 ```
 
-In `config/environment.js` you can specify additional Google Map libraries
+In `config/environment.js` you can specify additional Google Maps libraries
 to be loaded along with this add-on (check the full list [here](https://developers.google.com/maps/documentation/javascript/libraries))
 and optional API key for your application (additional info could be found [here](https://developers.google.com/maps/web/)).
 
@@ -50,6 +50,18 @@ ENV['g-map'] = {
 {{/g-map}}
 ```
 
+## Map fits to show all initial Markers
+
+`shouldFit` attribute overrides `lat`, `lng`, `zoom` settings.
+
+```handlebars
+{{#g-map shouldFit=true}}
+  {{g-map-marker lat=37.7933 lng=-122.4167}}
+  {{g-map-marker lat=37.7833 lng=-122.4267}}
+  {{g-map-marker lat=37.7733 lng=-122.4067}}
+{{/g-map}}
+```
+
 ## Map with Markers and optional Info Windows
 
 Markers can have optional Info Windows activated on click.
@@ -58,6 +70,7 @@ in block form with `withInfowindow` flag set to `true`.
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12}}
+  {{g-map-marker lat=37.7933 lng=-122.4167}}
   {{#g-map-marker lat=37.7833 lng=-122.4267 withInfowindow=true}}
     <h2>Infowindow header</h2>
     <p>Text with {{bound}} variables</p>
@@ -67,6 +80,8 @@ in block form with `withInfowindow` flag set to `true`.
 ```
 
 ## Map with route between 2 locations
+
+Using Google Maps [Directions](https://developers.google.com/maps/documentation/javascript/directions) service.
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12}}

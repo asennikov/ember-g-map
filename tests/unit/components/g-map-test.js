@@ -6,7 +6,8 @@ const { run } = Ember;
 
 const fakeMapObject = {
   setCenter: sinon.stub(),
-  setZoom: sinon.stub()
+  setZoom: sinon.stub(),
+  fitBounds: sinon.stub()
 };
 
 moduleForComponent('g-map', 'Unit | Component | g map', {
@@ -124,7 +125,7 @@ test('it should call `setZoom` of google map on `setZoom` with zoom present', fu
   fakeMapObject.setZoom = sinon.stub();
   run(() => component.setZoom());
   sinon.assert.calledOnce(fakeMapObject.setZoom);
-  sinon.assert.calledWith(fakeMapObject.setZoom,14);
+  sinon.assert.calledWith(fakeMapObject.setZoom, 14);
 });
 
 test('it should not call `setCenter` of google map on `setCenter` when no lat present', function() {
@@ -156,4 +157,62 @@ test('it should not call `setZoom` of google map on `setZoom` when no zoom prese
   fakeMapObject.setZoom = sinon.stub();
   run(() => component.setZoom());
   sinon.assert.calledOnce(fakeMapObject.setZoom);
+});
+
+test('it calls `fitToMarkers` object on `didInsertElement`', function() {
+  let component = this.subject({
+    shouldFit: true
+  });
+  this.render();
+
+  component.fitToMarkers = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.fitToMarkers);
+});
+
+test('it doesn\'t call `fitToMarkers` object on `didInsertElement` if shouldFit is falsy', function() {
+  let component = this.subject({
+    shouldFit: null
+  });
+  this.render();
+
+  component.fitToMarkers = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.notCalled(component.fitToMarkers);
+});
+
+test('it calls `fitBounds` of google map on `fitToMarkers`', function() {
+  let firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
+  let secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
+  let component = this.subject();
+  this.render();
+
+  fakeMapObject.fitBounds = sinon.stub();
+
+  let fakeLatLngBounds = {
+    extend: sinon.stub()
+  };
+  sinon.stub(google.maps, 'LatLngBounds').returns(fakeLatLngBounds);
+
+  let stubbedLatLng = sinon.stub(google.maps, 'LatLng');
+  stubbedLatLng.onCall(0).returns(firstMarker);
+  stubbedLatLng.onCall(1).returns(secondMarker);
+
+  run(() => component.set('markers', [ firstMarker, secondMarker ]));
+  run(() => component.fitToMarkers());
+  sinon.assert.calledOnce(google.maps.LatLngBounds);
+
+  sinon.assert.calledTwice(google.maps.LatLng);
+  sinon.assert.calledWith(google.maps.LatLng, 1, 2);
+  sinon.assert.calledWith(google.maps.LatLng, 3, 4);
+
+  sinon.assert.calledTwice(fakeLatLngBounds.extend);
+  sinon.assert.calledWith(fakeLatLngBounds.extend, firstMarker);
+  sinon.assert.calledWith(fakeLatLngBounds.extend, secondMarker);
+
+  sinon.assert.calledOnce(fakeMapObject.fitBounds);
+  sinon.assert.calledWith(fakeMapObject.fitBounds, fakeLatLngBounds);
+
+  google.maps.LatLng.restore();
+  google.maps.LatLngBounds.restore();
 });
