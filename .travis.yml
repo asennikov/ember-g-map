@@ -32,3 +32,8 @@ install:
 
 script:
   - ember try $EMBER_TRY_SCENARIO test
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
