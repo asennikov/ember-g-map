@@ -11,6 +11,16 @@ using `{{#if}}` and `{{#each}}` on template level.
 
 # Configuration
 
+You must define the size of the canvas in which the map is displayed.
+Simply add something similar to this to your styles:
+
+```css
+.g-map-canvas {
+  width: 600px;
+  height: 400px;
+}
+```
+
 In `config/environment.js` you can specify additional Google Map libraries
 to be loaded along with this add-on (check the full list [here](https://developers.google.com/maps/documentation/javascript/libraries))
 and optional API key for your application (additional info could be found [here](https://developers.google.com/maps/web/)).
