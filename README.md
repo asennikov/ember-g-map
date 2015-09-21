@@ -1,4 +1,4 @@
-# Ember-g-map
+# Ember-g-map [![Build Status](https://travis-ci.org/asennikov/ember-g-map.svg?branch=master)](https://travis-ci.org/asennikov/ember-g-map)
 
 This README outlines the details of collaborating on this Ember addon.
 
