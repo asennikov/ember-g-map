@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/g-map-marker';
 import GMapComponent from 'ember-g-map/components/g-map';
-/* globals google */
 
 const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
 
@@ -59,7 +58,7 @@ export default Ember.Component.extend({
   setInfowindow() {
     let map = this.get('map');
     let marker = this.get('marker');
-    
+
     if (isPresent(marker) && isPresent(map)) {
       let infowindow = new google.maps.InfoWindow({
         content: this.get('element')
