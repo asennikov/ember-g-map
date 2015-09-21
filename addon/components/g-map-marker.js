@@ -27,6 +27,13 @@ export default Ember.Component.extend({
     this.setMap();
   },
 
+  willDestroyElement() {
+    let marker = this.get('marker');
+    if (isPresent(marker)) {
+      marker.setMap(null);
+    }
+  },
+
   mapWasSet: observer('map', function() {
     run.once(this, 'setMap');
   }),

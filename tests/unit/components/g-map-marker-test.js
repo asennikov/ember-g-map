@@ -50,6 +50,26 @@ test('it should trigger `setMap` on `didInsertElement` event', function(assert) 
   component.trigger('didInsertElement');
   assert.ok(component.setMap.calledOnce);
 });
+
+test('it should trigger `setMap` of marker with null on `willDestroyElement` event if marker is set', function(assert) {
+  run(() => component.set('marker', fakeMarkerObject));
+  this.render();
+
+  fakeMarkerObject.setMap = sinon.spy();
+  component.trigger('willDestroyElement');
+  assert.ok(fakeMarkerObject.setMap.calledOnce);
+  assert.ok(fakeMarkerObject.setMap.calledWith(null));
+});
+
+test('it should not trigger `setMap` of marker on `willDestroyElement` event if there is no marker', function(assert) {
+  this.render();
+
+  run(() => component.set('marker', undefined));
+  fakeMarkerObject.setMap = sinon.spy();
+  component.trigger('willDestroyElement');
+  assert.equal(fakeMarkerObject.setMap.callCount, 0);
+});
+
 test('it should trigger `setMap` on `parentView.map` change', function(assert) {
   run(() => component.set('parentView', { map: '' }));
   this.render();
