@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/g-map-marker';
-import GMapComponent from '../components/g-map';
+import GMapComponent from './g-map';
 
 const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
 
