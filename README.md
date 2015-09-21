@@ -9,6 +9,19 @@ using `{{#if}}` and `{{#each}}` on template level.
 
 * `ember install ember-g-map`
 
+# Configuration
+
+In `config/environment.js` you can specify additional Google Map libraries
+to be loaded along with this add-on (check the full list [here](https://developers.google.com/maps/documentation/javascript/libraries))
+and optional API key for your application (additional info could be found [here](https://developers.google.com/maps/web/)).
+
+```
+ENV['g-map'] = {
+  libraries: ['places', 'geometry'],
+  key: 'your-unique-google-map-api-key'
+}
+```
+
 # Usage
 
 ## Simple map
