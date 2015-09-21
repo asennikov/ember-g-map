@@ -7,6 +7,7 @@ const { run } = Ember;
 
 const fakeMarkerObject = {
   setPosition: sinon.stub(),
+  setIcon: sinon.stub(),
   setMap: sinon.stub()
 };
 
@@ -166,4 +167,39 @@ test('it should not call `setMap` of google marker on `setMap` when no `map` pre
   fakeMarkerObject.setMap = sinon.stub();
   run(() => component.setMap());
   assert.equal(fakeMarkerObject.setMap.callCount, 0);
+});
+
+test('it should trigger `setIcon` on `didInsertElement` event', function(assert) {
+  this.render();
+
+  component.setIcon = sinon.spy();
+  component.trigger('didInsertElement');
+  assert.ok(component.setIcon.calledOnce);
+});
+
+test('it should trigger `setIcon` on `icon` change', function(assert) {
+  this.render();
+
+  component.setIcon = sinon.spy();
+  run(() => component.set('icon', 'image-src'));
+  assert.ok(component.setIcon.calledOnce);
+});
+
+test('it should call `setIcon` of google marker on `setIcon` with icon present', function(assert) {
+  run(() => component.set('icon', 'image-src'));
+  this.render();
+
+  fakeMarkerObject.setIcon = sinon.stub();
+  run(() => component.setIcon());
+  assert.ok(fakeMarkerObject.setIcon.calledOnce);
+  assert.ok(fakeMarkerObject.setIcon.calledWith('image-src'));
+});
+
+test('it should not call `setIcon` of google marker on `setIcon` when no icon present', function(assert) {
+  run(() => component.set('icon', undefined));
+  this.render();
+
+  fakeMarkerObject.setIcon = sinon.stub();
+  run(() => component.setIcon());
+  assert.equal(fakeMarkerObject.setIcon.callCount, 0);
 });

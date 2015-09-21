@@ -24,6 +24,7 @@ export default Ember.Component.extend({
       this.set('marker', marker);
     }
     this.setPosition();
+    this.setIcon();
     this.setMap();
   },
 
@@ -59,6 +60,19 @@ export default Ember.Component.extend({
     if (isPresent(marker) && isPresent(lat) && isPresent(lng)) {
       let position = new google.maps.LatLng(lat, lng);
       marker.setPosition(position);
+    }
+  },
+
+  iconChanged: observer('icon', function() {
+    run.once(this, 'setIcon');
+  }),
+
+  setIcon() {
+    let marker = this.get('marker');
+    let icon = this.get('icon');
+
+    if (isPresent(marker) && isPresent(icon)) {
+      marker.setIcon(icon);
     }
   }
 });
