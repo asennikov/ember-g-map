@@ -275,3 +275,8 @@ test('new `Infowindow` shouldn\'t be constructed if no marker is set', function(
 
   google.maps.InfoWindow.restore();
 });
+
+test('it should register itself in parent\'s `markers` array on `init` event', function(assert) {
+  assert.equal(component.get('parentView.markers').length, 1);
+  assert.equal(component.get('parentView.markers')[0], component);
+});

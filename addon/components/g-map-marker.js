@@ -16,6 +16,9 @@ export default Ember.Component.extend({
     let parent = this.get('parentView');
     assert('Must be inside {{#g-map}} component', parent instanceof GMapComponent);
 
+    let markers = parent.get('markers');
+    markers.push(this);
+
     if (isEmpty(this.get('withInfowindow'))) {
       this.set('withInfowindow', false);
     }

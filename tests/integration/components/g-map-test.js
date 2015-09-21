@@ -24,3 +24,18 @@ test('it renders', function(assert) {
 
   assert.equal(this.$().text().trim(), 'template block text');
 });
+
+test('it contains list of child markers', function(assert) {
+  assert.expect(1);
+
+  this.render(hbs`
+    {{#g-map}}
+      {{g-map-marker}}
+      {{g-map-marker}}
+      {{g-map-marker}}
+      {{g-map-marker}}
+    {{/g-map}}
+  `);
+
+  assert.equal(this.get('markers.length', 4));
+});
