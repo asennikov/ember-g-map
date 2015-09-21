@@ -1,12 +1,14 @@
-<h2 id="title">Welcome to Ember</h2>
-
-{{outlet}}
+<h2 id="title">Ember-g-map Component</h2>
 
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12}}
   {{g-map-marker lat=37.7933 lng=-122.4167}}
   {{#g-map-marker lat=37.7733 lng=-122.4167 withInfowindow=true}}
     <h1>Pretty Infowindow!</h1>
-    <p>It can have bound variables and elements with actions.</p>
+    <p>It can has bound variables:</p>
+    <p>Random: {{randomVariable}}</p>
+
+    <p>And elements with actions:</p>
+    <button {{action "refresh"}}>Refresh</button>
   {{/g-map-marker}}
 
   {{g-map-route originLat=37.7933 originLng=-122.4167
