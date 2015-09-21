@@ -42,6 +42,24 @@ test('it should call `initDirectionsService` after render', function() {
   sinon.assert.calledOnce(component.initDirectionsService);
 });
 
+test('it should trigger `setMap` of renderer with null on `willDestroyElement` event if renderer is set', function() {
+  run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
+  this.render();
+
+  component.trigger('willDestroyElement');
+  sinon.assert.calledOnce(fakeDirectionsRenderer.setMap);
+  sinon.assert.calledWith(fakeDirectionsRenderer.setMap, null);
+});
+
+test('it should not trigger `setMap` of renderer on `willDestroyElement` event if there is no renderer', function() {
+  this.render();
+
+  run(() => component.set('directionsRenderer', undefined));
+  fakeDirectionsRenderer.setMap = sinon.stub();
+  component.trigger('willDestroyElement');
+  sinon.assert.notCalled(fakeDirectionsRenderer.setMap);
+});
+
 test('it should construct new `DirectionsRenderer` on `initDirectionsService` call', function(assert) {
   this.render();
 

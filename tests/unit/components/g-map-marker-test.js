@@ -60,7 +60,7 @@ test('it should trigger `setMap` of marker with null on `willDestroyElement` eve
   fakeMarkerObject.setMap = sinon.spy();
   component.trigger('willDestroyElement');
   sinon.assert.calledOnce(fakeMarkerObject.setMap);
-  sinon.assert.calledWith(fakeMarkerObject.setMap,null);
+  sinon.assert.calledWith(fakeMarkerObject.setMap, null);
 });
 
 test('it should not trigger `setMap` of marker on `willDestroyElement` event if there is no marker', function() {
