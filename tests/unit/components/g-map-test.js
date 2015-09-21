@@ -24,7 +24,7 @@ moduleForComponent('g-map', 'Unit | Component | g map', {
   }
 });
 
-test('it should construct new `Map` object after render', function(assert) {
+test('it constructs new `Map` object after render', function(assert) {
   let component = this.subject();
 
   this.render();
@@ -32,7 +32,7 @@ test('it should construct new `Map` object after render', function(assert) {
   assert.equal(component.get('map'), fakeMapObject);
 });
 
-test('new `Map` shouldn\'t be constructed if it already present in component', function() {
+test('new `Map` isn\'t constructed if it already present in component', function() {
   this.subject({
     map: fakeMapObject
   });
@@ -41,7 +41,7 @@ test('new `Map` shouldn\'t be constructed if it already present in component', f
   sinon.assert.notCalled(google.maps.Map);
 });
 
-test('it should trigger `setZoom` on `didInsertElement` event', function() {
+test('it triggers `setZoom` on `didInsertElement` event', function() {
   let component = this.subject();
   this.render();
 
@@ -50,7 +50,7 @@ test('it should trigger `setZoom` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setZoom);
 });
 
-test('it should trigger `setCenter` on `didInsertElement` event', function() {
+test('it triggers `setCenter` on `didInsertElement` event', function() {
   let component = this.subject();
   this.render();
 
@@ -59,7 +59,7 @@ test('it should trigger `setCenter` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setCenter);
 });
 
-test('it should trigger `setZoom` on `zoom` change', function() {
+test('it triggers `setZoom` on `zoom` change', function() {
   let component = this.subject();
   this.render();
 
@@ -68,7 +68,7 @@ test('it should trigger `setZoom` on `zoom` change', function() {
   sinon.assert.calledOnce(component.setZoom);
 });
 
-test('it should trigger `setCenter` on `lat` change', function() {
+test('it triggers `setCenter` on `lat` change', function() {
   let component = this.subject();
   this.render();
 
@@ -77,7 +77,7 @@ test('it should trigger `setCenter` on `lat` change', function() {
   sinon.assert.calledOnce(component.setCenter);
 });
 
-test('it should trigger `setCenter` on `lng` change', function() {
+test('it triggers `setCenter` on `lng` change', function() {
   let component = this.subject();
   this.render();
 
@@ -86,7 +86,7 @@ test('it should trigger `setCenter` on `lng` change', function() {
   sinon.assert.calledOnce(component.setCenter);
 });
 
-test('it should trigger `setCenter` only once on `lat` and `lng` change', function() {
+test('it triggers `setCenter` only once on `lat` and `lng` change', function() {
   let component = this.subject();
   this.render();
 
@@ -98,7 +98,7 @@ test('it should trigger `setCenter` only once on `lat` and `lng` change', functi
   sinon.assert.calledOnce(component.setCenter);
 });
 
-test('it should call `setCenter` of google map on `setCenter` with lat/lng present', function() {
+test('it calls `setCenter` of google map on `setCenter` with lat/lng present', function() {
   let component = this.subject({
     lat: 10,
     lng: 100
@@ -116,7 +116,7 @@ test('it should call `setCenter` of google map on `setCenter` with lat/lng prese
   google.maps.LatLng.restore();
 });
 
-test('it should call `setZoom` of google map on `setZoom` with zoom present', function() {
+test('it calls `setZoom` of google map on `setZoom` with zoom present', function() {
   let component = this.subject({
     zoom: 14
   });
@@ -128,7 +128,7 @@ test('it should call `setZoom` of google map on `setZoom` with zoom present', fu
   sinon.assert.calledWith(fakeMapObject.setZoom, 14);
 });
 
-test('it should not call `setCenter` of google map on `setCenter` when no lat present', function() {
+test('it doesn\'t call `setCenter` of google map on `setCenter` when no lat present', function() {
   let component = this.subject({
     lat: 10
   });
@@ -139,7 +139,7 @@ test('it should not call `setCenter` of google map on `setCenter` when no lat pr
   sinon.assert.notCalled(fakeMapObject.setCenter);
 });
 
-test('it should not call `setCenter` of google map on `setCenter` when no lng present', function() {
+test('it doesn\'t call `setCenter` of google map on `setCenter` when no lng present', function() {
   let component = this.subject({
     lng: 10
   });
@@ -150,7 +150,7 @@ test('it should not call `setCenter` of google map on `setCenter` when no lng pr
   sinon.assert.notCalled(fakeMapObject.setCenter);
 });
 
-test('it should not call `setZoom` of google map on `setZoom` when no zoom present', function() {
+test('it doesn\'t call `setZoom` of google map on `setZoom` when no zoom present', function() {
   let component = this.subject();
   this.render();
 
