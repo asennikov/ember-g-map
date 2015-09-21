@@ -53,14 +53,19 @@ export default Ember.Component.extend({
   },
 
   fitToMarkers() {
-    let map = this.get('map');
-    let markers = this.get('markers');
-    let bounds = new google.maps.LatLngBounds();
-    let points = markers.map((marker) => {
-      return new google.maps.LatLng(marker.get('lat'), marker.get('lng'));
+    let markers = this.get('markers').filter((marker) => {
+      return isPresent(marker.get('lat')) && isPresent(marker.get('lng'));
     });
 
-    points.forEach((point) => bounds.extend(point));
-    map.fitBounds(bounds);
+    if (markers.length > 0) {
+      let map = this.get('map');
+      let bounds = new google.maps.LatLngBounds();
+      let points = markers.map((marker) => {
+        return new google.maps.LatLng(marker.get('lat'), marker.get('lng'));
+      });
+
+      points.forEach((point) => bounds.extend(point));
+      map.fitBounds(bounds);
+    }
   }
 });
