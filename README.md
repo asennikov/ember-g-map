@@ -15,7 +15,7 @@ In `config/environment.js` you can specify additional Google Map libraries
 to be loaded along with this add-on (check the full list [here](https://developers.google.com/maps/documentation/javascript/libraries))
 and optional API key for your application (additional info could be found [here](https://developers.google.com/maps/web/)).
 
-```
+```javascript
 ENV['g-map'] = {
   libraries: ['places', 'geometry'],
   key: 'your-unique-google-map-api-key'
@@ -26,13 +26,13 @@ ENV['g-map'] = {
 
 ## Simple map
 
-```
+```handlebars
 {{g-map lat=37.7833 lng=-122.4167 zoom=12}}
 ```
 
 ## Map with Markers
 
-```
+```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12}}
   {{g-map-marker lat=37.7933 lng=-122.4167}}
   {{g-map-marker lat=37.7833 lng=-122.4267}}
@@ -46,7 +46,7 @@ Markers can have optional Info Windows activated on click.
 To provide content for Info Window you should call `g-map-marker`
 in block form with `withInfowindow` flag set to `true`.
 
-```
+```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12}}
   {{#g-map-marker lat=37.7833 lng=-122.4267 withInfowindow=true}}
     <h2>Infowindow header</h2>
@@ -58,7 +58,7 @@ in block form with `withInfowindow` flag set to `true`.
 
 ## Map with route between 2 locations
 
-```
+```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12}}
   {{g-map-route originLat=37.7933 originLng=-122.4167
                 destinationLat=37.7733 destinationLng=-122.4167}}
