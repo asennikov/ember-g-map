@@ -90,6 +90,10 @@ Using Google Maps [Directions](https://developers.google.com/maps/documentation/
 {{/g-map}}
 ```
 
+## Demo
+
+http://asennikov.github.io/ember-g-map/
+
 # Planned Features
 
 - Independent Info Windows
