@@ -4,10 +4,9 @@ import GMapComponent from './g-map';
 
 const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
 
-export default Ember.Component.extend({
+const GMapMarkerComponent = Ember.Component.extend({
   layout: layout,
   classNames: ['g-map-marker'],
-  positionalParams: ['mapContext'],
 
   map: computed.alias('mapContext.map'),
 
@@ -112,3 +111,9 @@ export default Ember.Component.extend({
     }
   }
 });
+
+GMapMarkerComponent.reopenClass({
+  positionalParams: ['mapContext']
+});
+
+export default GMapMarkerComponent;
