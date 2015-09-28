@@ -22,7 +22,7 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
   beforeEach() {
     sinon.stub(google.maps, 'Marker').returns(fakeMarkerObject);
     component = this.subject({
-      parentView: new GMapComponent()
+      mapContext: new GMapComponent()
     });
   },
 
@@ -68,10 +68,10 @@ test('it doesn\'t trigger `setMap` of marker on `willDestroyElement` event if th
   sinon.assert.notCalled(fakeMarkerObject.setMap);
 });
 
-test('it triggers `setMap` on `parentView.map` change', function() {
-  run(() => component.set('parentView', { map: '' }));
+test('it triggers `setMap` on `mapContext.map` change', function() {
+  run(() => component.set('mapContext', { map: '' }));
   component.setMap = sinon.spy();
-  run(() => component.set('parentView.map', {}));
+  run(() => component.set('mapContext.map', {}));
   sinon.assert.calledOnce(component.setMap);
 });
 
@@ -268,6 +268,12 @@ test('new `Infowindow` isn\'t constructed if no marker is set', function() {
 });
 
 test('it registers itself in parent\'s `markers` array on `init` event', function(assert) {
-  assert.equal(component.get('parentView.markers').length, 1);
-  assert.equal(component.get('parentView.markers')[0], component);
+  assert.equal(component.get('mapContext.markers').length, 1);
+  assert.equal(component.get('mapContext.markers')[0], component);
+});
+
+test('it unregisters itself in parent\'s `markers` array on `willDestroyElement` event', function(assert) {
+  assert.equal(component.get('mapContext.markers').length, 1);
+  component.trigger('willDestroyElement');
+  assert.equal(component.get('mapContext.markers').length, 0);
 });

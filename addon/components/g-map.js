@@ -9,7 +9,7 @@ export default Ember.Component.extend({
 
   init() {
     this._super();
-    this.markers = [];
+    this.markers = Ember.A();
   },
 
   didInsertElement() {

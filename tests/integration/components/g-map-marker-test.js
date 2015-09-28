@@ -12,8 +12,8 @@ test('it renders', function(assert) {
   // Handle any actions with this.on('myAction', function(val) { ... });
 
   this.render(hbs`
-    {{#g-map}}
-      {{g-map-marker}}
+    {{#g-map as |context|}}
+      {{g-map-marker context}}
     {{/g-map}}
   `);
 
@@ -21,8 +21,8 @@ test('it renders', function(assert) {
 
   // Template block usage:
   this.render(hbs`
-    {{#g-map}}
-      {{#g-map-marker}}
+    {{#g-map as |context|}}
+      {{#g-map-marker context}}
         template block text
       {{/g-map-marker}}
     {{/g-map}}

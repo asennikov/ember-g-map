@@ -1,8 +1,9 @@
 <h2 id="title">Ember-g-map Component</h2>
 
-{{#g-map shouldFit=true}}
-  {{g-map-marker lat=37.7933 lng=-122.4167}}
-  {{#g-map-marker lat=37.7733 lng=-122.4167 withInfowindow=true}}
+{{#g-map shouldFit=true as |context|}}
+  {{g-map-marker context lat=37.7933 lng=-122.4167}}
+
+  {{#g-map-marker context lat=37.7733 lng=-122.4167 withInfowindow=true}}
     <h1>Pretty Infowindow!</h1>
     <p>It can has bound variables:</p>
     <p>Random: {{randomVariable}}</p>
@@ -11,6 +12,7 @@
     <button {{action "refresh"}}>Refresh</button>
   {{/g-map-marker}}
 
-  {{g-map-route originLat=37.7933 originLng=-122.4167
+  {{g-map-route context
+                originLat=37.7933 originLng=-122.4167
                 destinationLat=37.7733 destinationLng=-122.4167}}
 {{/g-map}}

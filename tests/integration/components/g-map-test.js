@@ -29,11 +29,11 @@ test('it contains list of child markers', function(assert) {
   assert.expect(1);
 
   this.render(hbs`
-    {{#g-map}}
-      {{g-map-marker}}
-      {{g-map-marker}}
-      {{g-map-marker}}
-      {{g-map-marker}}
+    {{#g-map as |context|}}
+      {{g-map-marker context}}
+      {{g-map-marker context}}
+      {{g-map-marker context}}
+      {{g-map-marker context}}
     {{/g-map}}
   `);
 
