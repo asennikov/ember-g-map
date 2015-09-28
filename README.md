@@ -1,4 +1,4 @@
-# Ember-g-map [![Build Status](https://travis-ci.org/asennikov/ember-g-map.svg?branch=master)](https://travis-ci.org/asennikov/ember-g-map) [![Ember Observer Score](http://emberobserver.com/badges/ember-g-map.svg)](http://emberobserver.com/addons/ember-g-map) [![Coverage Status](https://coveralls.io/repos/asennikov/ember-g-map/badge.svg?branch=master&service=github)](https://coveralls.io/github/asennikov/ember-g-map?branch=master)
+# Ember-g-map [![Build Status](https://travis-ci.org/asennikov/ember-g-map.svg?branch=master)](https://travis-ci.org/asennikov/ember-g-map) [![Ember Observer Score](http://emberobserver.com/badges/ember-g-map.svg)](http://emberobserver.com/addons/ember-g-map) [![Coverage Status](https://coveralls.io/repos/asennikov/ember-g-map/badge.svg?branch=master&service=github)](https://coveralls.io/github/asennikov/ember-g-map?branch=master) [![Code Climate](https://codeclimate.com/github/asennikov/ember-g-map/badges/gpa.svg)](https://codeclimate.com/github/asennikov/ember-g-map)
 
 An ember-cli add-on for easy integration with Google Maps.
 Each object displayed on map is inserted via child component,
