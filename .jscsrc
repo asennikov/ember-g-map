@@ -1,0 +1,4 @@
+{
+  "excludeFiles": ["blanket-options.js"],
+  "requireEnhancedObjectLiterals": null
+}
