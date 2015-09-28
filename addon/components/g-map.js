@@ -52,6 +52,14 @@ export default Ember.Component.extend({
     }
   },
 
+  registerMarker(marker) {
+    this.get('markers').addObject(marker);
+  },
+
+  unregisterMarker(marker) {
+    this.get('markers').removeObject(marker);
+  },
+
   fitToMarkers() {
     let markers = this.get('markers').filter((marker) => {
       return isPresent(marker.get('lat')) && isPresent(marker.get('lng'));

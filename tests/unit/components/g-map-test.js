@@ -216,3 +216,28 @@ test('it calls `fitBounds` of google map on `fitToMarkers`', function() {
   google.maps.LatLng.restore();
   google.maps.LatLngBounds.restore();
 });
+
+test('it registers marker in `markers` array during `registerMarker`', function(assert) {
+  let component = this.subject();
+  this.render();
+
+  run(() => component.get('markers').addObject('first'));
+  run(() => component.registerMarker('second'));
+  run(() => component.registerMarker('third'));
+
+  assert.equal(component.get('markers').length, 3);
+  assert.equal(component.get('markers')[1], 'second');
+  assert.equal(component.get('markers')[2], 'third');
+});
+
+test('it unregisters marker from `markers` array during `unregisterMarker`', function(assert) {
+  let component = this.subject();
+  this.render();
+
+  run(() => component.get('markers').addObjects(['first', 'second', 'third']));
+  run(() => component.unregisterMarker('second'));
+
+  assert.equal(component.get('markers').length, 2);
+  assert.equal(component.get('markers')[0], 'first');
+  assert.equal(component.get('markers')[1], 'third');
+});

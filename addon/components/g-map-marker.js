@@ -17,12 +17,10 @@ export default Ember.Component.extend({
     let mapContext = this.get('mapContext');
     assert('Must be inside {{#g-map}} component with context set', mapContext instanceof GMapComponent);
 
-    let markers = mapContext.get('markers');
-    markers.pushObject(this);
-
     if (isEmpty(this.get('withInfowindow'))) {
       this.set('withInfowindow', false);
     }
+    this.register();
   },
 
   didInsertElement() {
@@ -37,12 +35,23 @@ export default Ember.Component.extend({
   },
 
   willDestroyElement() {
+    this.unsetMarkerFromMap();
+    this.unregister();
+  },
+
+  register() {
+    this.get('mapContext').registerMarker(this);
+  },
+
+  unregister() {
+    this.get('mapContext').unregisterMarker(this);
+  },
+
+  unsetMarkerFromMap() {
     let marker = this.get('marker');
     if (isPresent(marker)) {
       marker.setMap(null);
     }
-    let markers = this.get('mapContext.markers');
-    markers.removeObject(this);
   },
 
   mapWasSet: observer('map', function() {
