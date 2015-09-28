@@ -42,11 +42,14 @@ ENV['g-map'] = {
 
 ## Map with Markers
 
+Mandatory `context` attribute ties child-elements
+with the main `g-map` component.
+
 ```handlebars
-{{#g-map lat=37.7833 lng=-122.4167 zoom=12}}
-  {{g-map-marker lat=37.7933 lng=-122.4167}}
-  {{g-map-marker lat=37.7833 lng=-122.4267}}
-  {{g-map-marker lat=37.7733 lng=-122.4067}}
+{{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
+  {{g-map-marker context lat=37.7933 lng=-122.4167}}
+  {{g-map-marker context lat=37.7833 lng=-122.4267}}
+  {{g-map-marker context lat=37.7733 lng=-122.4067}}
 {{/g-map}}
 ```
 
@@ -55,10 +58,10 @@ ENV['g-map'] = {
 `shouldFit` attribute overrides `lat`, `lng`, `zoom` settings.
 
 ```handlebars
-{{#g-map shouldFit=true}}
-  {{g-map-marker lat=37.7933 lng=-122.4167}}
-  {{g-map-marker lat=37.7833 lng=-122.4267}}
-  {{g-map-marker lat=37.7733 lng=-122.4067}}
+{{#g-map shouldFit=true as |context|}}
+  {{g-map-marker context lat=37.7933 lng=-122.4167}}
+  {{g-map-marker context lat=37.7833 lng=-122.4267}}
+  {{g-map-marker context lat=37.7733 lng=-122.4067}}
 {{/g-map}}
 ```
 
@@ -69,9 +72,9 @@ To provide content for Info Window you should call `g-map-marker`
 in block form with `withInfowindow` flag set to `true`.
 
 ```handlebars
-{{#g-map lat=37.7833 lng=-122.4167 zoom=12}}
-  {{g-map-marker lat=37.7933 lng=-122.4167}}
-  {{#g-map-marker lat=37.7833 lng=-122.4267 withInfowindow=true}}
+{{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
+  {{g-map-marker context lat=37.7933 lng=-122.4167}}
+  {{#g-map-marker context lat=37.7833 lng=-122.4267 withInfowindow=true}}
     <h2>Infowindow header</h2>
     <p>Text with {{bound}} variables</p>
     <button {{action "do"}}>Do</button>
@@ -84,8 +87,9 @@ in block form with `withInfowindow` flag set to `true`.
 Using Google Maps [Directions](https://developers.google.com/maps/documentation/javascript/directions) service.
 
 ```handlebars
-{{#g-map lat=37.7833 lng=-122.4167 zoom=12}}
-  {{g-map-route originLat=37.7933 originLng=-122.4167
+{{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
+  {{g-map-route context
+                originLat=37.7933 originLng=-122.4167
                 destinationLat=37.7733 destinationLng=-122.4167}}
 {{/g-map}}
 ```

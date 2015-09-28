@@ -25,7 +25,7 @@ moduleForComponent('g-map-route', 'Unit | Component | g map route', {
     sinon.stub(google.maps, 'DirectionsRenderer').returns(fakeDirectionsRenderer);
     sinon.stub(google.maps, 'DirectionsService').returns(fakeDirectionsService);
     component = this.subject({
-      parentView: new GMapComponent()
+      mapContext: new GMapComponent()
     });
   },
 
@@ -92,10 +92,10 @@ test('new `DirectionsService` and `DirectionsRenderer` isn\'t being constructed 
   sinon.assert.notCalled(google.maps.DirectionsRenderer);
 });
 
-test('it triggers `initDirectionsService` on `parentView.map` change', function() {
-  run(() => component.set('parentView', { map: '' }));
+test('it triggers `initDirectionsService` on `mapContext.map` change', function() {
+  run(() => component.set('mapContext', { map: '' }));
   component.initDirectionsService = sinon.spy();
-  run(() => component.set('parentView.map', {}));
+  run(() => component.set('mapContext.map', {}));
   sinon.assert.calledOnce(component.initDirectionsService);
 });
 

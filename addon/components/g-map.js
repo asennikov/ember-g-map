@@ -9,7 +9,7 @@ export default Ember.Component.extend({
 
   init() {
     this._super();
-    this.markers = [];
+    this.markers = Ember.A();
   },
 
   didInsertElement() {
@@ -50,6 +50,14 @@ export default Ember.Component.extend({
       let center = new google.maps.LatLng(lat, lng);
       map.setCenter(center);
     }
+  },
+
+  registerMarker(marker) {
+    this.get('markers').addObject(marker);
+  },
+
+  unregisterMarker(marker) {
+    this.get('markers').removeObject(marker);
   },
 
   fitToMarkers() {

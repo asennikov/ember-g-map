@@ -4,24 +4,22 @@ import GMapComponent from './g-map';
 
 const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
 
-export default Ember.Component.extend({
+const GMapMarkerComponent = Ember.Component.extend({
   layout: layout,
   classNames: ['g-map-marker'],
 
-  map: computed.alias('parentView.map'),
+  map: computed.alias('mapContext.map'),
 
   init() {
     this._super(arguments);
 
-    let parent = this.get('parentView');
-    assert('Must be inside {{#g-map}} component', parent instanceof GMapComponent);
-
-    let markers = parent.get('markers');
-    markers.push(this);
+    let mapContext = this.get('mapContext');
+    assert('Must be inside {{#g-map}} component with context set', mapContext instanceof GMapComponent);
 
     if (isEmpty(this.get('withInfowindow'))) {
       this.set('withInfowindow', false);
     }
+    this.register();
   },
 
   didInsertElement() {
@@ -36,6 +34,19 @@ export default Ember.Component.extend({
   },
 
   willDestroyElement() {
+    this.unsetMarkerFromMap();
+    this.unregister();
+  },
+
+  register() {
+    this.get('mapContext').registerMarker(this);
+  },
+
+  unregister() {
+    this.get('mapContext').unregisterMarker(this);
+  },
+
+  unsetMarkerFromMap() {
     let marker = this.get('marker');
     if (isPresent(marker)) {
       marker.setMap(null);
@@ -100,3 +111,9 @@ export default Ember.Component.extend({
     }
   }
 });
+
+GMapMarkerComponent.reopenClass({
+  positionalParams: ['mapContext']
+});
+
+export default GMapMarkerComponent;

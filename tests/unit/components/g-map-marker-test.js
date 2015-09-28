@@ -22,7 +22,7 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
   beforeEach() {
     sinon.stub(google.maps, 'Marker').returns(fakeMarkerObject);
     component = this.subject({
-      parentView: new GMapComponent()
+      mapContext: new GMapComponent()
     });
   },
 
@@ -31,7 +31,7 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
   }
 });
 
-test('it constructs new `Marker` object after render', function(assert) {
+test('it constructs new `Marker` object on `didInsertElement` event', function(assert) {
   component.trigger('didInsertElement');
   sinon.assert.calledOnce(google.maps.Marker);
   assert.equal(component.get('marker'), fakeMarkerObject);
@@ -44,57 +44,75 @@ test('new `Marker` isn\'t constructed if it already present in component', funct
 });
 
 test('it triggers `setMap` on `didInsertElement` event', function() {
-  component.setMap = sinon.spy();
+  component.setMap = sinon.stub();
   component.trigger('didInsertElement');
   sinon.assert.calledOnce(component.setMap);
 });
 
-test('it triggers `setMap` of marker with null on `willDestroyElement` event if marker is set', function() {
-  fakeMarkerObject.setMap = sinon.spy();
+test('it triggers `unsetMarkerFromMap` on `willDestroyElement` event', function() {
+  component.unsetMarkerFromMap = sinon.stub();
+  component.trigger('willDestroyElement');
+  sinon.assert.calledOnce(component.unsetMarkerFromMap);
+});
+
+test('it triggers `setMap` of marker with null during `unsetMarkerFromMap` if marker is set', function() {
+  fakeMarkerObject.setMap = sinon.stub();
 
   run(() => component.set('marker', fakeMarkerObject));
-  component.trigger('willDestroyElement');
+  run(() => component.unsetMarkerFromMap());
 
   sinon.assert.calledOnce(fakeMarkerObject.setMap);
   sinon.assert.calledWith(fakeMarkerObject.setMap, null);
 });
 
-test('it doesn\'t trigger `setMap` of marker on `willDestroyElement` event if there is no marker', function() {
-  fakeMarkerObject.setMap = sinon.spy();
+test('it doesn\'t trigger `setMap` of marker during `unsetMarkerFromMap` if there is no marker', function() {
+  fakeMarkerObject.setMap = sinon.stub();
 
   run(() => component.set('marker', undefined));
-  component.trigger('willDestroyElement');
+  run(() => component.unsetMarkerFromMap());
 
   sinon.assert.notCalled(fakeMarkerObject.setMap);
 });
 
-test('it triggers `setMap` on `parentView.map` change', function() {
-  run(() => component.set('parentView', { map: '' }));
+test('it triggers `register` on `init` event', function() {
+  component.register = sinon.stub();
+  component.trigger('init');
+  sinon.assert.calledOnce(component.register);
+});
+
+test('it triggers `unregister` on `willDestroyElement` event', function() {
+  component.unregister = sinon.stub();
+  component.trigger('willDestroyElement');
+  sinon.assert.calledOnce(component.unregister);
+});
+
+test('it triggers `setMap` on `mapContext.map` change', function() {
+  run(() => component.set('mapContext', { map: '' }));
   component.setMap = sinon.spy();
-  run(() => component.set('parentView.map', {}));
+  run(() => component.set('mapContext.map', {}));
   sinon.assert.calledOnce(component.setMap);
 });
 
 test('it triggers `setPosition` on `didInsertElement` event', function() {
-  component.setPosition = sinon.spy();
+  component.setPosition = sinon.stub();
   component.trigger('didInsertElement');
   sinon.assert.calledOnce(component.setPosition);
 });
 
 test('it triggers `setPosition` on `lat` change', function() {
-  component.setPosition = sinon.spy();
+  component.setPosition = sinon.stub();
   run(() => component.set('lat', 14));
   sinon.assert.calledOnce(component.setPosition);
 });
 
 test('it triggers `setPosition` on `lng` change', function() {
-  component.setPosition = sinon.spy();
+  component.setPosition = sinon.stub();
   run(() => component.set('lng', 21));
   sinon.assert.calledOnce(component.setPosition);
 });
 
 test('it triggers `setPosition` only once on `lat` and `lng` change', function() {
-  component.setPosition = sinon.spy();
+  component.setPosition = sinon.stub();
   run(() => component.setProperties({ lng: 1, lat: 11 }));
   sinon.assert.calledOnce(component.setPosition);
 });
@@ -164,13 +182,13 @@ test('it doesn\'t call `setMap` of google marker on `setMap` when no `map` prese
 });
 
 test('it triggers `setIcon` on `didInsertElement` event', function() {
-  component.setIcon = sinon.spy();
+  component.setIcon = sinon.stub();
   component.trigger('didInsertElement');
   sinon.assert.calledOnce(component.setIcon);
 });
 
 test('it triggers `setIcon` on `icon` change', function() {
-  component.setIcon = sinon.spy();
+  component.setIcon = sinon.stub();
   run(() => component.set('icon', 'image-src'));
   sinon.assert.calledOnce(component.setIcon);
 });
@@ -267,7 +285,25 @@ test('new `Infowindow` isn\'t constructed if no marker is set', function() {
   google.maps.InfoWindow.restore();
 });
 
-test('it registers itself in parent\'s `markers` array on `init` event', function(assert) {
-  assert.equal(component.get('parentView.markers').length, 1);
-  assert.equal(component.get('parentView.markers')[0], component);
+test('it registers itself in parent\'s `markers` array on `init` event', function() {
+  let mapContext;
+  run(() => mapContext = component.get('mapContext'));
+  mapContext.registerMarker = sinon.stub();
+
+  component.trigger('init');
+
+  sinon.assert.calledOnce(mapContext.registerMarker);
+  sinon.assert.calledWith(mapContext.registerMarker, component);
+});
+
+test('it unregisters itself in parent\'s `markers` array on `willDestroyElement` event', function() {
+  let unregisterStub = sinon.stub();
+  run(() => component.set('mapContext', {
+    unregisterMarker: unregisterStub
+  }));
+
+  component.trigger('willDestroyElement');
+
+  sinon.assert.calledOnce(unregisterStub);
+  sinon.assert.calledWith(unregisterStub, component);
 });
