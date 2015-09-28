@@ -33,6 +33,9 @@ install:
 script:
   - ember try $EMBER_TRY_SCENARIO test
 
+after_script:
+  - cat lcov.dat | node_modules/coveralls/bin/coveralls.js
+
 notifications:
   email:
     on_success: change

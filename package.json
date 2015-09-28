@@ -19,8 +19,10 @@
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.1.2",
+    "coveralls": "^2.11.4",
     "ember-cli": "1.13.8",
     "ember-cli-app-version": "0.5.0",
+    "ember-cli-blanket": "0.5.4",
     "ember-cli-content-security-policy": "0.4.0",
     "ember-cli-dependency-checker": "^1.0.1",
     "ember-cli-github-pages": "0.0.6",
