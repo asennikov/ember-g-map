@@ -10,9 +10,9 @@ var options = {
     reporters: ['lcov'],
     autostart: true,
     lcovOptions: {
-      outputFile: 'coverage/lcov.info',
+      outputFile: 'lcov.dat',
       renamer: function(moduleName){
-        var expression = /^APP_NAME/;
+        var expression = /^ember-g-map/;
         return moduleName.replace(expression, 'app') + '.js';
       }
     }

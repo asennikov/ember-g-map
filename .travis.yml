@@ -34,7 +34,7 @@ script:
   - ember try $EMBER_TRY_SCENARIO test
 
 after_script:
-  - cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
+  - cat lcov.dat | node_modules/coveralls/bin/coveralls.js
 
 notifications:
   email:
