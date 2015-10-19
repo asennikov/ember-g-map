@@ -1,0 +1,268 @@
+import Ember from 'ember';
+import { moduleForComponent, test } from 'ember-qunit';
+import GMapComponent from 'ember-g-map/components/g-map';
+// import GMapMarkerComponent from 'ember-g-map/components/g-map-marker';
+import sinon from 'sinon';
+
+const { run } = Ember;
+
+const fakeInfowindowObject = {
+  setPosition: sinon.stub(),
+  open: sinon.stub(),
+  close: sinon.stub(),
+  addListener: sinon.stub()
+};
+
+let component;
+
+moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
+  // Specify the other units that are required for this test
+  // needs: ['component:foo', 'helper:bar'],
+  unit: true,
+
+  beforeEach() {
+    sinon.stub(google.maps, 'InfoWindow').returns(fakeInfowindowObject);
+    component = this.subject({
+      mapContext: new GMapComponent()
+    });
+  },
+
+  afterEach() {
+    google.maps.InfoWindow.restore();
+  }
+});
+
+test('it triggers `buildInfowindow` on `didInsertElement` event', function(assert) {
+  component.buildInfowindow = sinon.stub().returns('infoWindowObject');
+  component.trigger('didInsertElement');
+
+  sinon.assert.calledOnce(component.buildInfowindow);
+  assert.equal(component.get('infowindow'), 'infoWindowObject');
+});
+
+test('`buildInfowindow` isn\'t triggered if infowindow is already present in component', function() {
+  component.buildInfowindow = sinon.stub();
+  run(() => component.set('infowindow', fakeInfowindowObject));
+  component.trigger('didInsertElement');
+
+  sinon.assert.notCalled(component.buildInfowindow);
+});
+
+test('it triggers `setPosition` on `didInsertElement` event', function() {
+  component.setPosition = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setPosition);
+});
+
+test('it triggers `setMap` on `didInsertElement` event', function() {
+  component.setMap = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setMap);
+});
+
+test('it triggers `setMarker` on `didInsertElement` event', function() {
+  component.setMarker = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setMarker);
+});
+
+test('it triggers `close` on `willDestroyElement` event', function() {
+  component.close = sinon.stub();
+  component.trigger('willDestroyElement');
+  sinon.assert.calledOnce(component.close);
+});
+
+test('it constructs new `InfoWindow` object during `buildInfowindow`', function(assert) {
+  let returnedInfowindow;
+  run(() => returnedInfowindow = component.buildInfowindow());
+
+  sinon.assert.calledOnce(google.maps.InfoWindow);
+  assert.equal(returnedInfowindow, fakeInfowindowObject);
+});
+
+test('it triggers `attachCloseEvent` during `buildInfowindow` if onClose attr specified', function() {
+  run(() => component.set('attrs', { onClose: 'action' }));
+
+  component.attachCloseEvent = sinon.stub();
+  run(() => component.buildInfowindow());
+
+  sinon.assert.calledOnce(component.attachCloseEvent);
+  sinon.assert.calledWith(component.attachCloseEvent, fakeInfowindowObject);
+});
+
+test('it doesn\'t triggers `attachCloseEvent` during `buildInfowindow` if onClose isn\'t specified', function() {
+  run(() => component.set('attrs', { onClose: undefined }));
+
+  component.attachCloseEvent = sinon.stub();
+  run(() => component.buildInfowindow());
+
+  sinon.assert.notCalled(component.attachCloseEvent);
+});
+
+test('it triggers `addListener` of InfoWindow during `attachCloseEvent`', function() {
+  run(() => component.attachCloseEvent(fakeInfowindowObject));
+  sinon.assert.calledOnce(fakeInfowindowObject.addListener);
+});
+
+test('it triggers `close` of infowindow during `close` if infowindow is set', function() {
+  fakeInfowindowObject.close = sinon.stub();
+
+  run(() => component.set('infowindow', fakeInfowindowObject));
+  run(() => component.close());
+
+  sinon.assert.calledOnce(fakeInfowindowObject.close);
+});
+
+test('it doesn\'t trigger `close` of infowindow during `close` if there is no infowindow', function() {
+  fakeInfowindowObject.close = sinon.stub();
+
+  run(() => component.set('infowindow', undefined));
+  run(() => component.close());
+
+  sinon.assert.notCalled(fakeInfowindowObject.close);
+});
+
+test('it triggers `setMap` on `mapContext.map` change', function() {
+  run(() => component.set('mapContext', { map: '' }));
+  component.setMap = sinon.spy();
+  run(() => component.set('mapContext.map', {}));
+  sinon.assert.calledOnce(component.setMap);
+});
+
+test('it triggers `setMarker` on `mapContext.marker` change', function() {
+  run(() => component.set('mapContext', { marker: '' }));
+  component.setMarker = sinon.spy();
+  run(() => component.set('mapContext.marker', {}));
+  sinon.assert.calledOnce(component.setMarker);
+});
+
+test('it triggers `setPosition` on `lat` change', function() {
+  component.setPosition = sinon.stub();
+  run(() => component.set('lat', 14));
+  sinon.assert.calledOnce(component.setPosition);
+});
+
+test('it triggers `setPosition` on `lng` change', function() {
+  component.setPosition = sinon.stub();
+  run(() => component.set('lng', 21));
+  sinon.assert.calledOnce(component.setPosition);
+});
+
+test('it triggers `setPosition` only once on `lat` and `lng` change', function() {
+  component.setPosition = sinon.stub();
+  run(() => component.setProperties({ lng: 1, lat: 11 }));
+  sinon.assert.calledOnce(component.setPosition);
+});
+
+test('it calls `setPosition` of InfoWindow on `setPosition` with lat/lng present', function() {
+  let point = {};
+  sinon.stub(google.maps, 'LatLng').returns(point);
+
+  run(() => component.setProperties({
+    lat: 10,
+    lng: 100,
+    infowindow: fakeInfowindowObject
+  }));
+
+  fakeInfowindowObject.setPosition = sinon.stub();
+
+  run(() => component.setPosition());
+
+  sinon.assert.calledOnce(fakeInfowindowObject.setPosition);
+  sinon.assert.calledWith(fakeInfowindowObject.setPosition, point);
+
+  google.maps.LatLng.restore();
+});
+
+test('it doesn\'t call `setPosition` of InfoWindow on `setPosition` when no lat present', function() {
+  fakeInfowindowObject.setPosition = sinon.stub();
+
+  run(() => component.setProperties({
+    lng: 100,
+    infowindow: fakeInfowindowObject
+  }));
+  run(() => component.setPosition());
+  sinon.assert.notCalled(fakeInfowindowObject.setPosition);
+});
+
+test('it doesn\'t call `setPosition` of InfoWindow on `setPosition` when no lng present', function() {
+  fakeInfowindowObject.setPosition = sinon.stub();
+
+  run(() => component.setProperties({
+    lat: 10,
+    infowindow: fakeInfowindowObject
+  }));
+  run(() => component.setPosition());
+
+  sinon.assert.notCalled(fakeInfowindowObject.setPosition);
+});
+
+test('it calls `open` of InfoWindow on `setMap` with `map` present', function() {
+  let mapObject = {};
+  run(() => component.setProperties({
+    map: mapObject,
+    hasMarker: false,
+    infowindow: fakeInfowindowObject
+  }));
+
+  fakeInfowindowObject.open = sinon.stub();
+
+  run(() => component.setMap());
+
+  sinon.assert.calledOnce(fakeInfowindowObject.open);
+  sinon.assert.calledWith(fakeInfowindowObject.open, mapObject);
+});
+
+test('it doesn\'t call `open` of InfoWindow on `setMap` when no `map` present', function() {
+  fakeInfowindowObject.setMap = sinon.stub();
+  run(() => component.setProperties({
+    hasMarker: false,
+    infowindow: fakeInfowindowObject
+  }));
+  run(() => component.setMap());
+  sinon.assert.notCalled(fakeInfowindowObject.setMap);
+});
+
+test('it doesn\'t call `open` of InfoWindow on `setMap` when `hasMarker` is true', function() {
+  fakeInfowindowObject.setMap = sinon.stub();
+  let mapObject = {};
+  run(() => component.setProperties({
+    map: mapObject,
+    hasMarker: true,
+    infowindow: fakeInfowindowObject
+  }));
+  run(() => component.setMap());
+
+  sinon.assert.notCalled(fakeInfowindowObject.setMap);
+});
+
+test('it calls `addListener` of google marker on `setMarker` with `map` and `marker` present', function() {
+  let mapObject = {};
+  let fakeMarkerObject = {
+    addListener: sinon.stub()
+  };
+  run(() => component.setProperties({
+    map: mapObject,
+    marker: fakeMarkerObject,
+    infowindow: fakeInfowindowObject
+  }));
+
+  fakeMarkerObject.addListener = sinon.stub();
+  run(() => component.setMarker());
+
+  sinon.assert.calledOnce(fakeMarkerObject.addListener);
+});
+
+test('it doesn\'t call `addListener` of google marker on `setMarker` when no `map` present', function() {
+  let fakeMarkerObject = {
+    addListener: sinon.stub()
+  };
+
+  run(() => component.setProperties({
+    marker: fakeMarkerObject,
+    infowindow: fakeInfowindowObject
+  }));
+  run(() => component.setMap());
+
+  sinon.assert.notCalled(fakeMarkerObject.addListener);
+});
