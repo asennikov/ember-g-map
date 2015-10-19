@@ -9,7 +9,8 @@ const { run } = Ember;
 const fakeInfowindowObject = {
   setPosition: sinon.stub(),
   open: sinon.stub(),
-  close: sinon.stub()
+  close: sinon.stub(),
+  addListener: sinon.stub()
 };
 
 let component;
@@ -31,16 +32,20 @@ moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
   }
 });
 
-test('it constructs new `InfoWindow` object on `didInsertElement` event', function(assert) {
+test('it triggers `buildInfowindow` on `didInsertElement` event', function(assert) {
+  component.buildInfowindow = sinon.stub().returns('infoWindowObject');
   component.trigger('didInsertElement');
-  sinon.assert.calledOnce(google.maps.InfoWindow);
-  assert.equal(component.get('infowindow'), fakeInfowindowObject);
+
+  sinon.assert.calledOnce(component.buildInfowindow);
+  assert.equal(component.get('infowindow'), 'infoWindowObject');
 });
 
-test('new `InfoWindow` isn\'t constructed if it\'s already present in component', function() {
+test('`buildInfowindow` isn\'t triggered if infowindow is already present in component', function() {
+  component.buildInfowindow = sinon.stub();
   run(() => component.set('infowindow', fakeInfowindowObject));
   component.trigger('didInsertElement');
-  sinon.assert.notCalled(google.maps.InfoWindow);
+
+  sinon.assert.notCalled(component.buildInfowindow);
 });
 
 test('it triggers `setPosition` on `didInsertElement` event', function() {
@@ -65,6 +70,38 @@ test('it triggers `close` on `willDestroyElement` event', function() {
   component.close = sinon.stub();
   component.trigger('willDestroyElement');
   sinon.assert.calledOnce(component.close);
+});
+
+test('it constructs new `InfoWindow` object during `buildInfowindow`', function(assert) {
+  let returnedInfowindow;
+  run(() => returnedInfowindow = component.buildInfowindow());
+
+  sinon.assert.calledOnce(google.maps.InfoWindow);
+  assert.equal(returnedInfowindow, fakeInfowindowObject);
+});
+
+test('it triggers `attachCloseEvent` during `buildInfowindow` if onClose attr specified', function() {
+  run(() => component.set('attrs', { onClose: 'action' }));
+
+  component.attachCloseEvent = sinon.stub();
+  run(() => component.buildInfowindow());
+
+  sinon.assert.calledOnce(component.attachCloseEvent);
+  sinon.assert.calledWith(component.attachCloseEvent, fakeInfowindowObject);
+});
+
+test('it doesn\'t triggers `attachCloseEvent` during `buildInfowindow` if onClose isn\'t specified', function() {
+  run(() => component.set('attrs', { onClose: undefined }));
+
+  component.attachCloseEvent = sinon.stub();
+  run(() => component.buildInfowindow());
+
+  sinon.assert.notCalled(component.attachCloseEvent);
+});
+
+test('it triggers `addListener` of InfoWindow during `attachCloseEvent`', function() {
+  run(() => component.attachCloseEvent(fakeInfowindowObject));
+  sinon.assert.calledOnce(fakeInfowindowObject.addListener);
 });
 
 test('it triggers `close` of infowindow during `close` if infowindow is set', function() {

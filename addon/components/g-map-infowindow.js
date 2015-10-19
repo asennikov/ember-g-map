@@ -3,7 +3,7 @@ import layout from '../templates/components/g-map-infowindow';
 import GMapComponent from './g-map';
 import GMapMarkerComponent from './g-map-marker';
 
-const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
+const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
 
 const GMapInfowindowComponent = Ember.Component.extend({
   layout: layout,
@@ -27,10 +27,7 @@ const GMapInfowindowComponent = Ember.Component.extend({
   didInsertElement() {
     this._super();
     if (isEmpty(this.get('infowindow'))) {
-      let infowindow = new google.maps.InfoWindow({
-        content: this.get('element'),
-        disableAutoPan: true
-      });
+      let infowindow = this.buildInfowindow();
       this.set('infowindow', infowindow);
     }
     this.setPosition();
@@ -40,6 +37,29 @@ const GMapInfowindowComponent = Ember.Component.extend({
 
   willDestroyElement() {
     this.close();
+  },
+
+  buildInfowindow() {
+    let infowindow = new google.maps.InfoWindow({
+      content: this.get('element'),
+      disableAutoPan: true
+    });
+
+    if (isPresent(this.get('attrs.onClose'))) {
+      this.attachCloseEvent(infowindow);
+    }
+    return infowindow;
+  },
+
+  attachCloseEvent(infowindow) {
+    infowindow.addListener('closeclick', () => {
+      const { onClose } = this.attrs;
+      if (typeOf(onClose) === 'function') {
+        onClose();
+      } else {
+        this.sendAction('onClose');
+      }
+    });
   },
 
   close() {
@@ -73,9 +93,7 @@ const GMapInfowindowComponent = Ember.Component.extend({
     let infowindow = this.get('infowindow');
 
     if (isPresent(infowindow) && isPresent(map) && isPresent(marker)) {
-      marker.addListener('click', function() {
-        infowindow.open(map, marker);
-      });
+      marker.addListener('click', () => infowindow.open(map, marker));
     }
   },
 

@@ -15,13 +15,13 @@
     {{/g-map-infowindow}}
   {{/g-map-marker}}
 
-  {{#g-map-infowindow context lat=37.7333 lng=-122.4367}}
+  {{#g-map-infowindow context lat=37.7333 lng=-122.4367 onClose="onInfowindowClosed"}}
     <h1>Independent InfoWindow</h1>
     <p>This InfoWindow can be placed anywhere on the map.</p>
   {{/g-map-infowindow}}
 
   {{g-map-infowindow context title="Blockless Infowindow" message="Contains plain text"
-                     lat=37.7633 lng=-122.4367}}
+                     lat=37.7633 lng=-122.4367 onClose=(action "onInfowindowClosed")}}
 
   {{g-map-route context
                 originLat=37.7933 originLng=-122.4467
