@@ -53,6 +53,31 @@ with the main `g-map` component.
 {{/g-map}}
 ```
 
+## Map with Info Windows
+
+Those Info Windows will be open right after component is rendered
+and will be closed forever after user closes them. You can specify
+optional `onClose` action to tear down anything you need when Info Window
+has been closed by user.
+
+```handlebars
+{{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
+  {{#g-map-infowindow context lat=37.7733 lng=-122.4067}}
+    <h1>Info Window with Block</h1>
+    <p>Text with {{bound}} variables</p>
+    <button {{action "do"}}>Do</button>
+  {{/g-map-infowindow}}
+  {{g-map-infowindow context lat=37.7733 lng=-122.4067
+                     title="Blockless form" message="Plain text."}}
+  {{g-map-infowindow context lat=37.7733 lng=-122.4067
+                     title="With action set"
+                     onClose="myOnCloseAction"}}
+  {{g-map-infowindow context lat=37.7733 lng=-122.4067
+                     title="With closure action set"
+                     onClose=(action "myOnCloseAction")}}
+{{/g-map}}
+```
+
 ## Map fits to show all initial Markers
 
 `shouldFit` attribute overrides `lat`, `lng`, `zoom` settings.
@@ -65,19 +90,19 @@ with the main `g-map` component.
 {{/g-map}}
 ```
 
-## Map with Markers and optional Info Windows
+## Map with Markers and bound Info Windows
 
-Markers can have optional Info Windows activated on click.
-To provide content for Info Window you should call `g-map-marker`
-in block form with `withInfowindow` flag set to `true`.
+Markers can have bound Info Windows activated on click.
+To properly bind Info Window with Marker you should call `g-map-marker`
+in block form and set context of Info Window to the one provided by Marker.
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
   {{g-map-marker context lat=37.7933 lng=-122.4167}}
-  {{#g-map-marker context lat=37.7833 lng=-122.4267 withInfowindow=true}}
-    <h2>Infowindow header</h2>
-    <p>Text with {{bound}} variables</p>
-    <button {{action "do"}}>Do</button>
+  {{#g-map-marker context lat=37.7833 lng=-122.4267 as |markerContext|}}
+    {{#g-map-infowindow markerContext}}
+      <h2>Bound Info Window</h2>
+    {{/g-map-infowindow}}
   {{/g-map-marker}}
 {{/g-map}}
 ```
