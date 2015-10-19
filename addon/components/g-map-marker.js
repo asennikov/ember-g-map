@@ -16,9 +16,6 @@ const GMapMarkerComponent = Ember.Component.extend({
     let mapContext = this.get('mapContext');
     assert('Must be inside {{#g-map}} component with context set', mapContext instanceof GMapComponent);
 
-    if (isEmpty(this.get('withInfowindow'))) {
-      this.set('withInfowindow', false);
-    }
     this.register();
   },
 
@@ -63,23 +60,6 @@ const GMapMarkerComponent = Ember.Component.extend({
 
     if (isPresent(marker) && isPresent(map)) {
       marker.setMap(map);
-      if (this.get('withInfowindow')) {
-        this.setInfowindow();
-      }
-    }
-  },
-
-  setInfowindow() {
-    let map = this.get('map');
-    let marker = this.get('marker');
-
-    if (isPresent(marker) && isPresent(map)) {
-      let infowindow = new google.maps.InfoWindow({
-        content: this.get('element')
-      });
-      marker.addListener('click', function() {
-        infowindow.open(map, marker);
-      });
     }
   },
 

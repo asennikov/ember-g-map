@@ -8,8 +8,7 @@ const { run } = Ember;
 const fakeMarkerObject = {
   setPosition: sinon.stub(),
   setIcon: sinon.stub(),
-  setMap: sinon.stub(),
-  addListener: sinon.stub()
+  setMap: sinon.stub()
 };
 
 let component;
@@ -217,72 +216,6 @@ test('it doesn\'t call `setIcon` of google marker on `setIcon` when no icon pres
   run(() => component.setIcon());
 
   sinon.assert.notCalled(fakeMarkerObject.setIcon);
-});
-
-test('it calls `setInfowindow` on `setMap` when `withInfowindow` is true', function() {
-  component.setInfowindow = sinon.stub();
-
-  run(() => component.set('map', {}));
-  run(() => component.setProperties({
-    withInfowindow: true,
-    marker: fakeMarkerObject
-  }));
-  run(() => component.setMap());
-
-  sinon.assert.calledOnce(component.setInfowindow);
-});
-
-test('it doesn\'t call `setInfowindow` on `setMap` when `withInfowindow` is not true', function() {
-  component.setInfowindow = sinon.stub();
-
-  run(() => component.set('map', {}));
-  run(() => component.set('withInfowindow', undefined));
-  run(() => component.setMap());
-
-  sinon.assert.notCalled(component.setInfowindow);
-});
-
-test('it constructs new `Infowindow` on `setInfowindow` with `map` set', function() {
-  run(() => component.setProperties({
-    map: {},
-    marker: fakeMarkerObject
-  }));
-
-  let infowindow = {
-    open: sinon.stub()
-  };
-  sinon.stub(google.maps, 'InfoWindow').returns(infowindow);
-
-  let correctOptions = { content: component.get('element') };
-
-  run(() => component.setInfowindow());
-
-  sinon.assert.calledOnce(google.maps.InfoWindow);
-  sinon.assert.calledWith(google.maps.InfoWindow, correctOptions);
-
-  google.maps.InfoWindow.restore();
-});
-
-test('new `Infowindow` isn\'t constructed if no map is set', function() {
-  sinon.stub(google.maps, 'InfoWindow');
-
-  run(() => component.set('map', undefined));
-  run(() => component.setInfowindow());
-
-  sinon.assert.notCalled(google.maps.InfoWindow);
-
-  google.maps.InfoWindow.restore();
-});
-
-test('new `Infowindow` isn\'t constructed if no marker is set', function() {
-  sinon.stub(google.maps, 'InfoWindow');
-
-  run(() => component.set('marker', undefined));
-  run(() => component.setInfowindow());
-
-  sinon.assert.notCalled(google.maps.InfoWindow);
-
-  google.maps.InfoWindow.restore();
 });
 
 test('it registers itself in parent\'s `markers` array on `init` event', function() {

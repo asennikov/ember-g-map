@@ -3,14 +3,25 @@
 {{#g-map shouldFit=true as |context|}}
   {{g-map-marker context lat=37.7933 lng=-122.4167}}
 
-  {{#g-map-marker context lat=37.7733 lng=-122.4167 withInfowindow=true}}
-    <h1>Pretty Infowindow!</h1>
-    <p>It can has bound variables:</p>
-    <p>Random: {{randomVariable}}</p>
+  {{#g-map-marker context lat=37.7733 lng=-122.4167 as |markerContext|}}
+    {{#g-map-infowindow markerContext}}
+      <h1>Bound Infowindow</h1>
+      <p>This infowindow is bound to a marker.</p>
+      <p>It can has bound variables:</p>
+      <p>Random: {{randomVariable}}</p>
 
-    <p>And elements with actions:</p>
-    <button {{action "refresh"}}>Refresh</button>
+      <p>And elements with actions:</p>
+      <button {{action "refresh"}}>Refresh</button>
+    {{/g-map-infowindow}}
   {{/g-map-marker}}
+
+  {{#g-map-infowindow context lat=37.7533 lng=-122.4267}}
+    <h1>Independent Infowindow</h1>
+    <p>This infowindow can be placed anywhere on the map.</p>
+  {{/g-map-infowindow}}
+
+  {{g-map-infowindow context title="Blockless Infowindow" message="Conatains plain text"
+                     lat=37.7933 lng=-122.4267}}
 
   {{g-map-route context
                 originLat=37.7933 originLng=-122.4167
