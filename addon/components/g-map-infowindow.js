@@ -28,7 +28,8 @@ const GMapInfowindowComponent = Ember.Component.extend({
     this._super();
     if (isEmpty(this.get('infowindow'))) {
       let infowindow = new google.maps.InfoWindow({
-        content: this.get('element')
+        content: this.get('element'),
+        disableAutoPan: true
       });
       this.set('infowindow', infowindow);
     }
