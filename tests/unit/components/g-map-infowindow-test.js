@@ -102,6 +102,27 @@ test('it doesn\'t triggers `attachCloseEvent` during `buildInfowindow` if onClos
 test('it triggers `addListener` of InfoWindow during `attachCloseEvent`', function() {
   run(() => component.attachCloseEvent(fakeInfowindowObject));
   sinon.assert.calledOnce(fakeInfowindowObject.addListener);
+  sinon.assert.calledWith(fakeInfowindowObject.addListener, 'closeclick');
+});
+
+test('it sends action `onClose` on callback for `closeclick` event', function() {
+  fakeInfowindowObject.addListener.callsArg(1);
+  component.sendAction = sinon.stub();
+
+  run(() => component.set('attrs', { onClose: 'action' }));
+  run(() => component.attachCloseEvent(fakeInfowindowObject));
+
+  sinon.assert.calledOnce(component.sendAction);
+  sinon.assert.calledWith(component.sendAction, 'onClose');
+});
+
+test('it runs closure action `attrs.onClose` directly on callback for `closeclick` event', function() {
+  fakeInfowindowObject.addListener.callsArg(1);
+
+  run(() => component.set('attrs', { onClose: sinon.stub() }));
+  run(() => component.attachCloseEvent(fakeInfowindowObject));
+
+  sinon.assert.calledOnce(component.attrs.onClose);
 });
 
 test('it triggers `close` of infowindow during `close` if infowindow is set', function() {
@@ -247,10 +268,15 @@ test('it calls `addListener` of google marker on `setMarker` with `map` and `mar
     infowindow: fakeInfowindowObject
   }));
 
-  fakeMarkerObject.addListener = sinon.stub();
+  fakeMarkerObject.addListener = sinon.stub().callsArg(1);
+  fakeInfowindowObject.open = sinon.stub();
   run(() => component.setMarker());
 
   sinon.assert.calledOnce(fakeMarkerObject.addListener);
+  sinon.assert.calledWith(fakeMarkerObject.addListener, 'click');
+
+  sinon.assert.calledOnce(fakeInfowindowObject.open);
+  sinon.assert.calledWith(fakeInfowindowObject.open, mapObject, fakeMarkerObject);
 });
 
 test('it doesn\'t call `addListener` of google marker on `setMarker` when no `map` present', function() {
