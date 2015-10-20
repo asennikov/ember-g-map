@@ -13,7 +13,7 @@ var options = {
       outputFile: 'lcov.dat',
       renamer: function(moduleName){
         var expression = /^ember-g-map/;
-        return moduleName.replace(expression, 'app') + '.js';
+        return moduleName.replace(expression, 'addon') + '.js';
       }
     }
   }
