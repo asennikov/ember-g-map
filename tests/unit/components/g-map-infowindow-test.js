@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
+import { moduleForComponent } from 'ember-qunit';
+import test from '../../ember-sinon-qunit/test';
 import GMapComponent from 'ember-g-map/components/g-map';
-// import GMapMarkerComponent from 'ember-g-map/components/g-map-marker';
 import sinon from 'sinon';
 
 const { run } = Ember;
