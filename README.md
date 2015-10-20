@@ -125,9 +125,10 @@ http://asennikov.github.io/ember-g-map/
 
 # Planned Features
 
-- Independent Info Windows
 - Auto-closing Info Windows
 - Polylines & Polygons
+- Google Maps events
+- Custom Google Maps options
 
 ## Running
 
