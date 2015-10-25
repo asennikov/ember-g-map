@@ -138,7 +138,6 @@ http://asennikov.github.io/ember-g-map/
 - Auto-closing Info Windows
 - Polylines & Polygons
 - Google Maps events
-- Custom Google Maps options
 
 ## Running
 
