@@ -33,6 +33,37 @@ test('it constructs new `Map` object after render', function(assert) {
   assert.equal(component.get('map'), fakeMapObject);
 });
 
+test('it constructs new `Map` object with given custom options', function() {
+  this.subject({
+    options: {
+      googleMapOption: 123
+    }
+  });
+  this.render();
+
+  let canvasElement = this.$().find('.g-map-canvas').get(0);
+  sinon.assert.calledWith(google.maps.Map, canvasElement, { googleMapOption: 123 });
+});
+
+test('it constructs new `Map` object with custom options except banned', function() {
+  this.subject({
+    bannedOptions: Ember.A(['bannedOption']),
+    options: {
+      firstOption: 111,
+      secondOption: 222,
+      bannedOption: 333
+    }
+  });
+  this.render();
+
+  let canvasElement = this.$().find('.g-map-canvas').get(0);
+  let expectedOptions = {
+    firstOption: 111,
+    secondOption: 222
+  };
+  sinon.assert.calledWith(google.maps.Map, canvasElement, expectedOptions);
+});
+
 test('new `Map` isn\'t constructed if it already present in component', function() {
   this.subject({
     map: fakeMapObject
@@ -58,6 +89,21 @@ test('it triggers `setCenter` on `didInsertElement` event', function() {
   component.setCenter = sinon.spy();
   component.trigger('didInsertElement');
   sinon.assert.calledOnce(component.setCenter);
+});
+
+test('it triggers `setOptions` on `permittedOptions` change', function() {
+  let component = this.subject({
+    permittedOptions: {
+      firstOption: '11'
+    }
+  });
+  this.render();
+
+  component.setOptions = sinon.spy();
+  run(() => component.set('permittedOptions', {
+    firstOption: '22'
+  }));
+  sinon.assert.calledOnce(component.setOptions);
 });
 
 test('it triggers `setZoom` on `zoom` change', function() {
@@ -99,6 +145,20 @@ test('it triggers `setCenter` only once on `lat` and `lng` change', function() {
   sinon.assert.calledOnce(component.setCenter);
 });
 
+test('it calls `setOptions` of google map on `setOptions`', function() {
+  let component = this.subject({
+    permittedOptions: {
+      firstOption: 123
+    }
+  });
+  this.render();
+
+  fakeMapObject.setOptions = sinon.stub();
+  run(() => component.setOptions());
+  sinon.assert.calledOnce(fakeMapObject.setOptions);
+  sinon.assert.calledWith(fakeMapObject.setOptions, { firstOption: 123 });
+});
+
 test('it calls `setCenter` of google map on `setCenter` with lat/lng present', function() {
   let component = this.subject({
     lat: 10,
@@ -117,7 +177,7 @@ test('it calls `setCenter` of google map on `setCenter` with lat/lng present', f
   google.maps.LatLng.restore();
 });
 
-test('it calls `setZoom` of google map on `setZoom` with zoom present', function() {
+test('it calls `setZoom` of google map on `setZoom`', function() {
   let component = this.subject({
     zoom: 14
   });
@@ -149,15 +209,6 @@ test('it doesn\'t call `setCenter` of google map on `setCenter` when no lng pres
   fakeMapObject.setCenter = sinon.stub();
   run(() => component.setCenter());
   sinon.assert.notCalled(fakeMapObject.setCenter);
-});
-
-test('it doesn\'t call `setZoom` of google map on `setZoom` when no zoom present', function() {
-  let component = this.subject();
-  this.render();
-
-  fakeMapObject.setZoom = sinon.stub();
-  run(() => component.setZoom());
-  sinon.assert.calledOnce(fakeMapObject.setZoom);
 });
 
 test('it calls `fitToMarkers` object on `didInsertElement`', function() {
