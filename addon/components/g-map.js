@@ -16,7 +16,8 @@ export default Ember.Component.extend({
     this._super();
     if (isEmpty(this.get('map'))) {
       let canvas = this.$().find('.g-map-canvas').get(0);
-      this.set('map', new google.maps.Map(canvas, null));
+      let options = this.get('options');
+      this.set('map', new google.maps.Map(canvas, options));
     }
     this.setZoom();
     this.setCenter();

@@ -3,6 +3,10 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   randomVariable: 111,
 
+  customOptions: {
+    mapTypeId: google.maps.MapTypeId.TERRAIN
+  },
+
   actions: {
     refresh() {
       this.set('randomVariable', Math.floor(Math.random() * 1000));

@@ -33,6 +33,18 @@ test('it constructs new `Map` object after render', function(assert) {
   assert.equal(component.get('map'), fakeMapObject);
 });
 
+test('it constructs new `Map` object with given custom options', function() {
+  this.subject({
+    options: {
+      googleMapOption: 123
+    }
+  });
+  this.render();
+
+  let canvasElement = this.$().find('.g-map-canvas').get(0);
+  sinon.assert.calledWith(google.maps.Map, canvasElement, { googleMapOption: 123 });
+});
+
 test('new `Map` isn\'t constructed if it already present in component', function() {
   this.subject({
     map: fakeMapObject
