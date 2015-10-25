@@ -91,6 +91,21 @@ test('it triggers `setCenter` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setCenter);
 });
 
+test('it triggers `setOptions` on `permittedOptions` change', function() {
+  let component = this.subject({
+    permittedOptions: {
+      firstOption: '11'
+    }
+  });
+  this.render();
+
+  component.setOptions = sinon.spy();
+  run(() => component.set('permittedOptions', {
+    firstOption: '22'
+  }));
+  sinon.assert.calledOnce(component.setOptions);
+});
+
 test('it triggers `setZoom` on `zoom` change', function() {
   let component = this.subject();
   this.render();
@@ -128,6 +143,20 @@ test('it triggers `setCenter` only once on `lat` and `lng` change', function() {
     lat: 11
   }));
   sinon.assert.calledOnce(component.setCenter);
+});
+
+test('it calls `setOptions` of google map on `setOptions`', function() {
+  let component = this.subject({
+    permittedOptions: {
+      firstOption: 123
+    }
+  });
+  this.render();
+
+  fakeMapObject.setOptions = sinon.stub();
+  run(() => component.setOptions());
+  sinon.assert.calledOnce(fakeMapObject.setOptions);
+  sinon.assert.calledWith(fakeMapObject.setOptions, { firstOption: 123 });
 });
 
 test('it calls `setCenter` of google map on `setCenter` with lat/lng present', function() {

@@ -41,6 +41,18 @@ export default Ember.Component.extend({
     }
   },
 
+  permittedOptionsChanged: observer('permittedOptions', function() {
+    run.once(this, 'setOptions');
+  }),
+
+  setOptions() {
+    let map = this.get('map');
+    let options = this.get('permittedOptions');
+    if (isPresent(map)) {
+      map.setOptions(options);
+    }
+  },
+
   zoomChanged: observer('zoom', function() {
     run.once(this, 'setZoom');
   }),
