@@ -40,6 +40,16 @@ ENV['g-map'] = {
 {{g-map lat=37.7833 lng=-122.4167 zoom=12}}
 ```
 
+## Map with custom options
+
+Any [custom options](https://developers.google.com/maps/documentation/javascript/3.exp/reference#MapOptions)
+(except for `center` and `zoom` to avoid conflicts) could be set for
+Google Map object on creation and updated on change.
+
+```handlebars
+{{g-map lat=37.7833 lng=-122.4167 zoom=12 options=customOptions}}
+```
+
 ## Map with Markers
 
 Mandatory `context` attribute ties child-elements
