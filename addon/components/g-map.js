@@ -1,22 +1,37 @@
 import Ember from 'ember';
 import layout from '../templates/components/g-map';
 
-const { isEmpty, isPresent, observer, run } = Ember;
+const { isEmpty, isPresent, computed, observer, run } = Ember;
 
 export default Ember.Component.extend({
   layout: layout,
   classNames: ['g-map'],
+  bannedOptions: Ember.A(['center', 'zoom']),
 
   init() {
     this._super();
     this.markers = Ember.A();
+    if (isEmpty(this.get('options'))) {
+      this.set('options', {});
+    }
   },
+
+  permittedOptions: computed('options', function() {
+    let { options, bannedOptions } = this.getProperties(['options', 'bannedOptions']);
+    let permittedOptions = {};
+    for (let option in options) {
+      if (options.hasOwnProperty(option) && !bannedOptions.contains(option)) {
+        permittedOptions[option] = options[option];
+      }
+    }
+    return permittedOptions;
+  }),
 
   didInsertElement() {
     this._super();
     if (isEmpty(this.get('map'))) {
       let canvas = this.$().find('.g-map-canvas').get(0);
-      let options = this.get('options');
+      let options = this.get('permittedOptions');
       this.set('map', new google.maps.Map(canvas, options));
     }
     this.setZoom();

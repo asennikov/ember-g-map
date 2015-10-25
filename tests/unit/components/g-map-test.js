@@ -45,6 +45,25 @@ test('it constructs new `Map` object with given custom options', function() {
   sinon.assert.calledWith(google.maps.Map, canvasElement, { googleMapOption: 123 });
 });
 
+test('it constructs new `Map` object with custom options except banned', function() {
+  this.subject({
+    bannedOptions: Ember.A(['bannedOption']),
+    options: {
+      firstOption: 111,
+      secondOption: 222,
+      bannedOption: 333
+    }
+  });
+  this.render();
+
+  let canvasElement = this.$().find('.g-map-canvas').get(0);
+  let expectedOptions = {
+    firstOption: 111,
+    secondOption: 222
+  };
+  sinon.assert.calledWith(google.maps.Map, canvasElement, expectedOptions);
+});
+
 test('new `Map` isn\'t constructed if it already present in component', function() {
   this.subject({
     map: fakeMapObject
