@@ -121,7 +121,7 @@ const GMapMarkerComponent = Ember.Component.extend({
 
   closeInfowindow() {
     const infowindow = this.get('infowindow');
-    if (isPresent('infowindow')) {
+    if (isPresent(infowindow)) {
       infowindow.close();
     }
   }
