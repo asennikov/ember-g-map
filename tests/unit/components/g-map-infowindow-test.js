@@ -307,7 +307,7 @@ test('it doesn\'t call `addListener` of google marker on `setMarker` when no `ma
     marker: fakeMarkerObject,
     infowindow: fakeInfowindowObject
   }));
-  run(() => component.setMap());
+  run(() => component.setMarker());
 
   sinon.assert.notCalled(fakeMarkerObject.addListener);
 });
