@@ -50,10 +50,10 @@ test('it triggers `setMap` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setMap);
 });
 
-test('it triggers `setGroup` on `didInsertElement` event', function() {
-  component.setGroup = sinon.stub();
+test('it triggers `setOnClick` on `didInsertElement` event', function() {
+  component.setOnClick = sinon.stub();
   component.trigger('didInsertElement');
-  sinon.assert.calledOnce(component.setGroup);
+  sinon.assert.calledOnce(component.setOnClick);
 });
 
 test('it triggers `unsetMarkerFromMap` on `willDestroyElement` event', function() {
@@ -86,13 +86,6 @@ test('it triggers `setMap` on `mapContext.map` change', function() {
   component.setMap = sinon.spy();
   run(() => component.set('mapContext.map', {}));
   sinon.assert.calledOnce(component.setMap);
-});
-
-test('it triggers `setGroup` on `group` change', function() {
-  run(() => component.set('group', ''));
-  component.setGroup = sinon.spy();
-  run(() => component.set('group', {}));
-  sinon.assert.calledOnce(component.setGroup);
 });
 
 test('it triggers `setPosition` on `didInsertElement` event', function() {
@@ -243,37 +236,58 @@ test('it unregisters itself in parent\'s `markers` array on `willDestroyElement`
   sinon.assert.calledWith(mapContext.unregisterMarker, component);
 });
 
-test('it calls `addListener` of google marker on `setGroup` with `group` and `marker` present', function() {
+test('it calls `addListener` of google marker on `setOnClick` with `marker` present', function() {
+  fakeMarkerObject.addListener = sinon.stub().callsArg(1);
+  run(() => component.set('marker', fakeMarkerObject));
+  component.sendOnClick = sinon.stub();
+
+  run(() => component.setOnClick());
+
+  sinon.assert.calledOnce(fakeMarkerObject.addListener);
+  sinon.assert.calledWith(fakeMarkerObject.addListener, 'click');
+
+  sinon.assert.calledOnce(component.sendOnClick);
+});
+
+test('it sends action `onClick` on callback for `click` event', function() {
+  component.sendAction = sinon.stub();
+
+  run(() => component.set('attrs', { onClick: 'action' }));
+  run(() => component.sendOnClick());
+
+  sinon.assert.calledOnce(component.sendAction);
+  sinon.assert.calledWith(component.sendAction, 'onClick');
+});
+
+test('it runs closure action `attrs.onClick` directly on callback for `click` event', function() {
+  run(() => component.set('attrs', { onClick: sinon.stub() }));
+  run(() => component.sendOnClick());
+
+  sinon.assert.calledOnce(component.attrs.onClick);
+});
+
+test('it calls `groupMarkerClicked` of map context on `sendOnClick` with `group` present', function() {
   let mapContext;
   run(() => mapContext = component.get('mapContext'));
   mapContext.groupMarkerClicked = sinon.stub();
 
   run(() => component.setProperties({
-    marker: fakeMarkerObject,
-    group: 'cats'
+    group: 'cats',
+    attrs: {}
   }));
-
-  fakeMarkerObject.addListener = sinon.stub().callsArg(1);
-  run(() => component.setGroup());
-
-  sinon.assert.calledOnce(fakeMarkerObject.addListener);
-  sinon.assert.calledWith(fakeMarkerObject.addListener, 'click');
+  run(() => component.sendOnClick());
 
   sinon.assert.calledOnce(mapContext.groupMarkerClicked);
   sinon.assert.calledWith(mapContext.groupMarkerClicked, component, 'cats');
 });
 
-test('it doesn\'t call `addListener` of google marker on `setGroup` when no `group` present', function() {
+test('it doesn\'t call `groupMarkerClicked` of google marker on `sendOnClick` when no `group` present', function() {
   let mapContext;
   run(() => mapContext = component.get('mapContext'));
   mapContext.groupMarkerClicked = sinon.stub();
 
-  run(() => component.setProperties({
-    marker: fakeMarkerObject
-  }));
-
-  run(() => component.setGroup());
-  sinon.assert.notCalled(fakeMarkerObject.addListener);
+  run(() => component.set('attrs', {}));
+  run(() => component.sendOnClick());
   sinon.assert.notCalled(mapContext.groupMarkerClicked);
 });
 

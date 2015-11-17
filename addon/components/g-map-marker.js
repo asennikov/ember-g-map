@@ -2,7 +2,7 @@ import Ember from 'ember';
 import layout from '../templates/components/g-map-marker';
 import GMapComponent from './g-map';
 
-const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
+const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
 
 const GMapMarkerComponent = Ember.Component.extend({
   layout: layout,
@@ -32,7 +32,7 @@ const GMapMarkerComponent = Ember.Component.extend({
     this.setPosition();
     this.setIcon();
     this.setMap();
-    this.setGroup();
+    this.setOnClick();
   },
 
   willDestroyElement() {
@@ -96,17 +96,26 @@ const GMapMarkerComponent = Ember.Component.extend({
     }
   },
 
-  groupChanged: observer('group', function() {
-    run.once(this, 'setGroup');
-  }),
-
-  setGroup() {
+  setOnClick() {
     const marker = this.get('marker');
+    if (isPresent(marker)) {
+      marker.addListener('click', () => this.sendOnClick());
+    }
+  },
+
+  sendOnClick() {
+    const { onClick } = this.attrs;
     const mapContext = this.get('mapContext');
     const group = this.get('group');
 
-    if (isPresent(marker) && isPresent(group)) {
-      marker.addListener('click', () => mapContext.groupMarkerClicked(this, group));
+    if (typeOf(onClick) === 'function') {
+      onClick();
+    } else {
+      this.sendAction('onClick');
+    }
+
+    if (isPresent(group)) {
+      mapContext.groupMarkerClicked(this, group);
     }
   },
 
