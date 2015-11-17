@@ -65,7 +65,7 @@ with the main `g-map` component.
 
 ## Map with Info Windows
 
-Those Info Windows will be open right after component is rendered
+These Info Windows will be open right after component is rendered
 and will be closed forever after user closes them. You can specify
 optional `onClose` action to tear down anything you need when Info Window
 has been closed by user.
@@ -112,6 +112,38 @@ in block form and set context of Info Window to the one provided by Marker.
   {{#g-map-marker context lat=37.7833 lng=-122.4267 as |markerContext|}}
     {{#g-map-infowindow markerContext}}
       <h2>Bound Info Window</h2>
+    {{/g-map-infowindow}}
+  {{/g-map-marker}}
+{{/g-map}}
+```
+
+## Grouped Markers with Info Windows
+
+Additionally you can specify parameter `group` which ensures that only
+one Info Window is open at each moment for Markers of each group.
+
+```handlebars
+{{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
+
+  {{#g-map-marker context group="cats" lat=37.7833 lng=-122.4167 as |markerContext|}}
+    {{#g-map-infowindow markerContext}}
+      <h2>Cat #1</h2>
+    {{/g-map-infowindow}}
+  {{/g-map-marker}}
+  {{#g-map-marker context group="cats" lat=37.7433 lng=-122.4467 as |markerContext|}}
+    {{#g-map-infowindow markerContext}}
+      <h2>Cat #2</h2>
+    {{/g-map-infowindow}}
+  {{/g-map-marker}}
+
+  {{#g-map-marker context group="dogs" lat=37.7533 lng=-122.4167 as |markerContext|}}
+    {{#g-map-infowindow markerContext}}
+      <h2>Dog #1</h2>
+    {{/g-map-infowindow}}
+  {{/g-map-marker}}
+  {{#g-map-marker context group="dogs" lat=37.7733 lng=-122.4467 as |markerContext|}}
+    {{#g-map-infowindow markerContext}}
+      <h2>Dog #2</h2>
     {{/g-map-infowindow}}
   {{/g-map-marker}}
 {{/g-map}}
