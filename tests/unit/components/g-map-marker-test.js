@@ -6,12 +6,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-const fakeMarkerObject = {
-  setPosition: sinon.stub(),
-  setIcon: sinon.stub(),
-  setMap: sinon.stub()
-};
-
+let fakeMarkerObject;
 let component;
 
 moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
@@ -20,6 +15,12 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
   unit: true,
 
   beforeEach() {
+    fakeMarkerObject = {
+      setPosition: sinon.stub(),
+      setIcon: sinon.stub(),
+      setMap: sinon.stub(),
+      addListener: sinon.stub()
+    };
     sinon.stub(google.maps, 'Marker').returns(fakeMarkerObject);
     component = this.subject({
       mapContext: new GMapComponent()
@@ -49,6 +50,12 @@ test('it triggers `setMap` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setMap);
 });
 
+test('it triggers `setOnClick` on `didInsertElement` event', function() {
+  component.setOnClick = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setOnClick);
+});
+
 test('it triggers `unsetMarkerFromMap` on `willDestroyElement` event', function() {
   component.unsetMarkerFromMap = sinon.stub();
   component.trigger('willDestroyElement');
@@ -72,18 +79,6 @@ test('it doesn\'t trigger `setMap` of marker during `unsetMarkerFromMap` if ther
   run(() => component.unsetMarkerFromMap());
 
   sinon.assert.notCalled(fakeMarkerObject.setMap);
-});
-
-test('it triggers `register` on `init` event', function() {
-  component.register = sinon.stub();
-  component.trigger('init');
-  sinon.assert.calledOnce(component.register);
-});
-
-test('it triggers `unregister` on `willDestroyElement` event', function() {
-  component.unregister = sinon.stub();
-  component.trigger('willDestroyElement');
-  sinon.assert.calledOnce(component.unregister);
 });
 
 test('it triggers `setMap` on `mapContext.map` change', function() {
@@ -118,7 +113,7 @@ test('it triggers `setPosition` only once on `lat` and `lng` change', function()
 });
 
 test('it calls `setPosition` of google marker on `setPosition` with lat/lng present', function() {
-  let point = {};
+  const point = {};
   sinon.stub(google.maps, 'LatLng').returns(point);
 
   run(() => component.setProperties({
@@ -161,7 +156,7 @@ test('it doesn\'t call `setPosition` of google marker on `setPosition` when no l
 });
 
 test('it calls `setMap` of google marker on `setMap` with `map` present', function() {
-  let mapObject = {};
+  const mapObject = {};
   run(() => component.setProperties({
     map: mapObject,
     marker: fakeMarkerObject
@@ -231,13 +226,75 @@ test('it registers itself in parent\'s `markers` array on `init` event', functio
 });
 
 test('it unregisters itself in parent\'s `markers` array on `willDestroyElement` event', function() {
-  let unregisterStub = sinon.stub();
-  run(() => component.set('mapContext', {
-    unregisterMarker: unregisterStub
-  }));
+  let mapContext;
+  run(() => mapContext = component.get('mapContext'));
+  mapContext.unregisterMarker = sinon.stub();
 
   component.trigger('willDestroyElement');
 
-  sinon.assert.calledOnce(unregisterStub);
-  sinon.assert.calledWith(unregisterStub, component);
+  sinon.assert.calledOnce(mapContext.unregisterMarker);
+  sinon.assert.calledWith(mapContext.unregisterMarker, component);
+});
+
+test('it calls `addListener` of google marker on `setOnClick` with `marker` present', function() {
+  fakeMarkerObject.addListener = sinon.stub().callsArg(1);
+  run(() => component.set('marker', fakeMarkerObject));
+  component.sendOnClick = sinon.stub();
+
+  run(() => component.setOnClick());
+
+  sinon.assert.calledOnce(fakeMarkerObject.addListener);
+  sinon.assert.calledWith(fakeMarkerObject.addListener, 'click');
+
+  sinon.assert.calledOnce(component.sendOnClick);
+});
+
+test('it sends action `onClick` on callback for `click` event', function() {
+  component.sendAction = sinon.stub();
+
+  run(() => component.set('attrs', { onClick: 'action' }));
+  run(() => component.sendOnClick());
+
+  sinon.assert.calledOnce(component.sendAction);
+  sinon.assert.calledWith(component.sendAction, 'onClick');
+});
+
+test('it runs closure action `attrs.onClick` directly on callback for `click` event', function() {
+  run(() => component.set('attrs', { onClick: sinon.stub() }));
+  run(() => component.sendOnClick());
+
+  sinon.assert.calledOnce(component.attrs.onClick);
+});
+
+test('it calls `groupMarkerClicked` of map context on `sendOnClick` with `group` present', function() {
+  let mapContext;
+  run(() => mapContext = component.get('mapContext'));
+  mapContext.groupMarkerClicked = sinon.stub();
+
+  run(() => component.setProperties({
+    group: 'cats',
+    attrs: {}
+  }));
+  run(() => component.sendOnClick());
+
+  sinon.assert.calledOnce(mapContext.groupMarkerClicked);
+  sinon.assert.calledWith(mapContext.groupMarkerClicked, component, 'cats');
+});
+
+test('it doesn\'t call `groupMarkerClicked` of google marker on `sendOnClick` when no `group` present', function() {
+  let mapContext;
+  run(() => mapContext = component.get('mapContext'));
+  mapContext.groupMarkerClicked = sinon.stub();
+
+  run(() => component.set('attrs', {}));
+  run(() => component.sendOnClick());
+  sinon.assert.notCalled(mapContext.groupMarkerClicked);
+});
+
+test('it calls `close` of infowindow on `closeInfowindow`', function() {
+  const infowindow = { close: sinon.stub() };
+  run(() => component.set('infowindow', infowindow));
+
+  run(() => component.closeInfowindow());
+  sinon.assert.calledOnce(infowindow.close);
 });

@@ -13,7 +13,7 @@ const GMapRouteComponent = Ember.Component.extend({
 
   init() {
     this._super(arguments);
-    let mapContext = this.get('mapContext');
+    const mapContext = this.get('mapContext');
     assert('Must be inside {{#g-map}} component with context set', mapContext instanceof GMapComponent);
   },
 
@@ -23,7 +23,7 @@ const GMapRouteComponent = Ember.Component.extend({
   },
 
   willDestroyElement() {
-    let renderer = this.get('directionsRenderer');
+    const renderer = this.get('directionsRenderer');
     if (isPresent(renderer)) {
       renderer.setMap(null);
     }
@@ -34,12 +34,12 @@ const GMapRouteComponent = Ember.Component.extend({
   }),
 
   initDirectionsService() {
-    let map = this.get('map');
+    const map = this.get('map');
     let service = this.get('directionsService');
     let renderer = this.get('directionsRenderer');
 
     if (isPresent(map) && isEmpty(service) && isEmpty(renderer)) {
-      let rendererOptions = {
+      const rendererOptions = {
         map: map,
         suppressMarkers: true,
         preserveViewport: true
@@ -59,19 +59,19 @@ const GMapRouteComponent = Ember.Component.extend({
   }),
 
   updateRoute: function() {
-    let service = this.get('directionsService');
-    let renderer = this.get('directionsRenderer');
-    let originLat = this.get('originLat');
-    let originLng = this.get('originLng');
-    let destinationLat = this.get('destinationLat');
-    let destinationLng = this.get('destinationLng');
+    const service = this.get('directionsService');
+    const renderer = this.get('directionsRenderer');
+    const originLat = this.get('originLat');
+    const originLng = this.get('originLng');
+    const destinationLat = this.get('destinationLat');
+    const destinationLng = this.get('destinationLng');
 
     if (isPresent(service) && isPresent(renderer) &&
         isPresent(originLat) && isPresent(originLng) &&
         isPresent(destinationLat) && isPresent(destinationLng)) {
-      let origin = new google.maps.LatLng(this.get('originLat'), this.get('originLng'));
-      let destination = new google.maps.LatLng(this.get('destinationLat'), this.get('destinationLng'));
-      let request = {
+      const origin = new google.maps.LatLng(this.get('originLat'), this.get('originLng'));
+      const destination = new google.maps.LatLng(this.get('destinationLat'), this.get('destinationLng'));
+      const request = {
         origin: origin,
         destination: destination,
         travelMode: google.maps.TravelMode.DRIVING
