@@ -6,15 +6,8 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-const fakeDirectionsService = {
-  route: sinon.stub()
-};
-
-const fakeDirectionsRenderer = {
-  setDirections: sinon.stub(),
-  setMap: sinon.stub()
-};
-
+let fakeDirectionsService;
+let fakeDirectionsRenderer;
 let component;
 
 moduleForComponent('g-map-route', 'Unit | Component | g map route', {
@@ -23,6 +16,13 @@ moduleForComponent('g-map-route', 'Unit | Component | g map route', {
   unit: true,
 
   beforeEach() {
+    fakeDirectionsService = {
+      route: sinon.stub()
+    };
+    fakeDirectionsRenderer = {
+      setDirections: sinon.stub(),
+      setMap: sinon.stub()
+    };
     sinon.stub(google.maps, 'DirectionsRenderer').returns(fakeDirectionsRenderer);
     sinon.stub(google.maps, 'DirectionsService').returns(fakeDirectionsService);
     component = this.subject({

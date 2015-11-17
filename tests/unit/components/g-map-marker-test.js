@@ -6,12 +6,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-const fakeMarkerObject = {
-  setPosition: sinon.stub(),
-  setIcon: sinon.stub(),
-  setMap: sinon.stub()
-};
-
+let fakeMarkerObject;
 let component;
 
 moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
@@ -20,6 +15,12 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
   unit: true,
 
   beforeEach() {
+    fakeMarkerObject = {
+      setPosition: sinon.stub(),
+      setIcon: sinon.stub(),
+      setMap: sinon.stub(),
+      addListener: sinon.stub()
+    };
     sinon.stub(google.maps, 'Marker').returns(fakeMarkerObject);
     component = this.subject({
       mapContext: new GMapComponent()

@@ -5,11 +5,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-const fakeMapObject = {
-  setCenter: sinon.stub(),
-  setZoom: sinon.stub(),
-  fitBounds: sinon.stub()
-};
+let fakeMapObject;
 
 moduleForComponent('g-map', 'Unit | Component | g map', {
   // Specify the other units that are required for this test
@@ -17,6 +13,11 @@ moduleForComponent('g-map', 'Unit | Component | g map', {
   unit: true,
 
   beforeEach() {
+    fakeMapObject = {
+      setCenter: sinon.stub(),
+      setZoom: sinon.stub(),
+      fitBounds: sinon.stub()
+    };
     sinon.stub(google.maps, 'Map').returns(fakeMapObject);
   },
 

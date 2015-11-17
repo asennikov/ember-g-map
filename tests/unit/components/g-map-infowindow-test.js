@@ -6,13 +6,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-const fakeInfowindowObject = {
-  setPosition: sinon.stub(),
-  open: sinon.stub(),
-  close: sinon.stub(),
-  addListener: sinon.stub()
-};
-
+let fakeInfowindowObject;
 let component;
 
 moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
@@ -21,6 +15,12 @@ moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
   unit: true,
 
   beforeEach() {
+    fakeInfowindowObject = {
+      setPosition: sinon.stub(),
+      open: sinon.stub(),
+      close: sinon.stub(),
+      addListener: sinon.stub()
+    };
     sinon.stub(google.maps, 'InfoWindow').returns(fakeInfowindowObject);
     component = this.subject({
       mapContext: new GMapComponent()
