@@ -187,7 +187,7 @@ test('it triggers `setPosition` only once on `lat` and `lng` change', function()
 });
 
 test('it calls `setPosition` of InfoWindow on `setPosition` with lat/lng present', function() {
-  let point = {};
+  const point = {};
   sinon.stub(google.maps, 'LatLng').returns(point);
 
   run(() => component.setProperties({
@@ -230,7 +230,7 @@ test('it doesn\'t call `setPosition` of InfoWindow on `setPosition` when no lng 
 });
 
 test('it calls `open` of InfoWindow on `setMap` with `map` present', function() {
-  let mapObject = {};
+  const mapObject = {};
   run(() => component.setProperties({
     map: mapObject,
     hasMarker: false,
@@ -257,7 +257,7 @@ test('it doesn\'t call `open` of InfoWindow on `setMap` when no `map` present', 
 
 test('it doesn\'t call `open` of InfoWindow on `setMap` when `hasMarker` is true', function() {
   fakeInfowindowObject.setMap = sinon.stub();
-  let mapObject = {};
+  const mapObject = {};
   run(() => component.setProperties({
     map: mapObject,
     hasMarker: true,
@@ -299,7 +299,7 @@ test(`it calls 'addListener' of google marker and 'registerInfowindow' of marker
 });
 
 test('it doesn\'t call `addListener` of google marker on `setMarker` when no `map` present', function() {
-  let fakeMarkerObject = {
+  const fakeMarkerObject = {
     addListener: sinon.stub()
   };
 

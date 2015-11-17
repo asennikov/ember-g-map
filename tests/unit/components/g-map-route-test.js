@@ -58,11 +58,11 @@ test('it doesn\'t trigger `setMap` of renderer on `willDestroyElement` event if 
 });
 
 test('it constructs new `DirectionsRenderer` on `initDirectionsService` call', function(assert) {
-  let mapObject = {};
+  const mapObject = {};
   run(() => component.set('map', mapObject));
   run(() => component.initDirectionsService());
 
-  let correctRendererOptions = {
+  const correctRendererOptions = {
     map: mapObject,
     suppressMarkers: true,
     preserveViewport: true
@@ -153,16 +153,16 @@ test('it calls `route` of directionsService on `updateRoute`', function() {
   run(() => component.set('directionsService', fakeDirectionsService));
   run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
 
-  let origin = {};
-  let destination = {};
-  let stubbedLatLng = sinon.stub(google.maps, 'LatLng');
+  const origin = {};
+  const destination = {};
+  const stubbedLatLng = sinon.stub(google.maps, 'LatLng');
   stubbedLatLng.onCall(0).returns(origin);
   stubbedLatLng.onCall(1).returns(destination);
 
   fakeDirectionsService.route = sinon.stub();
   run(() => component.updateRoute());
 
-  let correctRequest = {
+  const correctRequest = {
     origin: origin,
     destination: destination,
     travelMode: google.maps.TravelMode.DRIVING
@@ -175,8 +175,8 @@ test('it calls `route` of directionsService on `updateRoute`', function() {
 });
 
 test('it calls `setDirections` of directionsRenderer on `updateRoute`', function() {
-  let response = {};
-  let status = google.maps.DirectionsStatus.OK;
+  const response = {};
+  const status = google.maps.DirectionsStatus.OK;
   fakeDirectionsService.route.callsArgWith(1, response, status);
 
   run(() => component.setProperties({

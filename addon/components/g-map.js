@@ -17,8 +17,8 @@ export default Ember.Component.extend({
   },
 
   permittedOptions: computed('options', function() {
-    let { options, bannedOptions } = this.getProperties(['options', 'bannedOptions']);
-    let permittedOptions = {};
+    const { options, bannedOptions } = this.getProperties(['options', 'bannedOptions']);
+    const permittedOptions = {};
     for (let option in options) {
       if (options.hasOwnProperty(option) && !bannedOptions.contains(option)) {
         permittedOptions[option] = options[option];
@@ -30,8 +30,8 @@ export default Ember.Component.extend({
   didInsertElement() {
     this._super();
     if (isEmpty(this.get('map'))) {
-      let canvas = this.$().find('.g-map-canvas').get(0);
-      let options = this.get('permittedOptions');
+      const canvas = this.$().find('.g-map-canvas').get(0);
+      const options = this.get('permittedOptions');
       this.set('map', new google.maps.Map(canvas, options));
     }
     this.setZoom();
@@ -46,8 +46,8 @@ export default Ember.Component.extend({
   }),
 
   setOptions() {
-    let map = this.get('map');
-    let options = this.get('permittedOptions');
+    const map = this.get('map');
+    const options = this.get('permittedOptions');
     if (isPresent(map)) {
       map.setOptions(options);
     }
@@ -58,8 +58,8 @@ export default Ember.Component.extend({
   }),
 
   setZoom() {
-    let map = this.get('map');
-    let zoom = this.get('zoom');
+    const map = this.get('map');
+    const zoom = this.get('zoom');
     if (isPresent(map)) {
       map.setZoom(zoom);
     }
@@ -70,12 +70,12 @@ export default Ember.Component.extend({
   }),
 
   setCenter() {
-    let map = this.get('map');
-    let lat = this.get('lat');
-    let lng = this.get('lng');
+    const map = this.get('map');
+    const lat = this.get('lat');
+    const lng = this.get('lng');
 
     if (isPresent(map) && isPresent(lat) && isPresent(lng)) {
-      let center = new google.maps.LatLng(lat, lng);
+      const center = new google.maps.LatLng(lat, lng);
       map.setCenter(center);
     }
   },
@@ -89,14 +89,14 @@ export default Ember.Component.extend({
   },
 
   fitToMarkers() {
-    let markers = this.get('markers').filter((marker) => {
+    const markers = this.get('markers').filter((marker) => {
       return isPresent(marker.get('lat')) && isPresent(marker.get('lng'));
     });
 
     if (markers.length > 0) {
-      let map = this.get('map');
-      let bounds = new google.maps.LatLngBounds();
-      let points = markers.map((marker) => {
+      const map = this.get('map');
+      const bounds = new google.maps.LatLngBounds();
+      const points = markers.map((marker) => {
         return new google.maps.LatLng(marker.get('lat'), marker.get('lng'));
       });
 

@@ -17,7 +17,7 @@ const GMapMarkerComponent = Ember.Component.extend({
       this.set('group', null);
     }
 
-    let mapContext = this.get('mapContext');
+    const mapContext = this.get('mapContext');
     assert('Must be inside {{#g-map}} component with context set', mapContext instanceof GMapComponent);
 
     mapContext.registerMarker(this);
@@ -26,12 +26,13 @@ const GMapMarkerComponent = Ember.Component.extend({
   didInsertElement() {
     this._super();
     if (isEmpty(this.get('marker'))) {
-      let marker = new google.maps.Marker();
+      const marker = new google.maps.Marker();
       this.set('marker', marker);
     }
     this.setPosition();
     this.setIcon();
     this.setMap();
+    this.setGroup();
   },
 
   willDestroyElement() {
@@ -48,7 +49,7 @@ const GMapMarkerComponent = Ember.Component.extend({
   },
 
   unsetMarkerFromMap() {
-    let marker = this.get('marker');
+    const marker = this.get('marker');
     if (isPresent(marker)) {
       marker.setMap(null);
     }
@@ -59,8 +60,8 @@ const GMapMarkerComponent = Ember.Component.extend({
   }),
 
   setMap() {
-    let map = this.get('map');
-    let marker = this.get('marker');
+    const map = this.get('map');
+    const marker = this.get('marker');
 
     if (isPresent(marker) && isPresent(map)) {
       marker.setMap(map);
@@ -72,12 +73,12 @@ const GMapMarkerComponent = Ember.Component.extend({
   }),
 
   setPosition() {
-    let marker = this.get('marker');
-    let lat = this.get('lat');
-    let lng = this.get('lng');
+    const marker = this.get('marker');
+    const lat = this.get('lat');
+    const lng = this.get('lng');
 
     if (isPresent(marker) && isPresent(lat) && isPresent(lng)) {
-      let position = new google.maps.LatLng(lat, lng);
+      const position = new google.maps.LatLng(lat, lng);
       marker.setPosition(position);
     }
   },
@@ -87,8 +88,8 @@ const GMapMarkerComponent = Ember.Component.extend({
   }),
 
   setIcon() {
-    let marker = this.get('marker');
-    let icon = this.get('icon');
+    const marker = this.get('marker');
+    const icon = this.get('icon');
 
     if (isPresent(marker) && isPresent(icon)) {
       marker.setIcon(icon);

@@ -120,7 +120,7 @@ test('it triggers `setPosition` only once on `lat` and `lng` change', function()
 });
 
 test('it calls `setPosition` of google marker on `setPosition` with lat/lng present', function() {
-  let point = {};
+  const point = {};
   sinon.stub(google.maps, 'LatLng').returns(point);
 
   run(() => component.setProperties({
@@ -163,7 +163,7 @@ test('it doesn\'t call `setPosition` of google marker on `setPosition` when no l
 });
 
 test('it calls `setMap` of google marker on `setMap` with `map` present', function() {
-  let mapObject = {};
+  const mapObject = {};
   run(() => component.setProperties({
     map: mapObject,
     marker: fakeMarkerObject
