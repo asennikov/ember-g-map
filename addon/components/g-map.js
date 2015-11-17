@@ -103,5 +103,10 @@ export default Ember.Component.extend({
       points.forEach((point) => bounds.extend(point));
       map.fitBounds(bounds);
     }
+  },
+
+  groupMarkerClicked(marker, group) {
+    let markers = this.get('markers').without(marker).filterBy('group', group);
+    markers.forEach((marker) => marker.closeInfowindow());
   }
 });

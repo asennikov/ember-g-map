@@ -72,6 +72,17 @@ test('it triggers `close` on `willDestroyElement` event', function() {
   sinon.assert.calledOnce(component.close);
 });
 
+test('it triggers `unregisterInfowindow` on `willDestroyElement` event', function() {
+  let mapContext;
+  run(() => mapContext = component.get('mapContext'));
+  run(() => component.set('hasMarker', true));
+
+  mapContext.unregisterInfowindow = sinon.stub();
+  component.trigger('willDestroyElement');
+
+  sinon.assert.calledOnce(mapContext.unregisterInfowindow);
+});
+
 test('it constructs new `InfoWindow` object during `buildInfowindow`', function(assert) {
   let returnedInfowindow;
   run(() => returnedInfowindow = component.buildInfowindow());
@@ -257,20 +268,28 @@ test('it doesn\'t call `open` of InfoWindow on `setMap` when `hasMarker` is true
   sinon.assert.notCalled(fakeInfowindowObject.setMap);
 });
 
-test('it calls `addListener` of google marker on `setMarker` with `map` and `marker` present', function() {
-  let mapObject = {};
-  let fakeMarkerObject = {
-    addListener: sinon.stub()
-  };
+test(`it calls 'addListener' of google marker and 'registerInfowindow' of marker context
+      on 'setMarker' with 'map' and 'marker' present`, function() {
+  const mapObject = {};
+  const fakeMarkerObject = { addListener: sinon.stub() };
+
+  let mapContext;
+  run(() => mapContext = component.get('mapContext'));
+  mapContext.registerInfowindow = sinon.stub();
+
   run(() => component.setProperties({
     map: mapObject,
     marker: fakeMarkerObject,
     infowindow: fakeInfowindowObject
   }));
 
+  mapContext.registerInfowindow = sinon.stub();
   fakeMarkerObject.addListener = sinon.stub().callsArg(1);
   fakeInfowindowObject.open = sinon.stub();
   run(() => component.setMarker());
+
+  sinon.assert.calledOnce(mapContext.registerInfowindow);
+  sinon.assert.calledWith(mapContext.registerInfowindow, component);
 
   sinon.assert.calledOnce(fakeMarkerObject.addListener);
   sinon.assert.calledWith(fakeMarkerObject.addListener, 'click');

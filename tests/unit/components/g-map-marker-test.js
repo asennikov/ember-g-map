@@ -49,6 +49,12 @@ test('it triggers `setMap` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setMap);
 });
 
+test('it triggers `setGroup` on `didInsertElement` event', function() {
+  component.setGroup = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setGroup);
+});
+
 test('it triggers `unsetMarkerFromMap` on `willDestroyElement` event', function() {
   component.unsetMarkerFromMap = sinon.stub();
   component.trigger('willDestroyElement');
@@ -74,23 +80,18 @@ test('it doesn\'t trigger `setMap` of marker during `unsetMarkerFromMap` if ther
   sinon.assert.notCalled(fakeMarkerObject.setMap);
 });
 
-test('it triggers `register` on `init` event', function() {
-  component.register = sinon.stub();
-  component.trigger('init');
-  sinon.assert.calledOnce(component.register);
-});
-
-test('it triggers `unregister` on `willDestroyElement` event', function() {
-  component.unregister = sinon.stub();
-  component.trigger('willDestroyElement');
-  sinon.assert.calledOnce(component.unregister);
-});
-
 test('it triggers `setMap` on `mapContext.map` change', function() {
   run(() => component.set('mapContext', { map: '' }));
   component.setMap = sinon.spy();
   run(() => component.set('mapContext.map', {}));
   sinon.assert.calledOnce(component.setMap);
+});
+
+test('it triggers `setGroup` on `group` change', function() {
+  run(() => component.set('group', ''));
+  component.setGroup = sinon.spy();
+  run(() => component.set('group', {}));
+  sinon.assert.calledOnce(component.setGroup);
 });
 
 test('it triggers `setPosition` on `didInsertElement` event', function() {
@@ -231,13 +232,54 @@ test('it registers itself in parent\'s `markers` array on `init` event', functio
 });
 
 test('it unregisters itself in parent\'s `markers` array on `willDestroyElement` event', function() {
-  let unregisterStub = sinon.stub();
-  run(() => component.set('mapContext', {
-    unregisterMarker: unregisterStub
-  }));
+  let mapContext;
+  run(() => mapContext = component.get('mapContext'));
+  mapContext.unregisterMarker = sinon.stub();
 
   component.trigger('willDestroyElement');
 
-  sinon.assert.calledOnce(unregisterStub);
-  sinon.assert.calledWith(unregisterStub, component);
+  sinon.assert.calledOnce(mapContext.unregisterMarker);
+  sinon.assert.calledWith(mapContext.unregisterMarker, component);
+});
+
+test('it calls `addListener` of google marker on `setGroup` with `group` and `marker` present', function() {
+  let mapContext;
+  run(() => mapContext = component.get('mapContext'));
+  mapContext.groupMarkerClicked = sinon.stub();
+
+  run(() => component.setProperties({
+    marker: fakeMarkerObject,
+    group: 'cats'
+  }));
+
+  fakeMarkerObject.addListener = sinon.stub().callsArg(1);
+  run(() => component.setGroup());
+
+  sinon.assert.calledOnce(fakeMarkerObject.addListener);
+  sinon.assert.calledWith(fakeMarkerObject.addListener, 'click');
+
+  sinon.assert.calledOnce(mapContext.groupMarkerClicked);
+  sinon.assert.calledWith(mapContext.groupMarkerClicked, component, 'cats');
+});
+
+test('it doesn\'t call `addListener` of google marker on `setGroup` when no `group` present', function() {
+  let mapContext;
+  run(() => mapContext = component.get('mapContext'));
+  mapContext.groupMarkerClicked = sinon.stub();
+
+  run(() => component.setProperties({
+    marker: fakeMarkerObject
+  }));
+
+  run(() => component.setGroup());
+  sinon.assert.notCalled(fakeMarkerObject.addListener);
+  sinon.assert.notCalled(mapContext.groupMarkerClicked);
+});
+
+test('it calls `close` of infowindow on `closeInfowindow`', function() {
+  const infowindow = { close: sinon.stub() };
+  run(() => component.set('infowindow', infowindow));
+
+  run(() => component.closeInfowindow());
+  sinon.assert.calledOnce(infowindow.close);
 });

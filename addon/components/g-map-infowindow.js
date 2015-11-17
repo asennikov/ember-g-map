@@ -37,6 +37,10 @@ const GMapInfowindowComponent = Ember.Component.extend({
 
   willDestroyElement() {
     this.close();
+
+    if (this.get('hasMarker')) {
+      this.get('mapContext').unregisterInfowindow();
+    }
   },
 
   buildInfowindow() {
@@ -91,8 +95,10 @@ const GMapInfowindowComponent = Ember.Component.extend({
     let map = this.get('map');
     let marker = this.get('marker');
     let infowindow = this.get('infowindow');
+    const context = this.get('mapContext');
 
     if (isPresent(infowindow) && isPresent(map) && isPresent(marker)) {
+      context.registerInfowindow(this);
       marker.addListener('click', () => infowindow.open(map, marker));
     }
   },

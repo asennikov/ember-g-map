@@ -12,11 +12,15 @@ const GMapMarkerComponent = Ember.Component.extend({
 
   init() {
     this._super(arguments);
+    this.infowindow = null;
+    if (isEmpty(this.get('group'))) {
+      this.set('group', null);
+    }
 
     let mapContext = this.get('mapContext');
     assert('Must be inside {{#g-map}} component with context set', mapContext instanceof GMapComponent);
 
-    this.register();
+    mapContext.registerMarker(this);
   },
 
   didInsertElement() {
@@ -32,15 +36,15 @@ const GMapMarkerComponent = Ember.Component.extend({
 
   willDestroyElement() {
     this.unsetMarkerFromMap();
-    this.unregister();
-  },
-
-  register() {
-    this.get('mapContext').registerMarker(this);
-  },
-
-  unregister() {
     this.get('mapContext').unregisterMarker(this);
+  },
+
+  registerInfowindow(infowindow) {
+    this.set('infowindow', infowindow);
+  },
+
+  unregisterInfowindow() {
+    this.set('infowindow', null);
   },
 
   unsetMarkerFromMap() {
@@ -88,6 +92,27 @@ const GMapMarkerComponent = Ember.Component.extend({
 
     if (isPresent(marker) && isPresent(icon)) {
       marker.setIcon(icon);
+    }
+  },
+
+  groupChanged: observer('group', function() {
+    run.once(this, 'setGroup');
+  }),
+
+  setGroup() {
+    const marker = this.get('marker');
+    const mapContext = this.get('mapContext');
+    const group = this.get('group');
+
+    if (isPresent(marker) && isPresent(group)) {
+      marker.addListener('click', () => mapContext.groupMarkerClicked(this, group));
+    }
+  },
+
+  closeInfowindow() {
+    const infowindow = this.get('infowindow');
+    if (isPresent('infowindow')) {
+      infowindow.close();
     }
   }
 });

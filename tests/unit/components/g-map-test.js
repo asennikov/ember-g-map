@@ -293,3 +293,23 @@ test('it unregisters marker from `markers` array during `unregisterMarker`', fun
   assert.equal(component.get('markers')[0], 'first');
   assert.equal(component.get('markers')[1], 'third');
 });
+
+test('it calls `closeInfowindow` for each marker in group on `groupMarkerClicked`', function() {
+  const firstMarker = Ember.Object.create({ group: 'blue' });
+  const secondMarker = Ember.Object.create({ group: 'black' });
+  const thirdMarker = Ember.Object.create({ group: 'blue' });
+  const fourthMarker = Ember.Object.create({ group: 'blue' });
+  const markers = Ember.A([ firstMarker, secondMarker, thirdMarker, fourthMarker ]);
+  markers.forEach((marker) => marker.closeInfowindow = sinon.stub());
+
+  const component = this.subject();
+  this.render();
+
+  run(() => component.set('markers', markers));
+  run(() => component.groupMarkerClicked(thirdMarker, 'blue'));
+
+  sinon.assert.calledOnce(firstMarker.closeInfowindow);
+  sinon.assert.notCalled(secondMarker.closeInfowindow);
+  sinon.assert.notCalled(thirdMarker.closeInfowindow);
+  sinon.assert.calledOnce(fourthMarker.closeInfowindow);
+});
