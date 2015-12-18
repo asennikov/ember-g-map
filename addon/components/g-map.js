@@ -86,8 +86,14 @@ export default Ember.Component.extend({
     this.get('markers').removeObject(marker);
   },
 
+  shouldFit: computed('markersFitMode', function() {
+    return ['init', 'live'].indexOf(this.get('markersFitMode')) >= 0;
+  }),
+
   markersChanged: observer('markers.[]', function() {
-    run.once(this, 'fitToMarkers');
+    if (this.get('markersFitMode') === 'live') {
+      run.once(this, 'fitToMarkers');
+    }
   }),
 
   fitToMarkers() {
