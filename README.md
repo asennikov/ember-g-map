@@ -93,8 +93,8 @@ has been closed by user.
 `markersFitMode` attribute overrides `lat`, `lng`, `zoom` settings.
 `markersFitMode` value can be one of:
 * 'init' - which will make the map fit the markers on creation.
-* 'live' - which will keep the map keep fitting the markers as they are added or
-removed.
+* 'live' - which will keep the map keep fitting the markers as they are added,
+removed or moved.
 
 ```handlebars
 {{#g-map markersFitMode='live' as |context|}}

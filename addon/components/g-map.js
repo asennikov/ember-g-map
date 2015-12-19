@@ -89,10 +89,10 @@ export default Ember.Component.extend({
   },
 
   shouldFit: computed('markersFitMode', function() {
-    return ['init', 'live'].indexOf(this.get('markersFitMode')) >= 0;
+    return Ember.A(['init', 'live']).contains(this.get('markersFitMode'));
   }),
 
-  markersChanged: observer('markers.[]', function() {
+  markersChanged: observer('markers.@each.lat', 'markers.@each.lng', function() {
     if (this.get('markersFitMode') === 'live') {
       run.once(this, 'fitToMarkers');
     }
