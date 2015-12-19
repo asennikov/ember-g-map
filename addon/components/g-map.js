@@ -36,7 +36,9 @@ export default Ember.Component.extend({
     }
     this.setZoom();
     this.setCenter();
-    this.fitToMarkers();
+    if (this.get('shouldFit')) {
+      this.fitToMarkers();
+    }
   },
 
   permittedOptionsChanged: observer('permittedOptions', function() {
@@ -97,10 +99,6 @@ export default Ember.Component.extend({
   }),
 
   fitToMarkers() {
-    if (!this.get('shouldFit')) {
-      return;
-    };
-
     const markers = this.get('markers').filter((marker) => {
       return isPresent(marker.get('lat')) && isPresent(marker.get('lng'));
     });

@@ -201,8 +201,26 @@ test('it doesn\'t call `setCenter` of google map on `setCenter` when no lng pres
   sinon.assert.notCalled(fakeMapObject.setCenter);
 });
 
-test('it calls `fitToMarkers` object on `didInsertElement`', function() {
+test('it calls `fitToMarkers` object on `didInsertElement` if shouldFit is set to true', function() {
   const component = this.subject({ shouldFit: true });
+  this.render();
+
+  component.fitToMarkers = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.fitToMarkers);
+});
+
+test('it calls `fitToMarkers` object on `didInsertElement` if markersFitMode is "init"', function() {
+  const component = this.subject({ markersFitMode: 'init' });
+  this.render();
+
+  component.fitToMarkers = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.fitToMarkers);
+});
+
+test('it calls `fitToMarkers` object on `didInsertElement` if markersFitMode is "live"', function() {
+  const component = this.subject({ markersFitMode: 'live' });
   this.render();
 
   component.fitToMarkers = sinon.stub();
@@ -219,6 +237,14 @@ test('it doesn\'t call `fitToMarkers` object on `didInsertElement` if shouldFit 
   sinon.assert.notCalled(component.fitToMarkers);
 });
 
+test('it doesn\'t call `fitToMarkers` object on `didInsertElement` if markersFitMode has unexpected value', function() {
+  const component = this.subject({ markersFitMode: 'random-value' });
+  this.render();
+
+  component.fitToMarkers = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.notCalled(component.fitToMarkers);
+});
 test('it calls `fitBounds` of google map on `fitToMarkers`', function() {
   const firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
   const secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
