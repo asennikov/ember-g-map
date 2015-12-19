@@ -245,6 +245,18 @@ test('it doesn\'t call `fitToMarkers` object on `didInsertElement` if markersFit
   component.trigger('didInsertElement');
   sinon.assert.notCalled(component.fitToMarkers);
 });
+
+test('it triggers `fitToMarkers` on new marker added with markersFitMode set to "live"', function() {
+  const firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
+  const secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
+  const component = this.subject({ markersFitMode: 'live' });
+  this.render();
+
+  run(() => component.get('markers').addObject(firstMarker));
+  component.fitToMarkers = sinon.spy();
+  run(() => component.get('markers').addObject(secondMarker));
+  sinon.assert.calledOnce(component.fitToMarkers);
+});
 test('it calls `fitBounds` of google map on `fitToMarkers`', function() {
   const firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
   const secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
