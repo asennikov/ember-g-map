@@ -36,7 +36,9 @@ export default Ember.Component.extend({
     }
     this.setZoom();
     this.setCenter();
-    this.fitToMarkers();
+    if (this.get('shouldFit')) {
+      this.fitToMarkers();
+    }
   },
 
   permittedOptionsChanged: observer('permittedOptions', function() {
@@ -87,20 +89,16 @@ export default Ember.Component.extend({
   },
 
   shouldFit: computed('markersFitMode', function() {
-    return ['init', 'live'].indexOf(this.get('markersFitMode')) >= 0;
+    return Ember.A(['init', 'live']).contains(this.get('markersFitMode'));
   }),
 
-  markersChanged: observer('markers.[]', function() {
+  markersChanged: observer('markers.@each.lat', 'markers.@each.lng', function() {
     if (this.get('markersFitMode') === 'live') {
       run.once(this, 'fitToMarkers');
     }
   }),
 
   fitToMarkers() {
-    if (!this.get('shouldFit')) {
-      return;
-    };
-
     const markers = this.get('markers').filter((marker) => {
       return isPresent(marker.get('lat')) && isPresent(marker.get('lng'));
     });
