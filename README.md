@@ -90,10 +90,14 @@ has been closed by user.
 
 ## Map fits to show all initial Markers
 
-`shouldFit` attribute overrides `lat`, `lng`, `zoom` settings.
+`markersFitMode` attribute overrides `lat`, `lng`, `zoom` settings.
+`markersFitMode` value can be one of:
+* 'init' - which will make the map fit the markers on creation.
+* 'live' - which will keep the map keep fitting the markers as they are added,
+removed or moved.
 
 ```handlebars
-{{#g-map shouldFit=true as |context|}}
+{{#g-map markersFitMode='live' as |context|}}
   {{g-map-marker context lat=37.7933 lng=-122.4167}}
   {{g-map-marker context lat=37.7833 lng=-122.4267}}
   {{g-map-marker context lat=37.7733 lng=-122.4067}}

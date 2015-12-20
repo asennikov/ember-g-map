@@ -201,8 +201,26 @@ test('it doesn\'t call `setCenter` of google map on `setCenter` when no lng pres
   sinon.assert.notCalled(fakeMapObject.setCenter);
 });
 
-test('it calls `fitToMarkers` object on `didInsertElement`', function() {
+test('it calls `fitToMarkers` object on `didInsertElement` if shouldFit is set to true', function() {
   const component = this.subject({ shouldFit: true });
+  this.render();
+
+  component.fitToMarkers = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.fitToMarkers);
+});
+
+test('it calls `fitToMarkers` object on `didInsertElement` if markersFitMode is "init"', function() {
+  const component = this.subject({ markersFitMode: 'init' });
+  this.render();
+
+  component.fitToMarkers = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.fitToMarkers);
+});
+
+test('it calls `fitToMarkers` object on `didInsertElement` if markersFitMode is "live"', function() {
+  const component = this.subject({ markersFitMode: 'live' });
   this.render();
 
   component.fitToMarkers = sinon.stub();
@@ -216,6 +234,55 @@ test('it doesn\'t call `fitToMarkers` object on `didInsertElement` if shouldFit 
 
   component.fitToMarkers = sinon.stub();
   component.trigger('didInsertElement');
+  sinon.assert.notCalled(component.fitToMarkers);
+});
+
+test('it doesn\'t call `fitToMarkers` object on `didInsertElement` if markersFitMode has unexpected value', function() {
+  const component = this.subject({ markersFitMode: 'random-value' });
+  this.render();
+
+  component.fitToMarkers = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.notCalled(component.fitToMarkers);
+});
+
+test('it triggers `fitToMarkers` on new marker added with markersFitMode set to "live"', function() {
+  const firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
+  const secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
+  const component = this.subject({ markersFitMode: 'live' });
+  this.render();
+
+  run(() => component.get('markers').addObject(firstMarker));
+  component.fitToMarkers = sinon.spy();
+  run(() => component.get('markers').addObject(secondMarker));
+  sinon.assert.calledOnce(component.fitToMarkers);
+});
+
+test('it triggers `fitToMarkers` only once on `lat`/`lng` change of markers with markersFitMode set to "live"', function() {
+  const firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
+  const secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
+  const component = this.subject({ markersFitMode: 'live' });
+  this.render();
+
+  run(() => component.get('markers').addObjects([firstMarker, secondMarker]));
+  component.fitToMarkers = sinon.spy();
+  run(() => {
+    firstMarker.setProperties({ lng: 4, lat: 5 });
+    secondMarker.setProperties({ lng: 6, lat: 7 });
+  });
+  sinon.assert.calledOnce(component.fitToMarkers);
+});
+
+test('it doesn\'t trigger `fitToMarkers` with markersFitMode !== "live"', function() {
+  const firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
+  const secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
+  const component = this.subject({ markersFitMode: 'init' });
+  this.render();
+
+  run(() => component.get('markers').addObject(firstMarker));
+  component.fitToMarkers = sinon.spy();
+  run(() => firstMarker.setProperties({ lng: 4, lat: 5 }));
+  run(() => component.get('markers').addObject(secondMarker));
   sinon.assert.notCalled(component.fitToMarkers);
 });
 
@@ -259,25 +326,33 @@ test('it registers marker in `markers` array during `registerMarker`', function(
   const component = this.subject();
   this.render();
 
-  run(() => component.get('markers').addObject('first'));
-  run(() => component.registerMarker('second'));
-  run(() => component.registerMarker('third'));
+  const firstMarker = { name: 'first' };
+  const secondMarker = { name: 'second' };
+  const thirdMarker = { name: 'third' };
+
+  run(() => component.get('markers').addObject(firstMarker));
+  run(() => component.registerMarker(secondMarker));
+  run(() => component.registerMarker(thirdMarker));
 
   assert.equal(component.get('markers').length, 3);
-  assert.equal(component.get('markers')[1], 'second');
-  assert.equal(component.get('markers')[2], 'third');
+  assert.equal(component.get('markers')[1], secondMarker);
+  assert.equal(component.get('markers')[2], thirdMarker);
 });
 
 test('it unregisters marker from `markers` array during `unregisterMarker`', function(assert) {
   const component = this.subject();
   this.render();
 
-  run(() => component.get('markers').addObjects(['first', 'second', 'third']));
-  run(() => component.unregisterMarker('second'));
+  const firstMarker = { name: 'first' };
+  const secondMarker = { name: 'second' };
+  const thirdMarker = { name: 'third' };
+
+  run(() => component.get('markers').addObjects([firstMarker, secondMarker, thirdMarker]));
+  run(() => component.unregisterMarker(secondMarker));
 
   assert.equal(component.get('markers').length, 2);
-  assert.equal(component.get('markers')[0], 'first');
-  assert.equal(component.get('markers')[1], 'third');
+  assert.equal(component.get('markers')[0], firstMarker);
+  assert.equal(component.get('markers')[1], thirdMarker);
 });
 
 test('it calls `closeInfowindow` for each marker in group on `groupMarkerClicked`', function() {

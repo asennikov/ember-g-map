@@ -10,7 +10,7 @@ export default Ember.Component.extend({
 
   init() {
     this._super();
-    this.markers = Ember.A();
+    this.set('markers', Ember.A());
     if (isEmpty(this.get('options'))) {
       this.set('options', {});
     }
@@ -87,6 +87,16 @@ export default Ember.Component.extend({
   unregisterMarker(marker) {
     this.get('markers').removeObject(marker);
   },
+
+  shouldFit: computed('markersFitMode', function() {
+    return Ember.A(['init', 'live']).contains(this.get('markersFitMode'));
+  }),
+
+  markersChanged: observer('markers.@each.lat', 'markers.@each.lng', function() {
+    if (this.get('markersFitMode') === 'live') {
+      run.once(this, 'fitToMarkers');
+    }
+  }),
 
   fitToMarkers() {
     const markers = this.get('markers').filter((marker) => {
