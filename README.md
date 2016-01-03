@@ -153,6 +153,30 @@ one Info Window is open at each moment for Markers of each group.
 {{/g-map}}
 ```
 
+## Marker bound to address query
+
+Proxy `g-map-address-marker` component takes address string as parameter
+and translates it to lat/lng under the hood.
+Other optional parameters are the same as for `g-map-marker`.
+Requires `places` library to be specified in `environment.js`.
+
+```javascript
+ENV['g-map'] = {
+  libraries: ['places']
+}
+```
+
+```handlebars
+{{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
+  {{g-map-address-marker context address="San Francisco, Russian Hill"}}
+  {{#g-map-address-marker context address="Delft, The Netherlands"}}
+    {{#g-map-infowindow markerContext}}
+      Works in block form too.
+    {{/g-map-infowindow}}
+  {{/g-map-address-marker}}
+{{/g-map}}
+```
+
 ## Map with route between 2 locations
 
 Using Google Maps [Directions](https://developers.google.com/maps/documentation/javascript/directions) service.

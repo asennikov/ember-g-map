@@ -1,0 +1,7 @@
+{{#if hasBlock}}
+  {{#g-map-marker mapContext lat=lat lng=lng icon=icon group=group as |markerContext|}}
+    {{yield markerContext}}
+  {{/g-map-marker}}
+{{else}}
+  {{g-map-marker mapContext lat=lat lng=lng icon=icon group=group}}
+{{/if}}
