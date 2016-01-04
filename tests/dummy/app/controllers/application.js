@@ -1,9 +1,12 @@
 import Ember from 'ember';
 
+const { computed } = Ember;
+
 export default Ember.Controller.extend({
   randomVariable: 111,
 
   addressQuery: 'SF, Lafayette Park',
+  addressQueryInput: computed.reads('addressQuery'),
 
   customOptions: {
     mapTypeId: google.maps.MapTypeId.TERRAIN
@@ -16,6 +19,10 @@ export default Ember.Controller.extend({
 
     onInfowindowClosed() {
       window.alert('Info Window Closed!');
+    },
+
+    updateAdressQuery() {
+      this.set('addressQuery', this.get('addressQueryInput'));
     }
   }
 });
