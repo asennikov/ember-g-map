@@ -18,6 +18,7 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
     fakeMarkerObject = {
       setPosition: sinon.stub(),
       setIcon: sinon.stub(),
+      setTitle: sinon.stub(),
       setMap: sinon.stub(),
       addListener: sinon.stub()
     };
@@ -212,6 +213,18 @@ test('it doesn\'t call `setIcon` of google marker on `setIcon` when no icon pres
   run(() => component.setIcon());
 
   sinon.assert.notCalled(fakeMarkerObject.setIcon);
+});
+
+test('it triggers `setTitle` on `didInsertElement` event', function() {
+  component.setTitle = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setTitle);
+});
+
+test('it triggers `setTitle` on `title` change', function() {
+  component.setTitle = sinon.stub();
+  run(() => component.set('title', 'marker-title'));
+  sinon.assert.calledOnce(component.setTitle);
 });
 
 test('it registers itself in parent\'s `markers` array on `init` event', function() {
