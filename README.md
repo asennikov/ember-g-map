@@ -53,13 +53,14 @@ Google Map object on creation and updated on change.
 ## Map with Markers
 
 Mandatory `context` attribute ties child-elements
-with the main `g-map` component.
+with the main `g-map` component. You can set simple title appearing on click
+using `title` attribute.
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
   {{g-map-marker context lat=37.7933 lng=-122.4167}}
-  {{g-map-marker context lat=37.7833 lng=-122.4267}}
-  {{g-map-marker context lat=37.7733 lng=-122.4067}}
+  {{g-map-marker context lat=37.7833 lng=-122.4267 title=titleForSecondMarker}}
+  {{g-map-marker context lat=37.7733 lng=-122.4067 title="Marker #3"}}
 {{/g-map}}
 ```
 
