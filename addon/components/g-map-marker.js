@@ -31,6 +31,7 @@ const GMapMarkerComponent = Ember.Component.extend({
     }
     this.setPosition();
     this.setIcon();
+    this.setTitle();
     this.setMap();
     this.setOnClick();
   },
@@ -100,6 +101,19 @@ const GMapMarkerComponent = Ember.Component.extend({
     const marker = this.get('marker');
     if (isPresent(marker)) {
       marker.addListener('click', () => this.sendOnClick());
+    }
+  },
+
+  titleChanged: observer('title', function() {
+    run.once(this, 'setTitle');
+  }),
+
+  setTitle() {
+    const marker = this.get('marker');
+    const title = this.get('title');
+
+    if (isPresent(marker) && isPresent(title)) {
+      marker.setTitle(title);
     }
   },
 
