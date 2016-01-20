@@ -3,7 +3,8 @@
     "document",
     "window",
     "-Promise",
-    "google"
+    "google",
+    "MarkerClusterer"
   ],
   "browser": true,
   "boss": true,
