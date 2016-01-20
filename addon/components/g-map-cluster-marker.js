@@ -6,6 +6,7 @@ const { isPresent, computed, assert } = Ember;
 
 const GMapClusterMarkerComponent =  GMapMarkerComponent.extend({
   mapContext: computed.alias('clustererContext.mapContext'),
+  clusterer: computed.alias('clustererContext.clusterer'),
 
   init() {
     this._super(arguments);
@@ -17,7 +18,7 @@ const GMapClusterMarkerComponent =  GMapMarkerComponent.extend({
 
   unsetMarkerFromMap() {
     const marker = this.get('marker');
-    const clusterer = this.get('clustererContext.clusterer');
+    const clusterer = this.get('clusterer');
 
     if (isPresent(marker) && isPresent(clusterer)) {
       clusterer.removeMarker(marker);
@@ -25,7 +26,7 @@ const GMapClusterMarkerComponent =  GMapMarkerComponent.extend({
   },
 
   setMap() {
-    const clusterer = this.get('clustererContext.clusterer');
+    const clusterer = this.get('clusterer');
     const marker = this.get('marker');
 
     if (isPresent(marker) && isPresent(clusterer)) {
