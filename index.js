@@ -7,6 +7,8 @@ module.exports = {
   included: function(app, parentAddon) {
     var target = (parentAddon || app);
     target.import('vendor/addons.css');
+
+    app.import(app.bowerDirectory + '/markerclustererplus/src/markerclusterer.js');
   },
 
   contentFor: function(type, config) {
