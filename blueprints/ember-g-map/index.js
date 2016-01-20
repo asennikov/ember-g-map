@@ -2,8 +2,6 @@ module.exports = {
   normalizeEntityName: function() {},
 
   afterInstall: function() {
-    return this.addBowerPackageToProject([
-      { name: 'markerclustererplus', target: '~2.1.4' }
-    ]);
+    return this.addBowerPackageToProject('markerclustererplus', '~2.1.4');
   }
 };
