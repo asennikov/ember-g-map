@@ -11,7 +11,8 @@
     "jquery": "^2.1.4",
     "loader.js": "ember-cli/loader.js#3.2.1",
     "qunit": "~1.18.0",
-    "sinonjs": "~1.17.1"
+    "sinonjs": "~1.17.1",
+    "markerclustererplus": "~2.1.4"
   },
   "devDependencies": {
     "blanket": "~1.1.5"
