@@ -17,6 +17,7 @@ moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
   beforeEach() {
     fakeInfowindowObject = {
       setPosition: sinon.stub(),
+      setOptions: sinon.stub(),
       open: sinon.stub(),
       close: sinon.stub(),
       addListener: sinon.stub()
@@ -33,6 +34,7 @@ moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
 });
 
 test('it triggers `buildInfowindow` on `didInsertElement` event', function(assert) {
+  component.setOptions = sinon.stub();
   component.buildInfowindow = sinon.stub().returns('infoWindowObject');
   component.trigger('didInsertElement');
 

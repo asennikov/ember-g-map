@@ -33,6 +33,7 @@ const GMapInfowindowComponent = Ember.Component.extend({
     this.setPosition();
     this.setMap();
     this.setMarker();
+    this.setOptions();
   },
 
   willDestroyElement() {
@@ -43,10 +44,30 @@ const GMapInfowindowComponent = Ember.Component.extend({
     }
   },
 
+  optionsChanged: observer('disableAutoPan', 'maxWidth', 'pixelOffset', function() {
+    run.once(this, 'setOptions');
+  }),
+
+  setOptions() {
+    const infowindow = this.get('infowindow');
+    const options = ['disableAutoPan', 'maxWidth', 'pixelOffset'];
+    const infoWindowOptions = {};
+
+    for (let i = 0; i < options.length; i++) {
+      const value = this.get(options[i]);
+      if (isPresent(value)) {
+        infoWindowOptions[options[i]] = value;
+      }
+    }
+
+    if (isPresent(infowindow)) {
+      infowindow.setOptions(infoWindowOptions);
+    }
+  },
+
   buildInfowindow() {
     const infowindow = new google.maps.InfoWindow({
-      content: this.get('element'),
-      disableAutoPan: true
+      content: this.get('element')
     });
 
     if (isPresent(this.get('attrs.onClose'))) {
