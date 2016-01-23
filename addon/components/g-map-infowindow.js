@@ -51,7 +51,7 @@ const GMapInfowindowComponent = Ember.Component.extend({
   setOptions() {
     const infowindow = this.get('infowindow');
     const options = ['disableAutoPan', 'maxWidth', 'pixelOffset'];
-    const infoWindowOptions = null;
+    const infoWindowOptions = {};
 
     for (let i = 0; i < options.length; i++) {
       const value = this.get(options[i]);
@@ -60,7 +60,7 @@ const GMapInfowindowComponent = Ember.Component.extend({
       }
     }
 
-    if (isPresent(infowindow) && isPresent(infoWindowOptions)) {
+    if (isPresent(infowindow) && Object.keys(infoWindowOptions).length !== 0) {
       infowindow.setOptions(infoWindowOptions);
     }
   },
