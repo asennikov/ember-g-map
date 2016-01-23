@@ -18,6 +18,7 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
     fakeMarkerObject = {
       setPosition: sinon.stub(),
       setIcon: sinon.stub(),
+      setLabel: sinon.stub(),
       setTitle: sinon.stub(),
       setMap: sinon.stub(),
       addListener: sinon.stub()
@@ -213,6 +214,44 @@ test('it doesn\'t call `setIcon` of google marker on `setIcon` when no icon pres
   run(() => component.setIcon());
 
   sinon.assert.notCalled(fakeMarkerObject.setIcon);
+});
+
+test('it triggers `setLabel` on `didInsertElement` event', function() {
+  component.setLabel = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setLabel);
+});
+
+test('it triggers `setLabel` on `label` change', function() {
+  component.setLabel = sinon.stub();
+  run(() => component.set('label', 'A'));
+  sinon.assert.calledOnce(component.setLabel);
+});
+
+test('it calls `setLabel` of google marker on `setLabel` with label present', function() {
+  run(() => component.setProperties({
+    label: 'A',
+    marker: fakeMarkerObject
+  }));
+
+  fakeMarkerObject.setLabel = sinon.stub();
+
+  run(() => component.setLabel());
+
+  sinon.assert.calledOnce(fakeMarkerObject.setLabel);
+  sinon.assert.calledWith(fakeMarkerObject.setLabel, 'A');
+});
+
+test('it doesn\'t call `setLabel` of google marker on `setLabel` when no label present', function() {
+  fakeMarkerObject.setLabel = sinon.stub();
+
+  run(() => component.setProperties({
+    label: undefined,
+    marker: fakeMarkerObject
+  }));
+  run(() => component.setLabel());
+
+  sinon.assert.notCalled(fakeMarkerObject.setLabel);
 });
 
 test('it triggers `setTitle` on `didInsertElement` event', function() {
