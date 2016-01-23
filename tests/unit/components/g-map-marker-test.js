@@ -254,6 +254,18 @@ test('it doesn\'t call `setLabel` of google marker on `setLabel` when no label p
   sinon.assert.notCalled(fakeMarkerObject.setLabel);
 });
 
+test('it doesn\'t call `setLabel` of google marker on `setLabel` when no label present', function() {
+  fakeMarkerObject.setLabel = sinon.stub();
+
+  run(() => component.setProperties({
+    label: undefined,
+    marker: fakeMarkerObject
+  }));
+  run(() => component.setLabel());
+
+  sinon.assert.notCalled(fakeMarkerObject.setLabel);
+});
+
 test('it triggers `setTitle` on `didInsertElement` event', function() {
   component.setTitle = sinon.stub();
   component.trigger('didInsertElement');
@@ -264,6 +276,32 @@ test('it triggers `setTitle` on `title` change', function() {
   component.setTitle = sinon.stub();
   run(() => component.set('title', 'marker-title'));
   sinon.assert.calledOnce(component.setTitle);
+});
+
+test('it calls `setTitle` of google marker on `setTitle` with title present', function() {
+  run(() => component.setProperties({
+    title: 'Marker #13',
+    marker: fakeMarkerObject
+  }));
+
+  fakeMarkerObject.setTitle = sinon.stub();
+
+  run(() => component.setTitle());
+
+  sinon.assert.calledOnce(fakeMarkerObject.setTitle);
+  sinon.assert.calledWith(fakeMarkerObject.setTitle, 'Marker #13');
+});
+
+test('it doesn\'t call `setTitle` of google marker on `setTitle` when no title present', function() {
+  fakeMarkerObject.setTitle = sinon.stub();
+
+  run(() => component.setProperties({
+    title: undefined,
+    marker: fakeMarkerObject
+  }));
+  run(() => component.setTitle());
+
+  sinon.assert.notCalled(fakeMarkerObject.setTitle);
 });
 
 test('it registers itself in parent\'s `markers` array on `init` event', function() {
