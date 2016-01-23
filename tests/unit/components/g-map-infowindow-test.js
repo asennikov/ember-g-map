@@ -34,7 +34,6 @@ moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
 });
 
 test('it triggers `buildInfowindow` on `didInsertElement` event', function(assert) {
-  component.setOptions = sinon.stub();
   component.buildInfowindow = sinon.stub().returns('infoWindowObject');
   component.trigger('didInsertElement');
 
@@ -66,6 +65,12 @@ test('it triggers `setMarker` on `didInsertElement` event', function() {
   component.setMarker = sinon.stub();
   component.trigger('didInsertElement');
   sinon.assert.calledOnce(component.setMarker);
+});
+
+test('it triggers `setOptions` on `didInsertElement` event', function() {
+  component.setOptions = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setOptions);
 });
 
 test('it triggers `close` on `willDestroyElement` event', function() {
@@ -168,6 +173,34 @@ test('it triggers `setMarker` on `mapContext.marker` change', function() {
   component.setMarker = sinon.spy();
   run(() => component.set('mapContext.marker', {}));
   sinon.assert.calledOnce(component.setMarker);
+});
+
+test('it triggers `setOptions` on `disableAutoPan` change', function() {
+  component.setOptions = sinon.spy();
+  run(() => component.set('disableAutoPan', true));
+  sinon.assert.calledOnce(component.setOptions);
+});
+
+test('it triggers `setOptions` on `maxWidth` change', function() {
+  component.setOptions = sinon.spy();
+  run(() => component.set('maxWidth', 200));
+  sinon.assert.calledOnce(component.setOptions);
+});
+
+test('it triggers `setOptions` on `pixelOffset` change', function() {
+  component.setOptions = sinon.spy();
+  run(() => component.set('pixelOffset', { width: 10, height: 10 }));
+  sinon.assert.calledOnce(component.setOptions);
+});
+
+test('it doesn\'t call `setOptions` of InfoWindow on `setOptions` when no option present', function() {
+  fakeInfowindowObject.setOptions = sinon.stub();
+
+  run(() => component.setProperties({
+    infowindow: fakeInfowindowObject
+  }));
+  run(() => component.setOptions());
+  sinon.assert.notCalled(fakeInfowindowObject.setOptions);
 });
 
 test('it triggers `setPosition` on `lat` change', function() {
