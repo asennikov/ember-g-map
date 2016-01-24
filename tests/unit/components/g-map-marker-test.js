@@ -254,18 +254,6 @@ test('it doesn\'t call `setLabel` of google marker on `setLabel` when no label p
   sinon.assert.notCalled(fakeMarkerObject.setLabel);
 });
 
-test('it doesn\'t call `setLabel` of google marker on `setLabel` when no label present', function() {
-  fakeMarkerObject.setLabel = sinon.stub();
-
-  run(() => component.setProperties({
-    label: undefined,
-    marker: fakeMarkerObject
-  }));
-  run(() => component.setLabel());
-
-  sinon.assert.notCalled(fakeMarkerObject.setLabel);
-});
-
 test('it triggers `setTitle` on `didInsertElement` event', function() {
   component.setTitle = sinon.stub();
   component.trigger('didInsertElement');
