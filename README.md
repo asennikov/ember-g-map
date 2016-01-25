@@ -54,13 +54,13 @@ Google Map object on creation and updated on change.
 
 Mandatory `context` attribute ties child-elements
 with the main `g-map` component. You can set simple title appearing on click
-using `title` attribute.
+using `title` attribute and marker label using `label`.
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
   {{g-map-marker context lat=37.7933 lng=-122.4167}}
   {{g-map-marker context lat=37.7833 lng=-122.4267 title=titleForSecondMarker}}
-  {{g-map-marker context lat=37.7733 lng=-122.4067 title="Marker #3"}}
+  {{g-map-marker context lat=37.7733 lng=-122.4067 label="3" title="Marker #3"}}
 {{/g-map}}
 ```
 
@@ -158,12 +158,26 @@ one Info Window is open at each moment for Markers of each group.
 
 Proxy `g-map-address-marker` component takes address string as parameter
 and translates it to lat/lng under the hood.
+
+Optional `onLocationChange` action hook will send you back coordinates
+of the latest address search result and the raw array of
+[google.maps.places.PlaceResult](https://developers.google.com/maps/documentation/javascript/reference#PlaceResult) objects provided by `places` library.
+
 Other optional parameters are the same as for `g-map-marker`.
 Requires `places` library to be specified in `environment.js`.
 
 ```javascript
 ENV['g-map'] = {
   libraries: ['places']
+}
+```
+
+```javascript
+actions: {
+  onLocationChangeHandler(lat, lng, results) {
+    Ember.Logger.log(`lat: ${lat}, lng: ${lng}`);
+    Ember.Logger.debug(results);
+  }
 }
 ```
 
@@ -175,6 +189,11 @@ ENV['g-map'] = {
       Works in block form too.
     {{/g-map-infowindow}}
   {{/g-map-address-marker}}
+
+  {{g-map-address-marker context address=searchedAddress
+                         onLocationChange=(action "onLocationChangeHandler")}}
+  {{g-map-address-marker context address=anotherSearchedAddress
+                         onLocationChange="onLocationChangeHandler"}}
 {{/g-map}}
 ```
 
