@@ -203,6 +203,47 @@ test('it doesn\'t call `setOptions` of InfoWindow on `setOptions` when no option
   sinon.assert.notCalled(fakeInfowindowObject.setOptions);
 });
 
+test('it calls `setOptions` of InfoWindow on `setOptions` with `disableAutoPan` present', function() {
+  fakeInfowindowObject.setOptions = sinon.stub();
+
+  run(() => component.setProperties({
+    disableAutoPan: true,
+    infowindow: fakeInfowindowObject
+  }));
+  sinon.assert.calledOnce(fakeInfowindowObject.setOptions);
+});
+
+test('it calls `setOptions` of InfoWindow on `setOptions` with `maxWidth` present', function() {
+  fakeInfowindowObject.setOptions = sinon.stub();
+
+  run(() => component.setProperties({
+    maxWidth: 200,
+    infowindow: fakeInfowindowObject
+  }));
+  sinon.assert.calledOnce(fakeInfowindowObject.setOptions);
+});
+
+test('it calls `setOptions` of InfoWindow on `setOptions` with `pixelOffset` present', function() {
+  fakeInfowindowObject.setOptions = sinon.stub();
+
+  run(() => component.setProperties({
+    pixelOffset: { width: 10, height: 10 },
+    infowindow: fakeInfowindowObject
+  }));
+  sinon.assert.calledOnce(fakeInfowindowObject.setOptions);
+});
+
+test('it calls `setOptions` of InfoWindow on `setOptions` once with more than one option present', function() {
+  fakeInfowindowObject.setOptions = sinon.stub();
+
+  run(() => component.setProperties({
+    disableAutoPan: true,
+    maxWidth: 200,
+    infowindow: fakeInfowindowObject
+  }));
+  sinon.assert.calledOnce(fakeInfowindowObject.setOptions);
+});
+
 test('it triggers `setPosition` on `lat` change', function() {
   component.setPosition = sinon.stub();
   run(() => component.set('lat', 14));
