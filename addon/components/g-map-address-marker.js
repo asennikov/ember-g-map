@@ -2,7 +2,7 @@ import Ember from 'ember';
 import layout from '../templates/components/g-map-address-marker';
 /* global google */
 
-const { computed, observer, run, isPresent, isEmpty } = Ember;
+const { computed, observer, run, isPresent, isEmpty, typeOf } = Ember;
 
 const GMapAddressMarkerComponent = Ember.Component.extend({
   layout: layout,
@@ -26,15 +26,15 @@ const GMapAddressMarkerComponent = Ember.Component.extend({
     if (isPresent(map) && isEmpty(service)) {
       service = new google.maps.places.PlacesService(map);
       this.set('placesService', service);
-      this.updateLocation();
+      this.searchLocation();
     }
   },
 
   onAddressChanged: observer('address', function() {
-    run.once(this, 'updateLocation');
+    run.once(this, 'searchLocation');
   }),
 
-  updateLocation() {
+  searchLocation() {
     const service = this.get('placesService');
     const address = this.get('address');
 
@@ -43,10 +43,28 @@ const GMapAddressMarkerComponent = Ember.Component.extend({
 
       service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-          this.set('lat', results[0].geometry.location.lat());
-          this.set('lng', results[0].geometry.location.lng());
+          this.updateLocation(results);
         }
       });
+    }
+  },
+
+  updateLocation(results) {
+    const lat = results[0].geometry.location.lat();
+    const lng = results[0].geometry.location.lng();
+
+    this.set('lat', lat);
+    this.set('lng', lng);
+    this.sendOnLocationChange(lat, lng, results);
+  },
+
+  sendOnLocationChange() {
+    const { onLocationChange } = this.attrs;
+
+    if (typeOf(onLocationChange) === 'function') {
+      onLocationChange(...arguments);
+    } else {
+      this.sendAction('onLocationChange', ...arguments);
     }
   }
 });
