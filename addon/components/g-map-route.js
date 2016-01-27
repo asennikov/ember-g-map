@@ -61,7 +61,7 @@ const GMapRouteComponent = Ember.Component.extend({
     }
   },
 
-  onLocationsChanged: observer('originLat', 'originLng', 'destinationLat', 'destinationLng', 'travelModel', function() {
+  onLocationsChanged: observer('originLat', 'originLng', 'destinationLat', 'destinationLng', 'travelMode', function() {
     run.once(this, 'updateRoute');
   }),
 
@@ -94,7 +94,7 @@ const GMapRouteComponent = Ember.Component.extend({
   },
 
   retrieveTravelMode(mode) {
-    return TRAVEL_MODES.hasOwnProperty(mode) ? TRAVEL_MODES[mode] : TRAVEL_MODES['driving'];
+    return TRAVEL_MODES.hasOwnProperty(mode) ? TRAVEL_MODES[mode] : TRAVEL_MODES.driving;
   }
 });
 
