@@ -54,7 +54,7 @@ const GMapRouteComponent = Ember.Component.extend({
     }
   },
 
-  onLocationsChanged: observer('originLat', 'originLng', 'destinationLat', 'destinationLng', function() {
+  onLocationsChanged: observer('originLat', 'originLng', 'destinationLat', 'destinationLng', 'travelModel', function() {
     run.once(this, 'updateRoute');
   }),
 
@@ -71,10 +71,11 @@ const GMapRouteComponent = Ember.Component.extend({
         isPresent(destinationLat) && isPresent(destinationLng)) {
       const origin = new google.maps.LatLng(this.get('originLat'), this.get('originLng'));
       const destination = new google.maps.LatLng(this.get('destinationLat'), this.get('destinationLng'));
+      const travelMode = this.retrieveTravelMode(this.get('travelMode'));
       const request = {
         origin: origin,
         destination: destination,
-        travelMode: google.maps.TravelMode.DRIVING
+        travelMode: travelMode
       };
 
       service.route(request, (response, status) => {
@@ -83,6 +84,26 @@ const GMapRouteComponent = Ember.Component.extend({
         }
       });
     }
+  },
+
+  retrieveTravelMode(mode) {
+    let gMapsTravelMode = null;
+
+    switch (mode) {
+      case 'walking':
+        gMapsTravelMode = google.maps.TravelMode.WALKING;
+        break;
+      case 'bicycling':
+        gMapsTravelMode = google.maps.TravelMode.BICYCLING;
+        break;
+      case 'transit':
+        gMapsTravelMode = google.maps.TravelMode.TRANSIT;
+        break;
+      default:
+        gMapsTravelMode = google.maps.TravelMode.DRIVING;
+    }
+
+    return gMapsTravelMode;
   }
 });
 
