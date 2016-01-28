@@ -27,6 +27,11 @@ module.exports = {
         params.push('libraries=' + encodeURIComponent(libraries.join(',')));
       }
 
+      var protocol = gMapConfig.protocol;
+      if (protocol) {
+        src = protocol + ":" + src;
+      }
+
       src += '?' + params.join('&');
       content = '<script type="text/javascript" src="' + src + '"></script>';
     }
