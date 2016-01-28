@@ -72,6 +72,11 @@ and will be closed forever after user closes them. You can specify
 optional `onClose` action to tear down anything you need when Info Window
 has been closed by user.
 
+Available options (see details [in docs](https://developers.google.com/maps/documentation/javascript/3.exp/reference#InfoWindowOptions)):
+- disableAutoPan,
+- maxWidth,
+- pixelOffset
+
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
   {{#g-map-infowindow context lat=37.7733 lng=-122.4067}}
@@ -201,6 +206,12 @@ actions: {
 ## Map with route between 2 locations
 
 Using Google Maps [Directions](https://developers.google.com/maps/documentation/javascript/directions) service.
+
+You can optionally set travel mode with `travelMode` attr:
+- `walking`
+- `bicycling`
+- `transit`
+- `driving` (default)
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
