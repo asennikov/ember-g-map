@@ -26,7 +26,7 @@
   {{/g-map-marker}}
 
   {{#g-map-address-marker context address=addressQuery as |markerContext|}}
-    {{#g-map-infowindow markerContext}}
+    {{#g-map-infowindow markerContext openEvent="mouseover" closeEvent="mouseout"}}
       <h1>Bound to Address Query</h1>
     {{/g-map-infowindow}}
   {{/g-map-address-marker}}

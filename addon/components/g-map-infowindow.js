@@ -5,6 +5,10 @@ import GMapMarkerComponent from './g-map-marker';
 
 const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
 
+const OPEN_CLOSE_EVENTS = Ember.A(
+  [ 'click', 'dblclick', 'rightclick', 'mouseover', 'mouseout' ]
+);
+
 const GMapInfowindowComponent = Ember.Component.extend({
   layout: layout,
   classNames: ['g-map-marker'],
@@ -71,20 +75,18 @@ const GMapInfowindowComponent = Ember.Component.extend({
     });
 
     if (isPresent(this.get('attrs.onClose'))) {
-      this.attachCloseEvent(infowindow);
+      infowindow.addListener('closeclick', () => this.handleCloseEvent());
     }
     return infowindow;
   },
 
-  attachCloseEvent(infowindow) {
-    infowindow.addListener('closeclick', () => {
-      const { onClose } = this.attrs;
-      if (typeOf(onClose) === 'function') {
-        onClose();
-      } else {
-        this.sendAction('onClose');
-      }
-    });
+  handleCloseEvent() {
+    const { onClose } = this.attrs;
+    if (typeOf(onClose) === 'function') {
+      onClose();
+    } else {
+      this.sendAction('onClose');
+    }
   },
 
   close() {
@@ -120,8 +122,54 @@ const GMapInfowindowComponent = Ember.Component.extend({
 
     if (isPresent(infowindow) && isPresent(map) && isPresent(marker)) {
       context.registerInfowindow(this);
-      marker.addListener('click', () => infowindow.open(map, marker));
+
+      // TODO: move this to registerInfowindow of g-map-marker
+      const openEvent = this.retrieveOpenEvent();
+      const closeEvent = this.retrieveCloseEvent();
+      if (openEvent === closeEvent) {
+        this.attachTogglingMarkerEvent(map, marker, infowindow, openEvent);
+      } else {
+        this.attachOpenMarkerEvent(map, marker, infowindow, openEvent);
+        this.attachCloseMarkerEvent(marker, infowindow, closeEvent);
+      }
     }
+  },
+
+  attachOpenMarkerEvent(map, marker, infowindow, event) {
+    if (isPresent(event)) {
+      marker.addListener(event, () => infowindow.open(map, marker));
+    }
+  },
+
+  attachCloseMarkerEvent(marker, infowindow, event) {
+    if (isPresent(event)) {
+      marker.addListener(event, () => {
+        infowindow.close();
+        this.handleCloseEvent();
+      });
+    }
+  },
+
+  attachTogglingMarkerEvent(map, marker, infowindow, event) {
+    marker.addListener(event, () => {
+      this.toggleProperty('isOpen');
+      if (this.get('isOpen')) {
+        infowindow.open(map, marker);
+      } else {
+        infowindow.close();
+        this.handleCloseEvent();
+      }
+    });
+  },
+
+  retrieveOpenEvent() {
+    const openEvent = this.get('openEvent');
+    return OPEN_CLOSE_EVENTS.contains(openEvent) ? openEvent : 'click';
+  },
+
+  retrieveCloseEvent() {
+    const closeEvent = this.get('closeEvent');
+    return OPEN_CLOSE_EVENTS.contains(closeEvent) ? closeEvent : null;
   },
 
   coordsChanged: observer('lat', 'lng', function() {
