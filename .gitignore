@@ -16,3 +16,6 @@
 npm-debug.log
 testem.log
 lcov.dat
+
+# IDE misc
+/.idea

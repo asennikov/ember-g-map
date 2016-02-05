@@ -4,6 +4,13 @@ import GMapComponent from './g-map';
 
 const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
 
+const TRAVEL_MODES = {
+  walking: google.maps.TravelMode.WALKING,
+  bicycling: google.maps.TravelMode.BICYCLING,
+  transit: google.maps.TravelMode.TRANSIT,
+  driving: google.maps.TravelMode.DRIVING
+};
+
 const GMapRouteComponent = Ember.Component.extend({
   layout: layout,
   classNames: ['g-map-marker'],
@@ -54,7 +61,7 @@ const GMapRouteComponent = Ember.Component.extend({
     }
   },
 
-  onLocationsChanged: observer('originLat', 'originLng', 'destinationLat', 'destinationLng', function() {
+  onLocationsChanged: observer('originLat', 'originLng', 'destinationLat', 'destinationLng', 'travelMode', function() {
     run.once(this, 'updateRoute');
   }),
 
@@ -67,14 +74,15 @@ const GMapRouteComponent = Ember.Component.extend({
     const destinationLng = this.get('destinationLng');
 
     if (isPresent(service) && isPresent(renderer) &&
-        isPresent(originLat) && isPresent(originLng) &&
-        isPresent(destinationLat) && isPresent(destinationLng)) {
+      isPresent(originLat) && isPresent(originLng) &&
+      isPresent(destinationLat) && isPresent(destinationLng)) {
       const origin = new google.maps.LatLng(this.get('originLat'), this.get('originLng'));
       const destination = new google.maps.LatLng(this.get('destinationLat'), this.get('destinationLng'));
+      const travelMode = this.retrieveTravelMode(this.get('travelMode'));
       const request = {
         origin: origin,
         destination: destination,
-        travelMode: google.maps.TravelMode.DRIVING
+        travelMode: travelMode
       };
 
       service.route(request, (response, status) => {
@@ -83,6 +91,10 @@ const GMapRouteComponent = Ember.Component.extend({
         }
       });
     }
+  },
+
+  retrieveTravelMode(mode) {
+    return TRAVEL_MODES.hasOwnProperty(mode) ? TRAVEL_MODES[mode] : TRAVEL_MODES.driving;
   }
 });
 

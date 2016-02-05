@@ -22,13 +22,14 @@ Simply add something similar to this to your styles:
 ```
 
 In `config/environment.js` you can specify additional Google Maps libraries
-to be loaded along with this add-on (check the full list [here](https://developers.google.com/maps/documentation/javascript/libraries))
-and optional API key for your application (additional info could be found [here](https://developers.google.com/maps/web/)).
+to be loaded along with this add-on (check the full list [here](https://developers.google.com/maps/documentation/javascript/libraries)),
+optional API key for your application (additional info could be found [here](https://developers.google.com/maps/web/)) and optional explicit protocol setting.
 
 ```javascript
 ENV['g-map'] = {
   libraries: ['places', 'geometry'],
-  key: 'your-unique-google-map-api-key'
+  key: 'your-unique-google-map-api-key',
+  protocol: 'https'
 }
 ```
 
@@ -70,6 +71,11 @@ These Info Windows will be open right after component is rendered
 and will be closed forever after user closes them. You can specify
 optional `onClose` action to tear down anything you need when Info Window
 has been closed by user.
+
+Available options (see details [in docs](https://developers.google.com/maps/documentation/javascript/3.exp/reference#InfoWindowOptions)):
+- disableAutoPan,
+- maxWidth,
+- pixelOffset
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
@@ -200,6 +206,12 @@ actions: {
 ## Map with route between 2 locations
 
 Using Google Maps [Directions](https://developers.google.com/maps/documentation/javascript/directions) service.
+
+You can optionally set travel mode with `travelMode` attr:
+- `walking`
+- `bicycling`
+- `transit`
+- `driving` (default)
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
