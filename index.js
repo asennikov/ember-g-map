@@ -10,8 +10,8 @@ module.exports = {
 
     var gMapOptions = target.options.gMap || {};
     var extensions = gMapOptions.extensions || [];
-    for (let i = 0; i < extensions.length; i++) {
-      let extension = extensions[i];
+    for (var i = 0; i < extensions.length; i++) {
+      var extension = extensions[i];
       if (extension === 'clustering') {
         app.import(app.bowerDirectory + '/markerclustererplus/src/markerclusterer.js');
       }
