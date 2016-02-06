@@ -7,7 +7,7 @@ export default Ember.Component.extend({
   layout: layout,
   classNames: ['g-map'],
   bannedOptions: Ember.A(['center', 'zoom']),
-  events: Ember.A([
+  supportedEvents: Ember.A([
     'bounds_changed',
     'center_changed',
     'click',
@@ -147,7 +147,7 @@ export default Ember.Component.extend({
   },
 
   attachEvents() {
-    const events = this.get('events');
+    const events = this.get('supportedEvents');
 
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
@@ -175,7 +175,7 @@ export default Ember.Component.extend({
 
   detachEvents() {
     const map = this.get('map');
-    const events = this.get('events');
+    const events = this.get('supportedEvents');
 
     if (isPresent(map)) {
       for (let i = 0; i < events.length; i++) {
