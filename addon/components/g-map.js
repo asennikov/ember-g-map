@@ -1,12 +1,33 @@
 import Ember from 'ember';
 import layout from '../templates/components/g-map';
 
-const { isEmpty, isPresent, computed, observer, run } = Ember;
+const { isEmpty, isPresent, computed, observer, run, typeOf } = Ember;
 
 export default Ember.Component.extend({
   layout: layout,
   classNames: ['g-map'],
   bannedOptions: Ember.A(['center', 'zoom']),
+  events: Ember.A([
+    'bounds_changed',
+    'center_changed',
+    'click',
+    'dblclick',
+    'drag',
+    'dragend',
+    'dragstart',
+    'heading_changed',
+    'idle',
+    'maptypeid_changed',
+    'mousemove',
+    'mouseout',
+    'mouseover',
+    'projection_changed',
+    'resize',
+    'rightclick',
+    'tilesloaded',
+    'tilt_changed',
+    'zoom_changed'
+  ]),
 
   init() {
     this._super();
@@ -39,6 +60,11 @@ export default Ember.Component.extend({
     if (this.get('shouldFit')) {
       this.fitToMarkers();
     }
+    this.attachEvents();
+  },
+
+  willDestroyElement() {
+    this.detachEvents();
   },
 
   permittedOptionsChanged: observer('permittedOptions', function() {
@@ -118,5 +144,43 @@ export default Ember.Component.extend({
   groupMarkerClicked(marker, group) {
     let markers = this.get('markers').without(marker).filterBy('group', group);
     markers.forEach((marker) => marker.closeInfowindow());
+  },
+
+  attachEvents() {
+    const events = this.get('events');
+
+    for (let i = 0; i < events.length; i++) {
+      const event = events[i];
+      if (isPresent(this.get(event))) {
+        this.addListener(event);
+      }
+    }
+  },
+
+  addListener(event) {
+    const map = this.get('map');
+
+    if (isPresent(map)) {
+      google.maps.event.addListener(map, event, () => {
+        const action = this.get(event);
+
+        if (typeOf(action) === 'function') {
+          action();
+        } else {
+          this.sendAction(action);
+        }
+      });
+    }
+  },
+
+  detachEvents() {
+    const map = this.get('map');
+    const events = this.get('events');
+
+    if (isPresent(map)) {
+      for (let i = 0; i < events.length; i++) {
+        google.maps.event.clearListeners(map, events[i]);
+      }
+    }
   }
 });
