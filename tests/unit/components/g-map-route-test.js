@@ -133,6 +133,12 @@ test('it triggers `updateRoute` on `destinationLng` change', function() {
   sinon.assert.calledOnce(component.updateRoute);
 });
 
+test('it triggers `updateRoute` on `travelMode` change', function() {
+  component.updateRoute = sinon.spy();
+  run(() => component.set('travelMode', 'walking'));
+  sinon.assert.calledOnce(component.updateRoute);
+});
+
 test('it triggers `updateRoute` only once on several lat/lng changes', function() {
   component.updateRoute = sinon.spy();
   run(() => component.setProperties({

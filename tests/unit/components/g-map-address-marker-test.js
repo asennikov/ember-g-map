@@ -60,27 +60,27 @@ test('it triggers `initPlacesService` on `mapContext.map` change', function() {
   sinon.assert.calledOnce(component.initPlacesService);
 });
 
-test('it triggers `updateLocation` on `initPlacesService` call', function() {
-  component.updateLocation = sinon.spy();
+test('it triggers `searchLocation` on `initPlacesService` call', function() {
+  component.searchLocation = sinon.stub();
 
   run(() => component.set('map', {}));
   run(() => component.initPlacesService());
 
-  sinon.assert.calledOnce(component.updateLocation);
+  sinon.assert.calledOnce(component.searchLocation);
 });
 
-test('it triggers `updateLocation` on `address` change', function() {
-  component.updateLocation = sinon.spy();
+test('it triggers `searchLocation` on `address` change', function() {
+  component.searchLocation = sinon.stub();
   run(() => component.set('address', 'query string'));
-  sinon.assert.calledOnce(component.updateLocation);
+  sinon.assert.calledOnce(component.searchLocation);
 });
 
-test('it calls `textSearch` of placesService on `updateLocation`', function() {
+test('it calls `textSearch` of placesService on `searchLocation`', function() {
   run(() => component.set('address', 'query string'));
   run(() => component.set('placesService', fakePlacesService));
 
   fakePlacesService.textSearch = sinon.stub();
-  run(() => component.updateLocation());
+  run(() => component.searchLocation());
 
   const correctRequest = { query: 'query string' };
 
@@ -88,7 +88,22 @@ test('it calls `textSearch` of placesService on `updateLocation`', function() {
   sinon.assert.calledWith(fakePlacesService.textSearch, correctRequest);
 });
 
-test('it sets `lat` & `lng` of the first textSearch result on `updateLocation`', function(assert) {
+test('it calls `updateLocation` after successful textSearch on `searchLocation`', function() {
+  const results = [{ a: 1 }, { b: 2 }];
+  const status = google.maps.places.PlacesServiceStatus.OK;
+
+  run(() => component.set('address', 'query string'));
+  run(() => component.set('placesService', fakePlacesService));
+
+  fakePlacesService.textSearch.callsArgWith(1, results, status);
+  component.updateLocation = sinon.stub();
+  run(() => component.searchLocation());
+
+  sinon.assert.calledOnce(component.updateLocation);
+  sinon.assert.calledWith(component.updateLocation, results);
+});
+
+test('it sets `lat` & `lng` of the first provided result on `updateLocation`', function(assert) {
   const results = [{
     geometry: {
       location: {
@@ -104,16 +119,55 @@ test('it sets `lat` & `lng` of the first textSearch result on `updateLocation`',
       }
     }
   }];
-  const status = google.maps.places.PlacesServiceStatus.OK;
-  fakePlacesService.textSearch.callsArgWith(1, results, status);
 
-  run(() => component.set('address', 'query string'));
-  run(() => component.set('placesService', fakePlacesService));
-
-  run(() => component.updateLocation());
+  run(() => component.set('attrs', {}));
+  run(() => component.updateLocation(results));
 
   assert.equal(component.get('lat'), 12);
   assert.equal(component.get('lng'), -20);
+});
 
-  fakePlacesService.textSearch = sinon.stub();
+test('it calls `sendOnLocationChange` on `updateLocation`', function() {
+  const results = [{
+    geometry: {
+      location: {
+        lat: () => 12,
+        lng: () => -20
+      }
+    }
+  }, {
+    geometry: {
+      location: {
+        lat: () => 24,
+        lng: () => 100
+      }
+    }
+  }];
+
+  component.sendOnLocationChange = sinon.stub();
+  run(() => component.set('attrs', {}));
+  run(() => component.updateLocation(results));
+
+  sinon.assert.calledOnce(component.sendOnLocationChange);
+  sinon.assert.calledWith(component.sendOnLocationChange, 12, -20, results);
+});
+
+test('it sends action `onLocationChange` on `sendOnLocationChange`', function() {
+  const results = [{ a: 1 }, { b: 2 }];
+  component.sendAction = sinon.stub();
+
+  run(() => component.set('attrs', { onLocationChange: 'action' }));
+  run(() => component.sendOnLocationChange(12, 30, results));
+
+  sinon.assert.calledOnce(component.sendAction);
+  sinon.assert.calledWith(component.sendAction, 'onLocationChange', 12, 30, results);
+});
+
+test('it runs closure action `attrs.onLocationChange` directly on `updateLocation`', function() {
+  const results = [{ a: 1 }, { b: 2 }];
+  run(() => component.set('attrs', { onLocationChange: sinon.stub() }));
+  run(() => component.sendOnLocationChange(12, 30, results));
+
+  sinon.assert.calledOnce(component.attrs.onLocationChange);
+  sinon.assert.calledWith(component.attrs.onLocationChange, 12, 30, results);
 });
