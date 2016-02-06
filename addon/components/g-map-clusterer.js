@@ -7,6 +7,7 @@ const { isEmpty, isPresent, computed, observer, run, assert, typeOf } = Ember;
 const GMapClustererComponent = Ember.Component.extend({
   layout: layout,
   classNames: ['g-map-clusterer'],
+  supportedEvents: ['clusteringstart', 'clusteringend'],
 
   map: computed.oneWay('mapContext.map'),
   markers: computed.oneWay('mapContext.markers'),
@@ -33,10 +34,8 @@ const GMapClustererComponent = Ember.Component.extend({
     }
   }),
 
-  events: ['clusteringstart', 'clusteringend'],
-
   attachEvents() {
-    const events = this.get('events');
+    const events = this.get('supportedEvents');
 
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
@@ -60,7 +59,7 @@ const GMapClustererComponent = Ember.Component.extend({
 
   detachEvents() {
     const clusterer = this.get('clusterer');
-    const events = this.get('events');
+    const events = this.get('supportedEvents');
 
     for (let i = 0; i < events.length; i++) {
       google.maps.event.clearListeners(clusterer, events[i]);
