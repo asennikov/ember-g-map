@@ -8,7 +8,14 @@ module.exports = {
     var target = (parentAddon || app);
     target.import('vendor/addons.css');
 
-    app.import(app.bowerDirectory + '/markerclustererplus/src/markerclusterer.js');
+    var gMapOptions = target.options.gMap || {};
+    var extensions = gMapOptions.extensions || [];
+    for (let i = 0; i < extensions.length; i++) {
+      let extension = extensions[i];
+      if (extension === 'clustering') {
+        app.import(app.bowerDirectory + '/markerclustererplus/src/markerclusterer.js');
+      }
+    }
   },
 
   contentFor: function(type, config) {
