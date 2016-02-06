@@ -42,12 +42,45 @@ const GMapMarkerComponent = Ember.Component.extend({
     this.get('mapContext').unregisterMarker(this);
   },
 
-  registerInfowindow(infowindow) {
+  registerInfowindow(infowindow, openEvent, closeEvent) {
     this.set('infowindow', infowindow);
+    this.attachOpenCloseEvents(infowindow, openEvent, closeEvent);
   },
 
   unregisterInfowindow() {
     this.set('infowindow', null);
+  },
+
+  attachOpenCloseEvents(infowindow, openEvent, closeEvent) {
+    const marker = this.get('marker');
+    if (openEvent === closeEvent) {
+      this.attachTogglingInfowindowEvent(marker, infowindow, openEvent);
+    } else {
+      this.attachOpenInfowindowEvent(marker, infowindow, openEvent);
+      this.attachCloseInfowindowEvent(marker, infowindow, closeEvent);
+    }
+  },
+
+  attachOpenInfowindowEvent(marker, infowindow, event) {
+    if (isPresent(event)) {
+      marker.addListener(event, () => infowindow.open());
+    }
+  },
+
+  attachCloseInfowindowEvent(marker, infowindow, event) {
+    if (isPresent(event)) {
+      marker.addListener(event, () => infowindow.close());
+    }
+  },
+
+  attachTogglingInfowindowEvent(marker, infowindow, event) {
+    marker.addListener(event, () => {
+      if (infowindow.get('isOpen')) {
+        infowindow.close();
+      } else {
+        infowindow.open();
+      }
+    });
   },
 
   unsetMarkerFromMap() {
