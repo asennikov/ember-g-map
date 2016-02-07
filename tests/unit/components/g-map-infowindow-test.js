@@ -377,7 +377,7 @@ test('it doesn\'t call `open` of InfoWindow on `setMap` when `hasMarker` is true
   sinon.assert.notCalled(fakeInfowindowObject.setMap);
 });
 
-test(`it calls 'registerInfowindow' of marker context
+test(`it calls 'retrieveOpenEvent', 'retrieveCloseEvent' and 'registerInfowindow' of marker context
       on 'setMarker' with 'map' and 'marker' present`, function() {
   const mapObject = {};
   const markerObject = {};
@@ -390,11 +390,76 @@ test(`it calls 'registerInfowindow' of marker context
     infowindow: fakeInfowindowObject
   }));
 
+  component.retrieveOpenEvent = sinon.stub().returns('open');
+  component.retrieveCloseEvent = sinon.stub().returns('close');
   mapContext.registerInfowindow = sinon.stub();
   run(() => component.setMarker());
 
+  sinon.assert.calledOnce(component.retrieveOpenEvent);
+  sinon.assert.calledOnce(component.retrieveCloseEvent);
+
   sinon.assert.calledOnce(mapContext.registerInfowindow);
-  sinon.assert.calledWith(mapContext.registerInfowindow, component);
+  sinon.assert.calledWith(mapContext.registerInfowindow, component, 'open', 'close');
+});
+
+test('`retrieveOpenEvent` returns `openOn` event if it\'s whitelisted in const', function(assert) {
+  let resultingEvent;
+  run(() => component.set('openOn', 'click'));
+  run(() => resultingEvent = component.retrieveOpenEvent());
+  assert.equal(resultingEvent, 'click');
+
+  run(() => component.set('openOn', 'dblclick'));
+  run(() => resultingEvent = component.retrieveOpenEvent());
+  assert.equal(resultingEvent, 'dblclick');
+
+  run(() => component.set('openOn', 'rightclick'));
+  run(() => resultingEvent = component.retrieveOpenEvent());
+  assert.equal(resultingEvent, 'rightclick');
+
+  run(() => component.set('openOn', 'mouseover'));
+  run(() => resultingEvent = component.retrieveOpenEvent());
+  assert.equal(resultingEvent, 'mouseover');
+
+  run(() => component.set('openOn', 'mouseout'));
+  run(() => resultingEvent = component.retrieveOpenEvent());
+  assert.equal(resultingEvent, 'mouseout');
+});
+
+test('`retrieveCloseEvent` returns `closeOn` event if it\'s whitelisted in const', function(assert) {
+  let resultingEvent;
+  run(() => component.set('closeOn', 'click'));
+  run(() => resultingEvent = component.retrieveCloseEvent());
+  assert.equal(resultingEvent, 'click');
+
+  run(() => component.set('closeOn', 'dblclick'));
+  run(() => resultingEvent = component.retrieveCloseEvent());
+  assert.equal(resultingEvent, 'dblclick');
+
+  run(() => component.set('closeOn', 'rightclick'));
+  run(() => resultingEvent = component.retrieveCloseEvent());
+  assert.equal(resultingEvent, 'rightclick');
+
+  run(() => component.set('closeOn', 'mouseover'));
+  run(() => resultingEvent = component.retrieveCloseEvent());
+  assert.equal(resultingEvent, 'mouseover');
+
+  run(() => component.set('closeOn', 'mouseout'));
+  run(() => resultingEvent = component.retrieveCloseEvent());
+  assert.equal(resultingEvent, 'mouseout');
+});
+
+test('`retrieveOpenEvent` returns `click` event if `openOn` isn\'t whitelisted in const', function(assert) {
+  let resultingEvent;
+  run(() => component.set('openOn', 'wrong-event'));
+  run(() => resultingEvent = component.retrieveOpenEvent());
+  assert.equal(resultingEvent, 'click');
+});
+
+test('`retrieveCloseEvent` returns `null` event if `closeOn` isn\'t whitelisted in const', function(assert) {
+  let resultingEvent;
+  run(() => component.set('closeOn', 'wrong-event'));
+  run(() => resultingEvent = component.retrieveCloseEvent());
+  assert.equal(resultingEvent, null);
 });
 
 test('it doesn\'t call `addListener` of google marker on `setMarker` when no `map` present', function() {
