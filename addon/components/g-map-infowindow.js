@@ -91,16 +91,14 @@ const GMapInfowindowComponent = Ember.Component.extend({
 
   open() {
     const infowindow = this.get('infowindow');
-    if (isPresent(infowindow)) {
-      const map = this.get('map');
-      const marker = this.get('marker');
+    const map = this.get('map');
+    const marker = this.get('marker');
 
-      this.set('isOpen', true);
-      if (isPresent(map) && isPresent(marker)) {
-        infowindow.open(map, marker);
-      } else if (isPresent(map)) {
-        infowindow.open(map);
-      }
+    this.set('isOpen', true);
+    if (isPresent(map) && isPresent(marker)) {
+      infowindow.open(map, marker);
+    } else if (isPresent(map)) {
+      infowindow.open(map);
     }
   },
 

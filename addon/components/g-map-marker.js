@@ -74,13 +74,15 @@ const GMapMarkerComponent = Ember.Component.extend({
   },
 
   attachTogglingInfowindowEvent(marker, infowindow, event) {
-    marker.addListener(event, () => {
-      if (infowindow.get('isOpen')) {
-        infowindow.close();
-      } else {
-        infowindow.open();
-      }
-    });
+    if (isPresent(event)) {
+      marker.addListener(event, () => {
+        if (infowindow.get('isOpen')) {
+          infowindow.close();
+        } else {
+          infowindow.open();
+        }
+      });
+    }
   },
 
   unsetMarkerFromMap() {

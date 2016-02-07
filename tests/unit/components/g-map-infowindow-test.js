@@ -23,9 +23,12 @@ moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
       addListener: sinon.stub()
     };
     sinon.stub(google.maps, 'InfoWindow').returns(fakeInfowindowObject);
-    component = this.subject({
-      mapContext: new GMapComponent()
-    });
+
+    const mapContext = new GMapComponent();
+    mapContext.registerInfowindow = sinon.stub();
+    mapContext.unregisterInfowindow = sinon.stub();
+
+    component = this.subject({ mapContext });
   },
 
   afterEach() {
@@ -85,6 +88,7 @@ test('it triggers `unregisterInfowindow` on `willDestroyElement` event', functio
   run(() => component.set('hasMarker', true));
 
   mapContext.unregisterInfowindow = sinon.stub();
+  component.close = sinon.stub();
   component.trigger('willDestroyElement');
 
   sinon.assert.calledOnce(mapContext.unregisterInfowindow);
@@ -98,47 +102,43 @@ test('it constructs new `InfoWindow` object during `buildInfowindow`', function(
   assert.equal(returnedInfowindow, fakeInfowindowObject);
 });
 
-test('it triggers `attachCloseEvent` during `buildInfowindow` if onClose attr specified', function() {
+test('it triggers `addListener` of infowindow during `buildInfowindow` if onClose attr specified', function() {
   run(() => component.set('attrs', { onClose: 'action' }));
-
-  component.attachCloseEvent = sinon.stub();
   run(() => component.buildInfowindow());
 
-  sinon.assert.calledOnce(component.attachCloseEvent);
-  sinon.assert.calledWith(component.attachCloseEvent, fakeInfowindowObject);
-});
-
-test('it doesn\'t triggers `attachCloseEvent` during `buildInfowindow` if onClose isn\'t specified', function() {
-  run(() => component.set('attrs', { onClose: undefined }));
-
-  component.attachCloseEvent = sinon.stub();
-  run(() => component.buildInfowindow());
-
-  sinon.assert.notCalled(component.attachCloseEvent);
-});
-
-test('it triggers `addListener` of InfoWindow during `attachCloseEvent`', function() {
-  run(() => component.attachCloseEvent(fakeInfowindowObject));
   sinon.assert.calledOnce(fakeInfowindowObject.addListener);
   sinon.assert.calledWith(fakeInfowindowObject.addListener, 'closeclick');
 });
 
-test('it sends action `onClose` on callback for `closeclick` event', function() {
+test('it doesn\'t trigger `addListener` during `buildInfowindow` if onClose isn\'t specified', function() {
+  run(() => component.set('attrs', { onClose: undefined }));
+  run(() => component.buildInfowindow());
+  sinon.assert.notCalled(fakeInfowindowObject.addListener);
+});
+
+test('it triggers `handleCloseClickEvent` on callback for `closeclick` event', function() {
   fakeInfowindowObject.addListener.callsArg(1);
+  component.handleCloseClickEvent = sinon.stub();
+
+  run(() => component.set('attrs', { onClose: 'action' }));
+  run(() => component.buildInfowindow());
+
+  sinon.assert.calledOnce(component.handleCloseClickEvent);
+});
+
+test('it sends action `onClose` on `handleCloseClickEvent`', function() {
   component.sendAction = sinon.stub();
 
   run(() => component.set('attrs', { onClose: 'action' }));
-  run(() => component.attachCloseEvent(fakeInfowindowObject));
+  run(() => component.handleCloseClickEvent());
 
   sinon.assert.calledOnce(component.sendAction);
   sinon.assert.calledWith(component.sendAction, 'onClose');
 });
 
-test('it runs closure action `attrs.onClose` directly on callback for `closeclick` event', function() {
-  fakeInfowindowObject.addListener.callsArg(1);
-
+test('it runs closure action `attrs.onClose` directly on `handleCloseClickEvent`', function() {
   run(() => component.set('attrs', { onClose: sinon.stub() }));
-  run(() => component.attachCloseEvent(fakeInfowindowObject));
+  run(() => component.handleCloseClickEvent());
 
   sinon.assert.calledOnce(component.attrs.onClose);
 });
@@ -305,29 +305,62 @@ test('it doesn\'t call `setPosition` of InfoWindow on `setPosition` when no lng 
   sinon.assert.notCalled(fakeInfowindowObject.setPosition);
 });
 
-test('it calls `open` of InfoWindow on `setMap` with `map` present', function() {
+test('it calls `open` on `setMap` when `hasMarker` is false', function() {
+  run(() => component.set('hasMarker', false));
+
+  component.open = sinon.stub();
+  run(() => component.setMap());
+
+  sinon.assert.calledOnce(component.open);
+});
+
+test('it doesn\'t call `open` on `setMap` when `hasMarker` is true', function() {
+  run(() => component.set('hasMarker', true));
+
+  component.open = sinon.stub();
+  run(() => component.setMap());
+
+  sinon.assert.notCalled(component.open);
+});
+
+test('it calls `open` of InfoWindow on `open` with single arg when only `map` is present', function() {
   const mapObject = {};
   run(() => component.setProperties({
     map: mapObject,
-    hasMarker: false,
+    marker: undefined,
     infowindow: fakeInfowindowObject
   }));
 
   fakeInfowindowObject.open = sinon.stub();
-
-  run(() => component.setMap());
+  run(() => component.open());
 
   sinon.assert.calledOnce(fakeInfowindowObject.open);
   sinon.assert.calledWith(fakeInfowindowObject.open, mapObject);
 });
 
-test('it doesn\'t call `open` of InfoWindow on `setMap` when no `map` present', function() {
-  fakeInfowindowObject.setMap = sinon.stub();
+test('it calls `open` of InfoWindow on `open` with 2 args when `map` and `marker` are present', function() {
+  const mapObject = { mapParam: 'value' };
+  const markerObject = { markerParam: 'value' };
   run(() => component.setProperties({
-    hasMarker: false,
+    map: mapObject,
+    marker: markerObject,
     infowindow: fakeInfowindowObject
   }));
-  run(() => component.setMap());
+
+  fakeInfowindowObject.open = sinon.stub();
+  run(() => component.open());
+
+  sinon.assert.calledOnce(fakeInfowindowObject.open);
+  sinon.assert.calledWith(fakeInfowindowObject.open, mapObject, markerObject);
+});
+
+test('it doesn\'t call `open` of InfoWindow on `open` when no `map` present', function() {
+  fakeInfowindowObject.setMap = sinon.stub();
+  run(() => component.setProperties({
+    map: undefined,
+    infowindow: fakeInfowindowObject
+  }));
+  run(() => component.open());
   sinon.assert.notCalled(fakeInfowindowObject.setMap);
 });
 
@@ -344,34 +377,24 @@ test('it doesn\'t call `open` of InfoWindow on `setMap` when `hasMarker` is true
   sinon.assert.notCalled(fakeInfowindowObject.setMap);
 });
 
-test(`it calls 'addListener' of google marker and 'registerInfowindow' of marker context
+test(`it calls 'registerInfowindow' of marker context
       on 'setMarker' with 'map' and 'marker' present`, function() {
   const mapObject = {};
-  const fakeMarkerObject = { addListener: sinon.stub() };
+  const markerObject = {};
 
   let mapContext;
   run(() => mapContext = component.get('mapContext'));
-  mapContext.registerInfowindow = sinon.stub();
-
   run(() => component.setProperties({
     map: mapObject,
-    marker: fakeMarkerObject,
+    marker: markerObject,
     infowindow: fakeInfowindowObject
   }));
 
   mapContext.registerInfowindow = sinon.stub();
-  fakeMarkerObject.addListener = sinon.stub().callsArg(1);
-  fakeInfowindowObject.open = sinon.stub();
   run(() => component.setMarker());
 
   sinon.assert.calledOnce(mapContext.registerInfowindow);
   sinon.assert.calledWith(mapContext.registerInfowindow, component);
-
-  sinon.assert.calledOnce(fakeMarkerObject.addListener);
-  sinon.assert.calledWith(fakeMarkerObject.addListener, 'click');
-
-  sinon.assert.calledOnce(fakeInfowindowObject.open);
-  sinon.assert.calledWith(fakeInfowindowObject.open, mapObject, fakeMarkerObject);
 });
 
 test('it doesn\'t call `addListener` of google marker on `setMarker` when no `map` present', function() {
