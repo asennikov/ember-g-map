@@ -117,13 +117,23 @@ Markers can have bound Info Windows activated on click.
 To properly bind Info Window with Marker you should call `g-map-marker`
 in block form and set context of Info Window to the one provided by Marker.
 
+You can optionally setup custom `openOn`/`closeOn` events for each Info Window,
+available options are: `click`, `dblclick`, `rightclick`, `mouseover`, `mouseout`.
+By default `openOn` is set to `click` and `closeOn` is set to `null`. When `openOn`
+and `closeOn` are the same, Info Window visibility is being toggled by this event.
+
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
-  {{g-map-marker context lat=37.7933 lng=-122.4167}}
   {{#g-map-marker context lat=37.7833 lng=-122.4267 as |markerContext|}}
-    {{#g-map-infowindow markerContext}}
+    {{#g-map-infowindow markerContext openOn="mouseover" closeOn="mouseout"}}
       <h2>Bound Info Window</h2>
     {{/g-map-infowindow}}
+  {{/g-map-marker}}
+  {{#g-map-marker context lat=37.7833 lng=-122.4267 as |markerContext|}}
+    {{g-map-infowindow markerContext openOn="click" closeOn="click" title="Blockless form 1"}}
+  {{/g-map-marker}}
+  {{#g-map-marker context lat=37.7833 lng=-122.4267 as |markerContext|}}
+    {{g-map-infowindow markerContext openOn="dblclick" title="Blockless form 2"}}
   {{/g-map-marker}}
 {{/g-map}}
 ```
