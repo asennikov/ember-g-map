@@ -83,6 +83,173 @@ test('it doesn\'t trigger `setMap` of marker during `unsetMarkerFromMap` if ther
   sinon.assert.notCalled(fakeMarkerObject.setMap);
 });
 
+test('it sets `infowindow` and triggers `attachOpenCloseEvents` on `registerInfowindow`', function(assert) {
+  component.attachOpenCloseEvents = sinon.spy();
+
+  const infowindowObject = { infowindowProperty: 'value' };
+  run(() => component.registerInfowindow(infowindowObject, 'openEvent', 'closeEvent'));
+
+  assert.equal(component.get('infowindow'), infowindowObject);
+  sinon.assert.calledOnce(component.attachOpenCloseEvents);
+  sinon.assert.calledWith(component.attachOpenCloseEvents, infowindowObject, 'openEvent', 'closeEvent');
+});
+
+test('it unsets `infowindow` on `unregisterInfowindow`', function(assert) {
+  const infowindowObject = { infowindowProperty: 'value' };
+  run(() => component.set('infowindow', infowindowObject));
+  run(() => component.unregisterInfowindow());
+
+  assert.equal(component.get('infowindow'), null);
+});
+
+test(`it calls 'attachTogglingInfowindowEvent' on 'attachOpenCloseEvents'
+      if 'openEvent' and 'closeEvent' are equal`, function() {
+  component.attachTogglingInfowindowEvent = sinon.spy();
+
+  const infowindowObject = { infowindowProperty: 'value' };
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachOpenCloseEvents(infowindowObject, 'event', 'event'));
+
+  sinon.assert.calledOnce(component.attachTogglingInfowindowEvent);
+  sinon.assert.calledWith(component.attachTogglingInfowindowEvent,
+    fakeMarkerObject, infowindowObject, 'event');
+});
+
+test(`it calls 'attachOpenInfowindowEvent' and 'attachCloseInfowindowEvent' on 'attachOpenCloseEvents'
+      if 'openEvent' and 'closeEvent' are not equal`, function() {
+  component.attachOpenInfowindowEvent = sinon.spy();
+  component.attachCloseInfowindowEvent = sinon.spy();
+
+  const infowindowObject = { infowindowProperty: 'value' };
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachOpenCloseEvents(infowindowObject, 'openEvent', 'closeEvent'));
+
+  sinon.assert.calledOnce(component.attachOpenInfowindowEvent);
+  sinon.assert.calledWith(component.attachOpenInfowindowEvent,
+    fakeMarkerObject, infowindowObject, 'openEvent');
+
+  sinon.assert.calledOnce(component.attachCloseInfowindowEvent);
+  sinon.assert.calledWith(component.attachCloseInfowindowEvent,
+    fakeMarkerObject, infowindowObject, 'closeEvent');
+});
+
+test('it calls `addListener` of google marker on `attachTogglingInfowindowEvent` with `event` present', function() {
+  const infowindowObject = { infowindowProperty: 'value' };
+
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachTogglingInfowindowEvent(
+    fakeMarkerObject, infowindowObject, 'event-name'));
+
+  sinon.assert.calledOnce(fakeMarkerObject.addListener);
+  sinon.assert.calledWith(fakeMarkerObject.addListener, 'event-name');
+});
+
+test('it doesn\'t call `addListener` of google marker on `attachTogglingInfowindowEvent` when no `event` present', function() {
+  const infowindowObject = Ember.Object.create({ infowindowProperty: 'value' });
+
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachTogglingInfowindowEvent(
+    fakeMarkerObject, infowindowObject, null));
+
+  sinon.assert.notCalled(fakeMarkerObject.addListener);
+});
+
+test('it calls `open` of infowindow on event attached during `attachTogglingInfowindowEvent` if `isOpen` is false', function() {
+  const infowindowObject = Ember.Object.create({
+    open: sinon.stub(),
+    isOpen: false
+  });
+  fakeMarkerObject.addListener = sinon.stub().callsArg(1);
+
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachTogglingInfowindowEvent(
+    fakeMarkerObject, infowindowObject, 'event-name'));
+
+  sinon.assert.calledOnce(infowindowObject.open);
+});
+
+test('it calls `close` of infowindow on event attached during `attachTogglingInfowindowEvent` if `isOpen` is true', function() {
+  const infowindowObject = Ember.Object.create({
+    close: sinon.stub(),
+    isOpen: true
+  });
+  fakeMarkerObject.addListener = sinon.stub().callsArg(1);
+
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachTogglingInfowindowEvent(
+    fakeMarkerObject, infowindowObject, 'event-name'));
+
+  sinon.assert.calledOnce(infowindowObject.close);
+});
+
+test('it calls `addListener` of google marker on `attachOpenInfowindowEvent` with `event` present', function() {
+  const infowindowObject = { infowindowProperty: 'value' };
+
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachOpenInfowindowEvent(
+    fakeMarkerObject, infowindowObject, 'event-name'));
+
+  sinon.assert.calledOnce(fakeMarkerObject.addListener);
+  sinon.assert.calledWith(fakeMarkerObject.addListener, 'event-name');
+});
+
+test('it doesn\'t call `addListener` of google marker on `attachOpenInfowindowEvent` when no `event` present', function() {
+  const infowindowObject = { infowindowProperty: 'value' };
+
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachOpenInfowindowEvent(
+    fakeMarkerObject, infowindowObject, null));
+
+  sinon.assert.notCalled(fakeMarkerObject.addListener);
+});
+
+test('it calls `open` of infowindow on event attached during `attachOpenInfowindowEvent`', function() {
+  const infowindowObject = {
+    open: sinon.stub()
+  };
+  fakeMarkerObject.addListener = sinon.stub().callsArg(1);
+
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachOpenInfowindowEvent(
+    fakeMarkerObject, infowindowObject, 'event-name'));
+
+  sinon.assert.calledOnce(infowindowObject.open);
+});
+
+test('it calls `addListener` of google marker on `attachCloseInfowindowEvent` with `event` present', function() {
+  const infowindowObject = { infowindowProperty: 'value' };
+
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachCloseInfowindowEvent(
+    fakeMarkerObject, infowindowObject, 'event-name'));
+
+  sinon.assert.calledOnce(fakeMarkerObject.addListener);
+  sinon.assert.calledWith(fakeMarkerObject.addListener, 'event-name');
+});
+
+test('it doesn\'t call `addListener` of google marker on `attachCloseInfowindowEvent` when no `event` present', function() {
+  const infowindowObject = { infowindowProperty: 'value' };
+
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachCloseInfowindowEvent(
+    fakeMarkerObject, infowindowObject, null));
+
+  sinon.assert.notCalled(fakeMarkerObject.addListener);
+});
+
+test('it calls `close` of infowindow on event attached during `attachCloseInfowindowEvent`', function() {
+  const infowindowObject = {
+    close: sinon.stub()
+  };
+  fakeMarkerObject.addListener = sinon.stub().callsArg(1);
+
+  run(() => component.set('marker', fakeMarkerObject));
+  run(() => component.attachCloseInfowindowEvent(
+    fakeMarkerObject, infowindowObject, 'event-name'));
+
+  sinon.assert.calledOnce(infowindowObject.close);
+});
+
 test('it triggers `setMap` on `mapContext.map` change', function() {
   run(() => component.set('mapContext', { map: '' }));
   component.setMap = sinon.spy();

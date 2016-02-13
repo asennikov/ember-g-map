@@ -5,6 +5,10 @@ import GMapMarkerComponent from './g-map-marker';
 
 const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
 
+const OPEN_CLOSE_EVENTS = Ember.A(
+  [ 'click', 'dblclick', 'rightclick', 'mouseover', 'mouseout' ]
+);
+
 const GMapInfowindowComponent = Ember.Component.extend({
   layout: layout,
   classNames: ['g-map-marker'],
@@ -71,25 +75,37 @@ const GMapInfowindowComponent = Ember.Component.extend({
     });
 
     if (isPresent(this.get('attrs.onClose'))) {
-      this.attachCloseEvent(infowindow);
+      infowindow.addListener('closeclick', () => this.handleCloseClickEvent());
     }
     return infowindow;
   },
 
-  attachCloseEvent(infowindow) {
-    infowindow.addListener('closeclick', () => {
-      const { onClose } = this.attrs;
-      if (typeOf(onClose) === 'function') {
-        onClose();
-      } else {
-        this.sendAction('onClose');
-      }
-    });
+  handleCloseClickEvent() {
+    const { onClose } = this.attrs;
+    if (typeOf(onClose) === 'function') {
+      onClose();
+    } else {
+      this.sendAction('onClose');
+    }
+  },
+
+  open() {
+    const infowindow = this.get('infowindow');
+    const map = this.get('map');
+    const marker = this.get('marker');
+
+    this.set('isOpen', true);
+    if (isPresent(map) && isPresent(marker)) {
+      infowindow.open(map, marker);
+    } else if (isPresent(map)) {
+      infowindow.open(map);
+    }
   },
 
   close() {
     const infowindow = this.get('infowindow');
     if (isPresent(infowindow)) {
+      this.set('isOpen', false);
       infowindow.close();
     }
   },
@@ -99,12 +115,8 @@ const GMapInfowindowComponent = Ember.Component.extend({
   }),
 
   setMap() {
-    const map = this.get('map');
-    const hasMarker = this.get('hasMarker');
-    const infowindow = this.get('infowindow');
-
-    if (isPresent(infowindow) && isPresent(map) && !hasMarker) {
-      infowindow.open(map);
+    if (this.get('hasMarker') === false) {
+      this.open();
     }
   },
 
@@ -119,8 +131,9 @@ const GMapInfowindowComponent = Ember.Component.extend({
     const infowindow = this.get('infowindow');
 
     if (isPresent(infowindow) && isPresent(map) && isPresent(marker)) {
-      context.registerInfowindow(this);
-      marker.addListener('click', () => infowindow.open(map, marker));
+      const openEvent = this.retrieveOpenEvent();
+      const closeEvent = this.retrieveCloseEvent();
+      context.registerInfowindow(this, openEvent, closeEvent);
     }
   },
 
@@ -137,6 +150,16 @@ const GMapInfowindowComponent = Ember.Component.extend({
       const position = new google.maps.LatLng(lat, lng);
       infowindow.setPosition(position);
     }
+  },
+
+  retrieveOpenEvent() {
+    const openEvent = this.get('openOn');
+    return OPEN_CLOSE_EVENTS.contains(openEvent) ? openEvent : 'click';
+  },
+
+  retrieveCloseEvent() {
+    const closeEvent = this.get('closeOn');
+    return OPEN_CLOSE_EVENTS.contains(closeEvent) ? closeEvent : null;
   }
 });
 
