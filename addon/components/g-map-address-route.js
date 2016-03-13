@@ -1,102 +1,96 @@
 import Ember from 'ember';
 import layout from '../templates/components/g-map-address-route';
-import GMapComponent from './g-map';
+/* global google */
 
-const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
+const { computed, observer, run, isPresent, isEmpty, typeOf } = Ember;
 
-const TRAVEL_MODES = {
-  walking: google.maps.TravelMode.WALKING,
-  bicycling: google.maps.TravelMode.BICYCLING,
-  transit: google.maps.TravelMode.TRANSIT,
-  driving: google.maps.TravelMode.DRIVING
-};
-
-const GMapRouteComponent = Ember.Component.extend({
+const GMapAddressRouteComponent = Ember.Component.extend({
   layout: layout,
-  classNames: ['g-map-marker'],
-  positionalParams: ['mapContext'],
+  classNames: ['g-map-address-route'],
 
   map: computed.alias('mapContext.map'),
 
-  init() {
-    this._super(arguments);
-    const mapContext = this.get('mapContext');
-    assert('Must be inside {{#g-map}} component with context set', mapContext instanceof GMapComponent);
-  },
-
   didInsertElement() {
     this._super();
-    this.initDirectionsService();
-  },
-
-  willDestroyElement() {
-    const renderer = this.get('directionsRenderer');
-    if (isPresent(renderer)) {
-      renderer.setMap(null);
-    }
+    this.initPlacesService();
   },
 
   mapWasSet: observer('map', function() {
-    run.once(this, 'initDirectionsService');
+    run.once(this, 'initPlacesService');
   }),
 
-  initDirectionsService() {
+  initPlacesService() {
     const map = this.get('map');
-    let service = this.get('directionsService');
-    let renderer = this.get('directionsRenderer');
+    let service = this.get('placesService');
 
-    if (isPresent(map) && isEmpty(service) && isEmpty(renderer)) {
-      const rendererOptions = {
-        map: map,
-        suppressMarkers: true,
-        preserveViewport: true
-      };
-      renderer = new google.maps.DirectionsRenderer(rendererOptions);
-      service = new google.maps.DirectionsService();
-
-      this.set('directionsRenderer', renderer);
-      this.set('directionsService', service);
-
-      this.updateRoute();
+    if (isPresent(map) && isEmpty(service)) {
+      service = new google.maps.places.PlacesService(map);
+      this.set('placesService', service);
+      this.searchLocations();
     }
   },
 
-  onLocationsChanged: observer('originAddress', 'destinationAddress', 'travelMode', function() {
-    run.once(this, 'updateRoute');
+  onAddressChanged: observer('originAddress', 'destinationAddress', function() {
+    run.once(this, 'searchLocations');
   }),
 
-  updateRoute: function() {
-    const service = this.get('directionsService');
-    const renderer = this.get('directionsRenderer');
+  searchLocations() {
+    const service = this.get('placesService');
     const originAddress = this.get('originAddress');
     const destinationAddress = this.get('destinationAddress');
 
-    if (isPresent(service) && isPresent(renderer) &&
-      isPresent(originAddress) && isPresent(destinationAddress)) {
-      const origin = originAddress;
-      const destination = destinationAddress;
-      const travelMode = this.retrieveTravelMode(this.get('travelMode'));
-      const request = {
-        origin: origin,
-        destination: destination,
-        travelMode: travelMode
-      };
+    if (isPresent(service) && isPresent(originAddress)) {
+      const originRequest = { query: originAddress };
 
-      service.route(request, (response, status) => {
-        if (status === google.maps.DirectionsStatus.OK) {
-          renderer.setDirections(response);
+      service.textSearch(originRequest, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          this.updateOriginLocation(results);
+        }
+      });
+    }
+
+    if (isPresent(service) && isPresent(destinationAddress)) {
+      const destinationRequest = { query: destinationAddress };
+
+      service.textSearch(destinationRequest, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          this.updateDestinationLocation(results);
         }
       });
     }
   },
 
-  retrieveTravelMode(mode) {
-    return TRAVEL_MODES.hasOwnProperty(mode) ? TRAVEL_MODES[mode] : TRAVEL_MODES.driving;
+  updateOriginLocation(results) {
+    const lat = results[0].geometry.location.lat();
+    const lng = results[0].geometry.location.lng();
+
+    this.set('originLat', lat);
+    this.set('originLng', lng);
+    this.sendOnLocationsChange(lat, lng, results);
+  },
+
+  updateDestinationLocation(results) {
+    const lat = results[0].geometry.location.lat();
+    const lng = results[0].geometry.location.lng();
+
+    this.set('destinationLat', lat);
+    this.set('destinationLng', lng);
+    this.sendOnLocationsChange(lat, lng, results);
+  },
+
+  sendOnLocationsChange() {
+    const { onLocationsChange } = this.attrs;
+
+    if (typeOf(onLocationsChange) === 'function') {
+      onLocationsChange(...arguments);
+    } else {
+      this.sendAction('onLocationsChange', ...arguments);
+    }
   }
 });
 
-GMapRouteComponent.reopenClass({
+GMapAddressRouteComponent.reopenClass({
   positionalParams: ['mapContext']
 });
 
-export default GMapRouteComponent;
+export default GMapAddressRouteComponent;
