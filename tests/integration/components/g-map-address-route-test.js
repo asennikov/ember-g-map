@@ -28,5 +28,5 @@ test('it renders', function(assert) {
     {{/g-map}}
   `);
 
-  assert.equal(this.$().text().trim(), 'template block text');
+  assert.equal(this.$().text().trim(), '');
 });

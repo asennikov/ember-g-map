@@ -6,8 +6,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-let fakeDirectionsService;
-let fakeDirectionsRenderer;
+let fakePlacesService;
 let component;
 
 moduleForComponent('g-map-address-route', 'Unit | Component | g map address route', {
@@ -16,113 +15,232 @@ moduleForComponent('g-map-address-route', 'Unit | Component | g map address rout
   unit: true,
 
   beforeEach() {
-    fakeDirectionsService = {
-      route: sinon.stub()
+    fakePlacesService = {
+      textSearch: sinon.stub()
     };
-    fakeDirectionsRenderer = {
-      setDirections: sinon.stub(),
-      setMap: sinon.stub()
-    };
-    sinon.stub(google.maps, 'DirectionsRenderer').returns(fakeDirectionsRenderer);
-    sinon.stub(google.maps, 'DirectionsService').returns(fakeDirectionsService);
+    sinon.stub(google.maps.places, 'PlacesService').returns(fakePlacesService);
     component = this.subject({
       mapContext: new GMapComponent()
     });
   },
 
   afterEach() {
-    google.maps.DirectionsRenderer.restore();
-    google.maps.DirectionsService.restore();
+    google.maps.places.PlacesService.restore();
   }
 });
 
-test('it calls `initDirectionsService` on `didInsertElement`', function() {
-  component.initDirectionsService = sinon.stub();
+test('it calls `initPlacesService` on `didInsertElement`', function() {
+  component.initPlacesService = sinon.stub();
   component.trigger('didInsertElement');
-  sinon.assert.calledOnce(component.initDirectionsService);
+  sinon.assert.calledOnce(component.initPlacesService);
 });
 
-test('it triggers `setMap` of renderer with null on `willDestroyElement` event if renderer is set', function() {
-  run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
-  component.trigger('willDestroyElement');
-
-  sinon.assert.calledOnce(fakeDirectionsRenderer.setMap);
-  sinon.assert.calledWith(fakeDirectionsRenderer.setMap, null);
-});
-
-test('it doesn\'t trigger `setMap` of renderer on `willDestroyElement` event if there is no renderer', function() {
-  run(() => component.set('directionsRenderer', undefined));
-  fakeDirectionsRenderer.setMap = sinon.stub();
-  component.trigger('willDestroyElement');
-  sinon.assert.notCalled(fakeDirectionsRenderer.setMap);
-});
-
-test('it constructs new `DirectionsRenderer` on `initDirectionsService` call', function(assert) {
-  const mapObject = {};
-  run(() => component.set('map', mapObject));
-  run(() => component.initDirectionsService());
-
-  const correctRendererOptions = {
-    map: mapObject,
-    suppressMarkers: true,
-    preserveViewport: true
-  };
-
-  sinon.assert.calledOnce(google.maps.DirectionsRenderer);
-  sinon.assert.calledWith(google.maps.DirectionsRenderer, correctRendererOptions);
-  assert.equal(component.get('directionsRenderer'), fakeDirectionsRenderer);
-});
-
-test('it constructs new `DirectionsService` on `initDirectionsService` call', function(assert) {
+test('it constructs new `PlacesService` on `initPlacesService` call', function(assert) {
   run(() => component.set('map', {}));
-  run(() => component.initDirectionsService());
+  run(() => component.initPlacesService());
 
-  sinon.assert.calledOnce(google.maps.DirectionsService);
-  assert.equal(component.get('directionsService'), fakeDirectionsService);
+  sinon.assert.calledOnce(google.maps.places.PlacesService);
+  assert.equal(component.get('placesService'), fakePlacesService);
 });
 
-test('new `DirectionsService` and `DirectionsRenderer` isn\'t being constructed if they already present in component', function() {
+test('new `PlacesService` isn\'t being constructed if it\'s already present in component', function() {
   run(() => component.setProperties({
-    directionsService: fakeDirectionsService,
-    directionsRenderer: fakeDirectionsRenderer,
+    placesService: fakePlacesService,
     map: {}
   }));
-  run(() => component.initDirectionsService());
+  run(() => component.initPlacesService());
 
-  sinon.assert.notCalled(google.maps.DirectionsService);
-  sinon.assert.notCalled(google.maps.DirectionsRenderer);
+  sinon.assert.notCalled(google.maps.places.PlacesService);
 });
 
-test('it triggers `initDirectionsService` on `mapContext.map` change', function() {
+test('it triggers `initPlacesService` on `mapContext.map` change', function() {
   run(() => component.set('mapContext', { map: '' }));
-  component.initDirectionsService = sinon.spy();
+  component.initPlacesService = sinon.spy();
   run(() => component.set('mapContext.map', {}));
-  sinon.assert.calledOnce(component.initDirectionsService);
+  sinon.assert.calledOnce(component.initPlacesService);
 });
 
-test('it triggers `updateRoute` on `initDirectionsService` call', function() {
-  component.updateRoute = sinon.spy();
+test('it triggers `searchLocations` on `initPlacesService` call', function() {
+  component.searchLocations = sinon.stub();
 
   run(() => component.set('map', {}));
-  run(() => component.initDirectionsService());
+  run(() => component.initPlacesService());
 
-  sinon.assert.calledOnce(component.updateRoute);
+  sinon.assert.calledOnce(component.searchLocations);
 });
 
-test('it triggers `updateRoute` on `originAddress` change', function() {
-  component.updateRoute = sinon.spy();
-  run(() => component.set('originAddress', 'Los Angeles, California'));
-  sinon.assert.calledOnce(component.updateRoute);
+test('it triggers `searchLocations` on `originAddress` change', function() {
+  component.searchLocations = sinon.stub();
+  run(() => component.set('originAddress', 'query string'));
+  sinon.assert.calledOnce(component.searchLocations);
 });
 
-test('it triggers `updateRoute` on `destinationAddress` change', function() {
-  component.updateRoute = sinon.spy();
-  run(() => component.set('destinationAddress', 'San Francisco, California'));
-  sinon.assert.calledOnce(component.updateRoute);
+test('it triggers `searchLocations` on `destinationAddress` change', function() {
+  component.searchLocations = sinon.stub();
+  run(() => component.set('destinationAddress', 'query string'));
+  sinon.assert.calledOnce(component.searchLocations);
 });
 
-test('it triggers `updateRoute` on `travelMode` change', function() {
-  component.updateRoute = sinon.spy();
-  run(() => component.set('travelMode', 'walking'));
-  sinon.assert.calledOnce(component.updateRoute);
+test('it calls `textSearch` of placesService on `searchLocations`', function() {
+  run(() => component.set('originAddress', 'query string'));
+  run(() => component.set('destinationAddress', 'query string'));
+  run(() => component.set('placesService', fakePlacesService));
+
+  fakePlacesService.textSearch = sinon.stub();
+  run(() => component.searchLocations());
+
+  const correctOriginRequest = { query: 'query string' };
+  const correctDestinationRequest = { query: 'query string' };
+
+  sinon.assert.calledTwice(fakePlacesService.textSearch);
+  sinon.assert.calledWith(fakePlacesService.textSearch, correctOriginRequest);
+  sinon.assert.calledWith(fakePlacesService.textSearch, correctDestinationRequest);
+});
+
+test('it calls `updateOriginLocation` after successful textSearch on `searchLocations`', function() {
+  const results = [{ a: 1 }, { b: 2 }];
+  const status = google.maps.places.PlacesServiceStatus.OK;
+
+  run(() => component.set('originAddress', 'query string'));
+  run(() => component.set('placesService', fakePlacesService));
+
+  fakePlacesService.textSearch.callsArgWith(1, results, status);
+  component.updateOriginLocation = sinon.stub();
+  run(() => component.searchLocations());
+
+  sinon.assert.calledOnce(component.updateOriginLocation);
+  sinon.assert.calledWith(component.updateOriginLocation, results);
+});
+
+test('it calls `updateDestinationLocation` after successful textSearch on `searchLocations`', function() {
+  const results = [{ a: 1 }, { b: 2 }];
+  const status = google.maps.places.PlacesServiceStatus.OK;
+
+  run(() => component.set('destinationAddress', 'query string'));
+  run(() => component.set('placesService', fakePlacesService));
+
+  fakePlacesService.textSearch.callsArgWith(1, results, status);
+  component.updateDestinationLocation = sinon.stub();
+  run(() => component.searchLocations());
+
+  sinon.assert.calledOnce(component.updateDestinationLocation);
+  sinon.assert.calledWith(component.updateDestinationLocation, results);
+});
+
+test('it sets `originLat` & `originLng` of the first provided result on `updateOriginLocation`', function(assert) {
+  const results = [{
+    geometry: {
+      location: {
+        lat: () => 12,
+        lng: () => -20
+      }
+    }
+  }, {
+    geometry: {
+      location: {
+        lat: () => 24,
+        lng: () => 100
+      }
+    }
+  }];
+
+  run(() => component.set('attrs', {}));
+  run(() => component.updateOriginLocation(results));
+
+  assert.equal(component.get('originLat'), 12);
+  assert.equal(component.get('originLng'), -20);
+});
+
+test('it sets `destinationLat` & `destinationLng` of the first provided result on `updateDestinationLocation`', function(assert) {
+  const results = [{
+    geometry: {
+      location: {
+        lat: () => 12,
+        lng: () => -20
+      }
+    }
+  }, {
+    geometry: {
+      location: {
+        lat: () => 24,
+        lng: () => 100
+      }
+    }
+  }];
+
+  run(() => component.set('attrs', {}));
+  run(() => component.updateDestinationLocation(results));
+
+  assert.equal(component.get('destinationLat'), 12);
+  assert.equal(component.get('destinationLng'), -20);
+});
+
+test('it calls `sendOnLocationsChange` on `updateOriginLocation`', function() {
+  const results = [{
+    geometry: {
+      location: {
+        lat: () => 12,
+        lng: () => -20
+      }
+    }
+  }, {
+    geometry: {
+      location: {
+        lat: () => 24,
+        lng: () => 100
+      }
+    }
+  }];
+
+  component.sendOnLocationsChange = sinon.stub();
+  run(() => component.set('attrs', {}));
+  run(() => component.updateOriginLocation(results));
+
+  sinon.assert.calledOnce(component.sendOnLocationsChange);
+  sinon.assert.calledWith(component.sendOnLocationsChange, 12, -20, results);
+});
+
+test('it calls `sendOnLocationsChange` on `updateDestinationLocation`', function() {
+  const results = [{
+    geometry: {
+      location: {
+        lat: () => 12,
+        lng: () => -20
+      }
+    }
+  }, {
+    geometry: {
+      location: {
+        lat: () => 24,
+        lng: () => 100
+      }
+    }
+  }];
+
+  component.sendOnLocationsChange = sinon.stub();
+  run(() => component.set('attrs', {}));
+  run(() => component.updateDestinationLocation(results));
+
+  sinon.assert.calledOnce(component.sendOnLocationsChange);
+  sinon.assert.calledWith(component.sendOnLocationsChange, 12, -20, results);
+});
+
+test('it sends action `onLocationsChange` on `sendOnLocationsChange`', function() {
+  const results = [{ a: 1 }, { b: 2 }];
+  component.sendAction = sinon.stub();
+
+  run(() => component.set('attrs', { onLocationsChange: 'action' }));
+  run(() => component.sendOnLocationsChange(12, 30, results));
+
+  sinon.assert.calledOnce(component.sendAction);
+  sinon.assert.calledWith(component.sendAction, 'onLocationsChange', 12, 30, results);
+});
+
+test('it runs closure action `attrs.onLocationsChange` directly on `updateOriginLocation` and `updateDestinationLocation`', function() {
+  const results = [{ a: 1 }, { b: 2 }];
+  run(() => component.set('attrs', { onLocationsChange: sinon.stub() }));
+  run(() => component.sendOnLocationsChange(12, 30, results));
+
+  sinon.assert.calledOnce(component.attrs.onLocationsChange);
+  sinon.assert.calledWith(component.attrs.onLocationsChange, 12, 30, results);
 });
