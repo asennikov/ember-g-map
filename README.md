@@ -233,6 +233,51 @@ You can optionally set travel mode with `travelMode` attr:
 {{/g-map}}
 ```
 
+## Route bound to address queries
+
+Proxy `g-map-address-route` component takes 2 address strings as parameters
+and translates them to lat/lng pairs under the hood.
+
+Optional `onLocationChange` action hook will send you back coordinates
+of the latest address search result and the raw array of
+[google.maps.places.PlaceResult](https://developers.google.com/maps/documentation/javascript/reference#PlaceResult) objects provided by `places` library.
+
+Other optional parameters are the same as for `g-map-route`.
+Requires `places` library to be specified in `environment.js`.
+
+```javascript
+ENV['g-map'] = {
+  libraries: ['places']
+}
+```
+
+```javascript
+actions: {
+  onLocationChangeHandler(lat, lng, results) {
+    Ember.Logger.log(`lat: ${lat}, lng: ${lng}`);
+    Ember.Logger.debug(results);
+  }
+}
+```
+
+```handlebars
+{{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
+  {{g-map-address-route context
+                        originAddress="Los Angeles, California"
+                        destinationAddress="San Francisco, California"}}
+
+  {{g-map-address-route context
+                        originAddress=searchedAddress
+                        destinationAddress=anotherSearchedAddress
+                        onLocationChange=(action "onLocationChangeHandler")}}
+
+  {{g-map-address-route context
+                        originAddress=searchedAddress
+                        destinationAddress=anotherSearchedAddress
+                        onLocationChange="onLocationChangeAction"}}
+{{/g-map}}
+```
+
 ## Demo
 
 http://asennikov.github.io/ember-g-map/
