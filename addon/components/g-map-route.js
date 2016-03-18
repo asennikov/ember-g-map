@@ -1,8 +1,11 @@
 import Ember from 'ember';
 import layout from '../templates/components/g-map-route';
 import GMapComponent from './g-map';
+import compact from '../utils/compact';
 
 const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
+
+const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex']);
 
 const TRAVEL_MODES = {
   walking: google.maps.TravelMode.WALKING,
@@ -58,6 +61,7 @@ const GMapRouteComponent = Ember.Component.extend({
       this.set('directionsService', service);
 
       this.updateRoute();
+      this.updatePolylineOptions();
     }
   },
 
@@ -65,7 +69,7 @@ const GMapRouteComponent = Ember.Component.extend({
     run.once(this, 'updateRoute');
   }),
 
-  updateRoute: function() {
+  updateRoute() {
     const service = this.get('directionsService');
     const renderer = this.get('directionsRenderer');
     const originLat = this.get('originLat');
@@ -90,6 +94,24 @@ const GMapRouteComponent = Ember.Component.extend({
           renderer.setDirections(response);
         }
       });
+    }
+  },
+
+  polylineOptionsChanged: observer(...allowedPolylineOptions, function() {
+    run.once(this, 'updatePolylineOptions');
+  }),
+
+  updatePolylineOptions() {
+    const renderer = this.get('directionsRenderer');
+    const polylineOptions = compact(this.getProperties(allowedPolylineOptions));
+
+    if (isPresent(renderer) && isPresent(Object.keys(polylineOptions))) {
+      renderer.setOptions({ polylineOptions });
+
+      const directions = renderer.getDirections();
+      if (isPresent(directions)) {
+        renderer.setDirections(directions);
+      }
     }
   },
 

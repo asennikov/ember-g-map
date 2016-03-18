@@ -20,8 +20,10 @@ moduleForComponent('g-map-route', 'Unit | Component | g map route', {
       route: sinon.stub()
     };
     fakeDirectionsRenderer = {
+      getDirections: sinon.stub(),
       setDirections: sinon.stub(),
-      setMap: sinon.stub()
+      setMap: sinon.stub(),
+      setOptions: sinon.stub()
     };
     sinon.stub(google.maps, 'DirectionsRenderer').returns(fakeDirectionsRenderer);
     sinon.stub(google.maps, 'DirectionsService').returns(fakeDirectionsService);
@@ -201,4 +203,92 @@ test('it calls `setDirections` of directionsRenderer on `updateRoute`', function
 
   google.maps.LatLng.restore();
   fakeDirectionsService.route = sinon.stub();
+});
+
+test('it triggers `updatePolylineOptions` on `initDirectionsService` call', function() {
+  component.updatePolylineOptions = sinon.spy();
+
+  run(() => component.set('map', {}));
+  run(() => component.initDirectionsService());
+
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it triggers `updatePolylineOptions` on `strokeColor` change', function() {
+  component.updatePolylineOptions = sinon.spy();
+  run(() => component.set('strokeColor', '#000000'));
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it triggers `updatePolylineOptions` on `strokeWeight` change', function() {
+  component.updatePolylineOptions = sinon.spy();
+  run(() => component.set('strokeWeight', 5));
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it triggers `updatePolylineOptions` on `strokeOpacity` change', function() {
+  component.updatePolylineOptions = sinon.spy();
+  run(() => component.set('strokeOpacity', 0.1));
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it triggers `updatePolylineOptions` on `zIndex` change', function() {
+  component.updatePolylineOptions = sinon.spy();
+  run(() => component.set('zIndex', 2));
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it triggers `updatePolylineOptions` only once on several option changes', function() {
+  component.updatePolylineOptions = sinon.spy();
+  run(() => component.setProperties({
+    strokeWeight: 2,
+    strokeOpacity: 0.5,
+    zIndex: 4
+  }));
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it calls `setOptions` of directionsRenderer on `updatePolylineOptions`', function() {
+  const polylineOptions = {
+    strokeColor: '#ffffff',
+    strokeWeight: 2,
+    strokeOpacity: 1,
+    zIndex: 1
+  };
+  run(() => component.setProperties(polylineOptions));
+  run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
+
+  run(() => component.updatePolylineOptions());
+
+  sinon.assert.calledOnce(fakeDirectionsRenderer.setOptions);
+  sinon.assert.calledWith(fakeDirectionsRenderer.setOptions, { polylineOptions });
+});
+
+test('it doesn\'t call `setOptions` of directionsRenderer on `updatePolylineOptions` if no options are provided', function() {
+  run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
+  run(() => component.updatePolylineOptions());
+  sinon.assert.notCalled(fakeDirectionsRenderer.setOptions);
+});
+
+test('it calls `setDirections` of directionsRenderer on `updatePolylineOptions` if `getDirections` return something', function() {
+  fakeDirectionsRenderer.getDirections.returns(['a', 'b']);
+
+  run(() => component.set('strokeColor', '#ffffff'));
+  run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
+
+  run(() => component.updatePolylineOptions());
+
+  sinon.assert.calledOnce(fakeDirectionsRenderer.setDirections);
+  sinon.assert.calledWith(fakeDirectionsRenderer.setDirections, ['a', 'b']);
+});
+
+test('it doesn\'t call `setDirections` of directionsRenderer on `updatePolylineOptions` if `getDirections` return nothing', function() {
+  fakeDirectionsRenderer.getDirections.returns([]);
+
+  run(() => component.set('strokeColor', '#ffffff'));
+  run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
+
+  run(() => component.updatePolylineOptions());
+
+  sinon.assert.notCalled(fakeDirectionsRenderer.setDirections);
 });
