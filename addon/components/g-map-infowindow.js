@@ -2,8 +2,11 @@ import Ember from 'ember';
 import layout from '../templates/components/g-map-infowindow';
 import GMapComponent from './g-map';
 import GMapMarkerComponent from './g-map-marker';
+import compact from '../utils/compact';
 
 const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
+
+const allowedOptions = Ember.A(['disableAutoPan', 'maxWidth', 'pixelOffset']);
 
 const OPEN_CLOSE_EVENTS = Ember.A(
   [ 'click', 'dblclick', 'rightclick', 'mouseover', 'mouseout' ]
@@ -48,24 +51,16 @@ const GMapInfowindowComponent = Ember.Component.extend({
     }
   },
 
-  optionsChanged: observer('disableAutoPan', 'maxWidth', 'pixelOffset', function() {
+  optionsChanged: observer(...allowedOptions, function() {
     run.once(this, 'setOptions');
   }),
 
   setOptions() {
     const infowindow = this.get('infowindow');
-    const options = ['disableAutoPan', 'maxWidth', 'pixelOffset'];
-    const infoWindowOptions = {};
+    const options = compact(this.getProperties(allowedOptions));
 
-    for (let i = 0; i < options.length; i++) {
-      const value = this.get(options[i]);
-      if (isPresent(value)) {
-        infoWindowOptions[options[i]] = value;
-      }
-    }
-
-    if (isPresent(infowindow) && Object.keys(infoWindowOptions).length !== 0) {
-      infowindow.setOptions(infoWindowOptions);
+    if (isPresent(infowindow) && isPresent(Object.keys(options))) {
+      infowindow.setOptions(options);
     }
   },
 
