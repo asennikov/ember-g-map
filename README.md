@@ -225,9 +225,21 @@ You can optionally set travel mode with `travelMode` attr:
 - `transit`
 - `driving` (default)
 
+You can optionally set following custom polyline options as attributes:
+- `strokeColor`
+- `strokeWeight`
+- `strokeOpacity`
+- `zIndex`
+
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
   {{g-map-route context
+                travelMode='driving' strokeColor='red'
+                originLat=37.7933 originLng=-122.4167
+                destinationLat=37.7733 destinationLng=-122.4167}}
+
+  {{g-map-route context
+                travelMode='bicycling' strokeColor='blue' zIndex=10
                 originLat=37.7933 originLng=-122.4167
                 destinationLat=37.7733 destinationLng=-122.4167}}
 {{/g-map}}

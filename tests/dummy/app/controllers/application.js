@@ -7,6 +7,7 @@ export default Ember.Controller.extend({
 
   addressQuery: 'SF, Lafayette Park',
   addressQueryInput: computed.reads('addressQuery'),
+  routeColor: 'red',
 
   customOptions: {
     mapTypeId: google.maps.MapTypeId.TERRAIN
@@ -23,6 +24,14 @@ export default Ember.Controller.extend({
 
     updateAdressQuery() {
       this.set('addressQuery', this.get('addressQueryInput'));
+    },
+
+    toggleRouteColor() {
+      if (this.get('routeColor') === 'red') {
+        this.set('routeColor', 'green');
+      } else {
+        this.set('routeColor', 'red');
+      }
     }
   }
 });

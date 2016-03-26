@@ -8,6 +8,9 @@
   <p>
     <button type="submit"> Update bound marker </button>
   </p>
+  <p>
+    <button {{action "toggleRouteColor"}}> Toggle route color </button>
+  </p>
 </form>
 
 {{#g-map markersFitMode="live" options=customOptions as |context|}}
@@ -39,7 +42,7 @@
   {{g-map-infowindow context title="Blockless Infowindow" message="Contains plain text"
                      lat=37.7633 lng=-122.4367 onClose=(action "onInfowindowClosed")}}
 
-  {{g-map-route context
+  {{g-map-route context strokeColor=routeColor strokeWeight=2 strokeOpacity=0.5 zIndex=10
                 originLat=37.7933 originLng=-122.4467
                 destinationLat=37.7433 destinationLng=-122.3867}}
 
