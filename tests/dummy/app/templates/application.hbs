@@ -42,11 +42,28 @@
   {{g-map-infowindow context title="Blockless Infowindow" message="Contains plain text"
                      lat=37.7633 lng=-122.4367 onClose=(action "onInfowindowClosed")}}
 
-  {{g-map-route context strokeColor=routeColor strokeWeight=2 strokeOpacity=0.5 zIndex=10
+  {{#g-map-route context strokeColor=routeColor strokeWeight=2 strokeOpacity=0.5 zIndex=10
                 originLat=37.7933 originLng=-122.4467
+                destinationLat=37.7433 destinationLng=-122.3867
+                as |routeContext|}}
+    {{g-map-route-waypoint routeContext address="Oakland, California"}}
+  {{/g-map-route}}
+
+  {{#g-map-address-route context
+                strokeColor="#00FF00"
+                originAddress="Los Angeles, California"
+                destinationAddress="San Francisco, California"
+                as |routeContext|}}
+    {{g-map-route-waypoint routeContext address="Oakland, California"}}
+    {{g-map-route-waypoint routeContext address="New York City, New York"}}
+    {{g-map-route-waypoint routeContext address="Dallas, Texas"}}
+  {{/g-map-address-route}}
+
+  {{g-map-route context strokeColor=routeColor strokeWeight=6 strokeOpacity=0.5 zIndex=10
+                originLat=36.169941 originLng=-115.139830
                 destinationLat=37.7433 destinationLng=-122.3867}}
 
   {{g-map-address-route context
-                originAddress="Los Angeles, California"
-                destinationAddress="San Francisco, California"}}
+                originAddress="Las Vegas, Nevada"
+                destinationAddress="Sacramento, California"}}
 {{/g-map}}

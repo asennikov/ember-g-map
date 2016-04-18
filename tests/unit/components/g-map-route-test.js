@@ -158,6 +158,7 @@ test('it calls `route` of directionsService on `updateRoute`', function() {
     destinationLng: 1,
     destinationLat: 11
   }));
+
   run(() => component.set('directionsService', fakeDirectionsService));
   run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
 
@@ -173,7 +174,8 @@ test('it calls `route` of directionsService on `updateRoute`', function() {
   const correctRequest = {
     origin: origin,
     destination: destination,
-    travelMode: google.maps.TravelMode.DRIVING
+    travelMode: google.maps.TravelMode.DRIVING,
+    waypoints: []
   };
 
   sinon.assert.calledOnce(fakeDirectionsService.route);
