@@ -1,4 +1,14 @@
-{{g-map-route mapContext zIndex=zIndex
-              strokeColor=strokeColor strokeWeight=strokeWeight strokeOpacity=strokeOpacity
-              originLat=originLat originLng=originLng
-              destinationLat=destinationLat destinationLng=destinationLng}}
+{{#if hasBlock}}
+  {{#g-map-route mapContext zIndex=zIndex
+                strokeColor=strokeColor strokeWeight=strokeWeight strokeOpacity=strokeOpacity
+                originLat=originLat originLng=originLng
+                destinationLat=destinationLat destinationLng=destinationLng
+                as |routeContext|}}
+    {{yield routeContext}}
+  {{/g-map-route}}
+{{else}}
+  {{g-map-route mapContext zIndex=zIndex
+                strokeColor=strokeColor strokeWeight=strokeWeight strokeOpacity=strokeOpacity
+                originLat=originLat originLng=originLng
+                destinationLat=destinationLat destinationLng=destinationLng}}
+{{/if}}

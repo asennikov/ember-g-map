@@ -23,6 +23,7 @@ const GMapRouteComponent = Ember.Component.extend({
 
   init() {
     this._super(arguments);
+    this.set('waypoints', Ember.A());
     const mapContext = this.get('mapContext');
     assert('Must be inside {{#g-map}} component with context set', mapContext instanceof GMapComponent);
   },
@@ -76,6 +77,7 @@ const GMapRouteComponent = Ember.Component.extend({
     const originLng = this.get('originLng');
     const destinationLat = this.get('destinationLat');
     const destinationLng = this.get('destinationLng');
+    const waypoints = !isEmpty(this.get('waypoints')) ? this.get('waypoints').mapBy('waypoint') : [];
 
     if (isPresent(service) && isPresent(renderer) &&
       isPresent(originLat) && isPresent(originLng) &&
@@ -86,7 +88,8 @@ const GMapRouteComponent = Ember.Component.extend({
       const request = {
         origin: origin,
         destination: destination,
-        travelMode: travelMode
+        travelMode: travelMode,
+        waypoints: waypoints
       };
 
       service.route(request, (response, status) => {
@@ -117,7 +120,19 @@ const GMapRouteComponent = Ember.Component.extend({
 
   retrieveTravelMode(mode) {
     return TRAVEL_MODES.hasOwnProperty(mode) ? TRAVEL_MODES[mode] : TRAVEL_MODES.driving;
-  }
+  },
+
+  registerWaypoint(waypoint) {
+    this.get('waypoints').addObject(waypoint);
+  },
+
+  unregisterWaypoint(waypoint) {
+    this.get('waypoints').removeObject(waypoint);
+  },
+
+  waypointsChanged: observer('waypoints.@each.location', function() {
+    run.once(this, 'updateRoute');
+  })
 });
 
 GMapRouteComponent.reopenClass({
