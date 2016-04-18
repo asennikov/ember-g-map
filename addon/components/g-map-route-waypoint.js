@@ -2,13 +2,15 @@ import Ember from 'ember';
 import layout from '../templates/components/g-map-route-waypoint';
 import GMapRouteComponent from './g-map-route';
 
-const { isEmpty, isPresent, observer, run, assert } = Ember;
+const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
 
 const GMapRouteWaypointComponent = Ember.Component.extend({
   layout: layout,
   classNames: ['g-map-route-waypoint'],
 
   stopover: true,
+
+  map: computed.alias('routeContext.mapContext.map'),
 
   init() {
     this._super(arguments);
@@ -24,26 +26,69 @@ const GMapRouteWaypointComponent = Ember.Component.extend({
 
   didInsertElement() {
     this._super();
-    if (isEmpty(this.get('waypoint'))) {
-      const waypoint = this.buildWaypoint();
-      this.set('waypoint', waypoint);
-    }
-    this.setRoute();
+
+    this.initPlacesService();
   },
+
+  initPlacesService: Ember.observer('map', function() {
+    const map = this.get('map');
+    let service = this.get('placesService');
+
+    if (isPresent(map) && isEmpty(service)) {
+      service = new google.maps.places.PlacesService(map);
+      this.set('placesService', service);
+
+      this.searchLocation();
+    }
+  }),
 
   willDestroyElement() {
     this.get('routeContext').unregisterWaypoint(this);
   },
 
+  onAddressChanged: observer('address', function() {
+    run.once(this, 'searchLocation');
+  }),
+
+  searchLocation() {
+    const service = this.get('placesService');
+    const address = this.get('address');
+
+    if (isPresent(service) && isPresent(address)) {
+      const request = { query: address };
+
+      service.textSearch(request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          this.updateLocation(results);
+        }
+      });
+    }
+  },
+
+  updateLocation(results) {
+    const lat = results[0].geometry.location.lat();
+    const lng = results[0].geometry.location.lng();
+
+    this.set('lat', lat);
+    this.set('lng', lng);
+
+    this.set('waypoint', this.buildWaypoint());
+  },
+
   buildWaypoint() {
+    let lat = this.get('lat');
+    let lng = this.get('lng');
+    let location = new google.maps.LatLng(lat, lng);
+
     const waypoint = {
-      location: this.get('address'),
+      location: location,
       stopover: this.get('stopover')
     };
+
     return waypoint;
   },
 
-  routeWasSet: observer('route', function() {
+  waypointWasSet: observer('waypoint', function() {
     run.once(this, 'setRoute');
   }),
 
@@ -54,15 +99,6 @@ const GMapRouteWaypointComponent = Ember.Component.extend({
     if (isPresent(waypoint) && isPresent(routeContext)) {
       routeContext.registerWaypoint(this);
     }
-  },
-
-  addressChanged: observer('address', function() {
-    run.once(this, 'setAddress');
-  }),
-
-  setAddress() {
-    const address = this.get('address');
-    this.set('waypoint.location', address);
   }
 });
 
