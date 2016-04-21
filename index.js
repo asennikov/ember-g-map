@@ -13,7 +13,7 @@ module.exports = {
     var content = '';
 
     if (type === 'head') {
-      var src = "//maps.googleapis.com/maps/api/js";
+      var src = "https://maps.googleapis.com/maps/api/js";
       var gMapConfig = config['g-map'] || {};
       var params = [];
 
