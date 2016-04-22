@@ -67,6 +67,14 @@ with the main `g-map` component. You can also set optional attributes:
 {{/g-map}}
 ```
 
+### Custom Marker Images
+
+You can assign custom images to your markers by pointing the `icon` attribute to an image file (jpg, png, svg, etc.)
+
+```handlebars
+{{g-map-marker context lat=lat lng=lng icon="/assets/images/driver-icon.svg" }}
+```
+
 ## Map with Info Windows
 
 These Info Windows will be open right after component is rendered
