@@ -298,6 +298,25 @@ actions: {
 {{/g-map}}
 ```
 
+## Route with waypoints
+
+You can add optional waypoints to both `{{g-map-route}}` and `{{g-map-address-route}}`.
+Waypoints could be added using
+`{{g-map-route-waypoint}}` or `{{g-map-route-address-waypoint}}` components.
+
+```handlebars
+{{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
+  {{#g-map-address-route context
+                originAddress="Los Angeles, California"
+                destinationAddress="San Francisco, California"
+                as |routeContext|}}
+    {{g-map-route-address-waypoint routeContext address="New York City, New York"}}
+    {{g-map-route-waypoint routeContext lat=37.7933 lng=-122.4167}}
+    {{g-map-route-address-waypoint routeContext address="Dallas, Texas"}}
+  {{/g-map-address-route}}
+{{/g-map}}
+```
+
 ## Demo
 
 http://asennikov.github.io/ember-g-map/
