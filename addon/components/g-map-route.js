@@ -77,7 +77,7 @@ const GMapRouteComponent = Ember.Component.extend({
     const originLng = this.get('originLng');
     const destinationLat = this.get('destinationLat');
     const destinationLng = this.get('destinationLng');
-    const waypoints = !isEmpty(this.get('waypoints')) ? this.get('waypoints').mapBy('waypoint') : [];
+    const waypoints = this.get('waypoints').mapBy('waypoint');
 
     if (isPresent(service) && isPresent(renderer) &&
       isPresent(originLat) && isPresent(originLng) &&

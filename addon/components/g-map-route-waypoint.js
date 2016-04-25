@@ -8,91 +8,49 @@ const GMapRouteWaypointComponent = Ember.Component.extend({
   layout: layout,
   classNames: ['g-map-route-waypoint'],
 
-  stopover: true,
-
-  map: computed.alias('routeContext.mapContext.map'),
+  map: computed.alias('routeContext.map'),
 
   init() {
     this._super(arguments);
+    if (isEmpty(this.stopover)) {
+      this.stopover = true;
+    }
 
     const routeContext = this.get('routeContext');
-    const hasRoute = routeContext instanceof GMapRouteComponent;
-
     assert('Must be inside {{#g-map-route}} component with routeContext set',
-      hasRoute);
-
-    this.set('hasRoute', hasRoute);
+      routeContext instanceof GMapRouteComponent);
   },
 
   didInsertElement() {
     this._super();
-
-    this.initPlacesService();
+    this.updateWaypoint();
   },
-
-  initPlacesService: Ember.observer('map', function() {
-    const map = this.get('map');
-    let service = this.get('placesService');
-
-    if (isPresent(map) && isEmpty(service)) {
-      service = new google.maps.places.PlacesService(map);
-      this.set('placesService', service);
-
-      this.searchLocation();
-    }
-  }),
 
   willDestroyElement() {
     this.get('routeContext').unregisterWaypoint(this);
   },
 
-  onAddressChanged: observer('address', function() {
-    run.once(this, 'searchLocation');
+  coordsChanged: observer('lat', 'lng', function() {
+    run.once(this, 'updateWaypoint');
   }),
 
-  searchLocation() {
-    const service = this.get('placesService');
-    const address = this.get('address');
+  updateWaypoint() {
+    const { lat, lng } = this.getProperties(['lat', 'lng']);
 
-    if (isPresent(service) && isPresent(address)) {
-      const request = { query: address };
-
-      service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          this.updateLocation(results);
-        }
+    if (isPresent(lat) && isPresent(lng)) {
+      let location = new google.maps.LatLng(lat, lng);
+      this.set('waypoint', {
+        location: location,
+        stopover: this.get('stopover')
       });
     }
   },
 
-  updateLocation(results) {
-    const lat = results[0].geometry.location.lat();
-    const lng = results[0].geometry.location.lng();
-
-    this.set('lat', lat);
-    this.set('lng', lng);
-
-    this.set('waypoint', this.buildWaypoint());
-  },
-
-  buildWaypoint() {
-    let lat = this.get('lat');
-    let lng = this.get('lng');
-    let location = new google.maps.LatLng(lat, lng);
-
-    const waypoint = {
-      location: location,
-      stopover: this.get('stopover')
-    };
-
-    return waypoint;
-  },
-
   waypointWasSet: observer('waypoint', function() {
-    run.once(this, 'setRoute');
+    run.once(this, 'updateRoute');
   }),
 
-  setRoute() {
+  updateRoute() {
     const routeContext = this.get('routeContext');
     const waypoint = this.get('waypoint');
 
