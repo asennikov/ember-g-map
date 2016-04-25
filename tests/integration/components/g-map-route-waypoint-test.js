@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('g-map-address-route', 'Integration | Component | g map address route', {
+moduleForComponent('g-map-route-waypoint', 'Integration | Component | g map route waypoint', {
   integration: true
 });
 
@@ -12,19 +12,22 @@ test('it renders', function(assert) {
   // Handle any actions with this.on('myAction', function(val) { ... });
 
   this.render(hbs`
-    {{#g-map as |context|}}
-      {{g-map-address-route context}}
-    {{/g-map}}
-    `);
+    {{#g-map as |mapContext|}}
+      {{#g-map-route mapContext as |routeContext|}}
+        {{g-map-route-waypoint routeContext}}
+      {{/g-map-route}}
+    {{/g-map}}`);
 
   assert.equal(this.$().text().trim(), '');
 
   // Template block usage:
   this.render(hbs`
-    {{#g-map as |context|}}
-      {{#g-map-address-route context}}
-        template block text
-      {{/g-map-address-route}}
+    {{#g-map as |mapContext|}}
+      {{#g-map-route mapContext as |routeContext|}}
+        {{#g-map-route-waypoint routeContext}}
+          template block text
+        {{/g-map-route-waypoint}}
+      {{/g-map-route}}
     {{/g-map}}
   `);
 

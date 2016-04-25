@@ -158,6 +158,7 @@ test('it calls `route` of directionsService on `updateRoute`', function() {
     destinationLng: 1,
     destinationLat: 11
   }));
+
   run(() => component.set('directionsService', fakeDirectionsService));
   run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
 
@@ -173,7 +174,8 @@ test('it calls `route` of directionsService on `updateRoute`', function() {
   const correctRequest = {
     origin: origin,
     destination: destination,
-    travelMode: google.maps.TravelMode.DRIVING
+    travelMode: google.maps.TravelMode.DRIVING,
+    waypoints: []
   };
 
   sinon.assert.calledOnce(fakeDirectionsService.route);
@@ -291,4 +293,86 @@ test('it doesn\'t call `setDirections` of directionsRenderer on `updatePolylineO
   run(() => component.updatePolylineOptions());
 
   sinon.assert.notCalled(fakeDirectionsRenderer.setDirections);
+});
+
+test('it registers waypoint in `waypoints` array during `registerWaypoint`', function(assert) {
+  const component = this.subject();
+  this.render();
+
+  const firstWaypoint = { name: 'first' };
+  const secondWaypoint = { name: 'second' };
+  const thirdWaypoint = { name: 'third' };
+
+  run(() => component.get('waypoints').addObject(firstWaypoint));
+  run(() => component.registerWaypoint(secondWaypoint));
+  run(() => component.registerWaypoint(thirdWaypoint));
+
+  assert.equal(component.get('waypoints').length, 3);
+  assert.equal(component.get('waypoints')[1], secondWaypoint);
+  assert.equal(component.get('waypoints')[2], thirdWaypoint);
+});
+
+test('it unregisters waypoint from `waypoints` array during `unregisterWaypoint`', function(assert) {
+  const component = this.subject();
+  this.render();
+
+  const firstWaypoint = { name: 'first' };
+  const secondWaypoint = { name: 'second' };
+  const thirdWaypoint = { name: 'third' };
+
+  run(() => component.get('waypoints').addObjects([firstWaypoint, secondWaypoint, thirdWaypoint]));
+  run(() => component.unregisterWaypoint(secondWaypoint));
+
+  assert.equal(component.get('waypoints').length, 2);
+  assert.equal(component.get('waypoints')[0], firstWaypoint);
+  assert.equal(component.get('waypoints')[1], thirdWaypoint);
+});
+
+test('it triggers `updateRoute` on change of one of `waypoints` location', function() {
+  run(() => component.get('waypoints').addObjects([
+    { location: { oldValue: true } },
+    { location: { anotherOldValue: true } }
+  ]));
+  component.updateRoute = sinon.spy();
+  run(() => component.set('waypoints.firstObject.location', { newValue: true }));
+  sinon.assert.calledOnce(component.updateRoute);
+});
+
+test('it triggers `updateRoute` on addition to `waypoints`', function() {
+  run(() => component.get('waypoints').addObjects([
+    { location: { oldValue: true } }
+  ]));
+  component.updateRoute = sinon.spy();
+  run(() => component.get('waypoints').addObject({ location: { newValue: true } }));
+  sinon.assert.calledOnce(component.updateRoute);
+});
+
+test('it triggers `updateRoute` when one of `waypoints` is removed', function() {
+  run(() => component.get('waypoints').addObjects([
+    { location: { oldValue: true } },
+    { location: { anotherOldValue: true } }
+  ]));
+  const lastWaypoint = component.get('waypoints.lastObject');
+
+  component.updateRoute = sinon.spy();
+  run(() => component.get('waypoints').removeObject(lastWaypoint));
+
+  sinon.assert.calledOnce(component.updateRoute);
+});
+
+test('it triggers `updateRoute` only once on several changes tp `waypoints`', function() {
+  run(() => component.get('waypoints').addObjects([
+    { location: { oldValue: true } },
+    { location: { anotherOldValue: true } }
+  ]));
+  const lastWaypoint = component.get('waypoints.lastObject');
+
+  component.updateRoute = sinon.spy();
+  run(() => {
+    component.get('waypoints').addObject({ location: { newValue: true } });
+    component.get('waypoints').removeObject(lastWaypoint);
+    component.set('waypoints.firstObject.location', { newValue: true });
+  });
+
+  sinon.assert.calledOnce(component.updateRoute);
 });
