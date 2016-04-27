@@ -116,16 +116,14 @@ const GMapPolylineComponent = Ember.Component.extend({
     const coordinates = this.get('coordinates');
     var coordArray = [];
     coordinates.forEach(function(coordinate){
-      const lat = coordinate.get('lat');
-      const lng = coordinate.get('lng');
-
-      if (isPresent(lat) && isPresent(lng)) {
-        coordArray.push(new google.maps.LatLng(lat, lng));
+      const coord = coordinate.get('coordinate');
+      if (isPresent(coord)) {
+        coordArray.push(coord);
       }
     });
     Ember.Logger.log(coordArray);
-    assert('Must have at least two valid coordinates in {{#g-map-polyline}} component', coordArray.length > 1);
-    if (isPresent(polyline) && isPresent(coordinates)) {
+    // assert('Must have at least two valid coordinates in {{#g-map-polyline}} component', coordArray.length > 1);
+    if (coordArray.length > 1 && isPresent(polyline) && isPresent(coordinates)) {
       polyline.setPath(coordArray);
     }
   },

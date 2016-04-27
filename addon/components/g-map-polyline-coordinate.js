@@ -2,7 +2,7 @@ import Ember from 'ember';
 import layout from '../templates/components/g-map-polyline-coordinate';
 import GMapPolylineComponent from './g-map-polyline';
 
-const { isPresent, observer, computed, run, assert } = Ember;
+const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
 
 const GMapPolylineCoordinateComponent = Ember.Component.extend({
   layout: layout,
@@ -19,6 +19,15 @@ const GMapPolylineCoordinateComponent = Ember.Component.extend({
     polylineContext.registerCoordinate(this);
   },
 
+  didInsertElement() {
+    this._super();
+    if (isEmpty(this.get('coordinate'))) {
+      const coordinate = new google.maps.LatLng();
+      this.set('coordinate', coordinate);
+    }
+    this.setPosition();
+  },
+
   coordsChanged: observer('lat', 'lng', function() {
     run.once(this, 'setPosition');
   }),
@@ -29,7 +38,8 @@ const GMapPolylineCoordinateComponent = Ember.Component.extend({
     const lng = this.get('lng');
 
     if (isPresent(polylineContext) && isPresent(lat) && isPresent(lng)) {
-      // const position = new google.maps.LatLng(lat, lng);
+      const coordinate = new google.maps.LatLng(lat, lng);
+      this.set('coordinate', coordinate);
       polylineContext.setPath();
     }
   }
