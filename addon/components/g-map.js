@@ -88,6 +88,15 @@ export default Ember.Component.extend({
     this.get('markers').removeObject(marker);
   },
 
+
+  registerPolyline(polyline) {
+    this.get('polyline').addObject(polyline);
+  },
+
+  unregisterPolyline(polyline) {
+    this.get('polyline').removeObject(polyline);
+  },
+
   shouldFit: computed('markersFitMode', function() {
     return Ember.A(['init', 'live']).contains(this.get('markersFitMode'));
   }),
