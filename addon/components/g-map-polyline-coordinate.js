@@ -24,13 +24,13 @@ const GMapPolylineCoordinateComponent = Ember.Component.extend({
   }),
 
   setPosition() {
-    const polyline = this.get('polyline');
+    const polylineContext = this.get('polylineContext');
     const lat = this.get('lat');
     const lng = this.get('lng');
 
-    if (isPresent(polyline) && isPresent(lat) && isPresent(lng)) {
+    if (isPresent(polylineContext) && isPresent(lat) && isPresent(lng)) {
       // const position = new google.maps.LatLng(lat, lng);
-      polyline.setPath();
+      polylineContext.setPath();
     }
   }
 });
