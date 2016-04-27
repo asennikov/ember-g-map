@@ -110,23 +110,14 @@ const GMapPolylineComponent = Ember.Component.extend({
       polyline.setMap(map);
     }
   },
-
-  coordsChanged: observer('lat', 'lng', function() {
-    run.once(this, 'setPath');
-  }),
-
+  
   setPath() {
     const polyline = this.get('polyline');
     const coordinates = this.get('coordinates');
-    var coordArray = []
+    var coordArray = [];
     coordinates.forEach(function(coordinate){
       coordArray.push(new google.maps.LatLng(coordinate.get('lat'), coordinate.get('lng') ) );
     });
-    // const coordinates =
-    // [
-    //   {lat: 37.7933, lng: -122.4567},
-    //   {lat: 37.7933, lng: -122.4767}
-    // ]
 
     if (isPresent(polyline) && isPresent(coordinates)) {
       polyline.setPath(coordArray);
