@@ -13,6 +13,7 @@ const GMapPolylineComponent = Ember.Component.extend({
   init() {
     this._super(arguments);
     this.infowindow = null;
+    this.set('coordinates', Ember.A());
     if (isEmpty(this.get('group'))) {
       this.set('group', null);
     }
@@ -29,10 +30,7 @@ const GMapPolylineComponent = Ember.Component.extend({
       const polyline = new google.maps.Polyline();
       this.set('polyline', polyline);
     }
-    this.setPosition();
-    this.setIcon();
-    this.setLabel();
-    this.setTitle();
+    this.setPath();
     this.setMap();
     this.setOnClick();
   },
@@ -49,6 +47,14 @@ const GMapPolylineComponent = Ember.Component.extend({
 
   unregisterInfowindow() {
     this.set('infowindow', null);
+  },
+
+  registerCoordinate(coordinate) {
+    this.get('coordinates').addObject(coordinate);
+  },
+
+  unregisterCoordinate(coordinate) {
+    this.get('coordinates').removeObject(coordinate);
   },
 
   attachOpenCloseEvents(infowindow, openEvent, closeEvent) {
@@ -106,32 +112,30 @@ const GMapPolylineComponent = Ember.Component.extend({
   },
 
   coordsChanged: observer('lat', 'lng', function() {
-    run.once(this, 'setPosition');
+    run.once(this, 'setPath');
   }),
 
-  setPosition() {
+  setPath() {
     const polyline = this.get('polyline');
-    const lat = this.get('lat');
-    const lng = this.get('lng');
+    const coordinates = this.get('coordinates');
+    var coordArray = []
+    coordinates.forEach(function(coordinate){
+      coordArray.push(new google.maps.LatLng(coordinate.get('lat'), coordinate.get('lng') ) );
+    });
+    // const coordinates =
+    // [
+    //   {lat: 37.7933, lng: -122.4567},
+    //   {lat: 37.7933, lng: -122.4767}
+    // ]
 
-    if (isPresent(polyline) && isPresent(lat) && isPresent(lng)) {
-      const position = new google.maps.LatLng(lat, lng);
-      polyline.setPosition(position);
+    if (isPresent(polyline) && isPresent(coordinates)) {
+      polyline.setPath(coordArray);
     }
   },
 
   iconChanged: observer('icon', function() {
     run.once(this, 'setIcon');
   }),
-
-  setIcon() {
-    const polyline = this.get('polyline');
-    const icon = this.get('icon');
-
-    if (isPresent(polyline) && isPresent(icon)) {
-      polyline.setIcon(icon);
-    }
-  },
 
   setOnClick() {
     const polyline = this.get('polyline');

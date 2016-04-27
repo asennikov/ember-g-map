@@ -14,6 +14,13 @@
 </form>
 
 {{#g-map markersFitMode="live" options=customOptions as |context|}}
+
+  {{#g-map-polyline context as |coordinateContext|}}
+    {{g-map-polyline-coordinate coordinateContext lat=37.7933 lng=-122.4567}}
+    {{g-map-polyline-coordinate coordinateContext lat=37.7933 lng=-122.4667}}
+    {{g-map-polyline-coordinate coordinateContext lat=37.7833 lng=-122.4667}}
+  {{/g-map-polyline}}
+
   {{g-map-marker context lat=37.7933 lng=-122.4467}}
 
   {{#g-map-marker context lat=37.7433 lng=-122.3867 as |markerContext|}}
