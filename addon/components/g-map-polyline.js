@@ -110,15 +110,21 @@ const GMapPolylineComponent = Ember.Component.extend({
       polyline.setMap(map);
     }
   },
-  
+
   setPath() {
     const polyline = this.get('polyline');
     const coordinates = this.get('coordinates');
     var coordArray = [];
     coordinates.forEach(function(coordinate){
-      coordArray.push(new google.maps.LatLng(coordinate.get('lat'), coordinate.get('lng') ) );
-    });
+      const lat = coordinate.get('lat');
+      const lng = coordinate.get('lng');
 
+      if (isPresent(lat) && isPresent(lng)) {
+        coordArray.push(new google.maps.LatLng(lat, lng));
+      }
+    });
+    Ember.Logger.log(coordArray);
+    assert('Must have at least two valid coordinates in {{#g-map-polyline}} component', coordArray.length > 1);
     if (isPresent(polyline) && isPresent(coordinates)) {
       polyline.setPath(coordArray);
     }
