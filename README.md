@@ -323,7 +323,6 @@ http://asennikov.github.io/ember-g-map/
 
 # Planned Features
 
-- Auto-closing Info Windows
 - Polylines & Polygons
 - Google Maps events
 
