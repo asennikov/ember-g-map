@@ -1,33 +1,17 @@
 import Ember from 'ember';
 import layout from '../templates/components/g-map-address-marker';
-/* global google */
 
-const { computed, observer, run, isPresent, isEmpty, typeOf } = Ember;
+const { observer, run, typeOf, inject } = Ember;
 
 const GMapAddressMarkerComponent = Ember.Component.extend({
   layout: layout,
   classNames: ['g-map-address-marker'],
 
-  map: computed.alias('mapContext.map'),
+  places: inject.service(),
 
   didInsertElement() {
-    this._super();
-    this.initPlacesService();
-  },
-
-  mapWasSet: observer('map', function() {
-    run.once(this, 'initPlacesService');
-  }),
-
-  initPlacesService() {
-    const map = this.get('map');
-    let service = this.get('placesService');
-
-    if (isPresent(map) && isEmpty(service)) {
-      service = new google.maps.places.PlacesService(map);
-      this.set('placesService', service);
-      this.searchLocation();
-    }
+    this._super(...arguments);
+    this.searchLocation();
   },
 
   onAddressChanged: observer('address', function() {
@@ -35,36 +19,23 @@ const GMapAddressMarkerComponent = Ember.Component.extend({
   }),
 
   searchLocation() {
-    const service = this.get('placesService');
     const address = this.get('address');
-
-    if (isPresent(service) && isPresent(address)) {
-      const request = { query: address };
-
-      service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          this.updateLocation(results);
-        }
-      });
-    }
+    this.get('places').search(address)
+      .then((lat, lng, results) => this.updateLocation(lat, lng, results));
   },
 
-  updateLocation(results) {
-    const lat = results[0].geometry.location.lat();
-    const lng = results[0].geometry.location.lng();
-
-    this.set('lat', lat);
-    this.set('lng', lng);
+  updateLocation(lat, lng, results) {
+    this.setProperties({ lat, lng });
     this.sendOnLocationChange(lat, lng, results);
   },
 
-  sendOnLocationChange() {
+  sendOnLocationChange(lat, lng, results) {
     const { onLocationChange } = this.attrs;
 
     if (typeOf(onLocationChange) === 'function') {
-      onLocationChange(...arguments);
+      onLocationChange(lat, lng, results);
     } else {
-      this.sendAction('onLocationChange', ...arguments);
+      this.sendAction('onLocationChange', lat, lng, results);
     }
   }
 });

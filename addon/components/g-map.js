@@ -1,12 +1,15 @@
 import Ember from 'ember';
 import layout from '../templates/components/g-map';
+/* global google */
 
-const { isEmpty, isPresent, computed, observer, run } = Ember;
+const { isEmpty, isPresent, computed, observer, run, inject } = Ember;
 
 export default Ember.Component.extend({
   layout: layout,
   classNames: ['g-map'],
   bannedOptions: Ember.A(['center', 'zoom']),
+
+  places: inject.service(),
 
   init() {
     this._super();
@@ -32,7 +35,9 @@ export default Ember.Component.extend({
     if (isEmpty(this.get('map'))) {
       const canvas = this.$().find('.g-map-canvas').get(0);
       const options = this.get('permittedOptions');
-      this.set('map', new google.maps.Map(canvas, options));
+      const map = new google.maps.Map(canvas, options);
+      this.set('map', map);
+      this.get('places').start(map);
     }
     this.setZoom();
     this.setCenter();
