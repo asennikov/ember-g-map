@@ -132,7 +132,7 @@ const GMapPolylineComponent = Ember.Component.extend({
     if (coordArray.length > 1 && isPresent(polyline) && isPresent(coordinates)) {
       polyline.setPath(coordArray);
     }
-    if (isPresent(options)) {
+    if (isPresent(polyline) && isPresent(options)) {
       polyline.setOptions(options);
     }
   },
