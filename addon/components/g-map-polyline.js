@@ -1,8 +1,12 @@
 import Ember from 'ember';
 import layout from '../templates/components/g-map-polyline';
 import GMapComponent from './g-map';
+import compact from '../utils/compact';
+
 
 const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
+
+const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex']);
 
 const GMapPolylineComponent = Ember.Component.extend({
   layout: layout,
@@ -27,7 +31,8 @@ const GMapPolylineComponent = Ember.Component.extend({
   didInsertElement() {
     this._super();
     if (isEmpty(this.get('polyline'))) {
-      const polyline = new google.maps.Polyline();
+      const options = compact(this.getProperties(allowedPolylineOptions));
+      const polyline = new google.maps.Polyline(options);
       this.set('polyline', polyline);
     }
     this.setPath();
@@ -114,6 +119,7 @@ const GMapPolylineComponent = Ember.Component.extend({
   setPath() {
     const polyline = this.get('polyline');
     const coordinates = this.get('coordinates');
+    const options = compact(this.getProperties(allowedPolylineOptions));
     var coordArray = [];
     coordinates.forEach(function(coordinate){
       const coord = coordinate.get('coordinate');
@@ -125,6 +131,9 @@ const GMapPolylineComponent = Ember.Component.extend({
     // assert('Must have at least two valid coordinates in {{#g-map-polyline}} component', coordArray.length > 1);
     if (coordArray.length > 1 && isPresent(polyline) && isPresent(coordinates)) {
       polyline.setPath(coordArray);
+    }
+    if (isPresent(options)) {
+      polyline.setOptions(options);
     }
   },
 
