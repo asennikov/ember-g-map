@@ -25,7 +25,8 @@ const GMapMarkerComponent = Ember.Component.extend({
 
   didInsertElement() {
     this._super();
-    if (isEmpty(this.get('marker'))) {
+    if (isEmpty(this.get('marker')) &&
+      (typeof FastBoot === 'undefined')) {
       const marker = new google.maps.Marker();
       this.set('marker', marker);
     }
@@ -114,7 +115,10 @@ const GMapMarkerComponent = Ember.Component.extend({
     const lat = this.get('lat');
     const lng = this.get('lng');
 
-    if (isPresent(marker) && isPresent(lat) && isPresent(lng)) {
+    if (isPresent(marker) &&
+        isPresent(lat) &&
+        isPresent(lng) &&
+        (typeof FastBoot === 'undefined')) {
       const position = new google.maps.LatLng(lat, lng);
       marker.setPosition(position);
     }

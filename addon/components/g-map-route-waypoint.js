@@ -37,7 +37,9 @@ const GMapRouteWaypointComponent = Ember.Component.extend({
   updateWaypoint() {
     const { lat, lng } = this.getProperties(['lat', 'lng']);
 
-    if (isPresent(lat) && isPresent(lng)) {
+    if (isPresent(lat) &&
+        isPresent(lng) &&
+        (typeof FastBoot === 'undefined')) {
       let location = new google.maps.LatLng(lat, lng);
       this.set('waypoint', {
         location: location,

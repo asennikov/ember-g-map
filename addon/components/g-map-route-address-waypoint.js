@@ -18,7 +18,9 @@ const GMapRouteAddressWaypointComponent = Ember.Component.extend({
     const map = this.get('map');
     let service = this.get('placesService');
 
-    if (isPresent(map) && isEmpty(service)) {
+    if (isPresent(map) &&
+        isEmpty(service) &&
+        (typeof FastBoot === 'undefined')) {
       service = new google.maps.places.PlacesService(map);
       this.set('placesService', service);
 
