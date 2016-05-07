@@ -1,5 +1,7 @@
 {
   "preset": "ember-suave",
   "excludeFiles": ["blanket-options.js"],
-  "requireEnhancedObjectLiterals": null
+  "requireEnhancedObjectLiterals": null,
+  "disallowConstOutsideModuleScope": null,
+  "disallowPositionalParamsExtend": null
 }
