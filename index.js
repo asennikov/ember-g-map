@@ -13,7 +13,7 @@ module.exports = {
     var content = '';
 
     if (type === 'head') {
-      var src = "//maps.googleapis.com/maps/api/js";
+      var src = '//maps.googleapis.com/maps/api/js';
       var gMapConfig = config['g-map'] || {};
       var params = [];
 
@@ -29,7 +29,7 @@ module.exports = {
 
       var protocol = gMapConfig.protocol;
       if (protocol) {
-        src = protocol + ":" + src;
+        src = protocol + ':' + src;
       }
 
       src += '?' + params.join('&');

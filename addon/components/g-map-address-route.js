@@ -23,7 +23,9 @@ const GMapAddressRouteComponent = Ember.Component.extend({
     const map = this.get('map');
     let service = this.get('placesService');
 
-    if (isPresent(map) && isEmpty(service)) {
+    if (isPresent(map) &&
+        isEmpty(service) &&
+        (typeof FastBoot === 'undefined')) {
       service = new google.maps.places.PlacesService(map);
       this.set('placesService', service);
       this.searchLocations();
@@ -39,21 +41,25 @@ const GMapAddressRouteComponent = Ember.Component.extend({
     const originAddress = this.get('originAddress');
     const destinationAddress = this.get('destinationAddress');
 
-    if (isPresent(service) && isPresent(originAddress)) {
+    if (isPresent(service) &&
+        isPresent(originAddress) &&
+        (typeof FastBoot === 'undefined')) {
       const originRequest = { query: originAddress };
 
       service.textSearch(originRequest, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        if (google && status === google.maps.places.PlacesServiceStatus.OK) {
           this.updateOriginLocation(results);
         }
       });
     }
 
-    if (isPresent(service) && isPresent(destinationAddress)) {
+    if (isPresent(service) &&
+        isPresent(destinationAddress) &&
+        (typeof FastBoot === 'undefined')) {
       const destinationRequest = { query: destinationAddress };
 
       service.textSearch(destinationRequest, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        if (google && status === google.maps.places.PlacesServiceStatus.OK) {
           this.updateDestinationLocation(results);
         }
       });
