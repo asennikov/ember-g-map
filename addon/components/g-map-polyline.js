@@ -3,7 +3,6 @@ import layout from '../templates/components/g-map-polyline';
 import GMapComponent from './g-map';
 import compact from '../utils/compact';
 
-
 const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
 
 const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex']);
@@ -120,8 +119,8 @@ const GMapPolylineComponent = Ember.Component.extend({
     const polyline = this.get('polyline');
     const coordinates = this.get('coordinates');
     const options = compact(this.getProperties(allowedPolylineOptions));
-    var coordArray = [];
-    coordinates.forEach(function(coordinate){
+    let coordArray = [];
+    coordinates.forEach(function(coordinate) {
       const coord = coordinate.get('coordinate');
       if (isPresent(coord)) {
         coordArray.push(coord);

@@ -89,7 +89,6 @@ export default Ember.Component.extend({
     this.get('markers').removeObject(marker);
   },
 
-
   registerPolyline(polyline) {
     this.get('polylines').addObject(polyline);
   },
