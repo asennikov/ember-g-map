@@ -119,14 +119,7 @@ const GMapPolylineComponent = Ember.Component.extend({
     const polyline = this.get('polyline');
     const coordinates = this.get('coordinates');
     const options = compact(this.getProperties(allowedPolylineOptions));
-    let coordArray = this.get('coordinates').mapBy('coordinate').compact();
-    // coordinates.forEach(function(coordinate) {
-    //   const coord = coordinate.get('coordinate');
-    //   if (isPresent(coord)) {
-    //     coordArray.push(coord);
-    //   }
-    // });
-    // Ember.Logger.log(coordArray);
+    let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
     if (coordArray.length > 1 && isPresent(polyline) && isPresent(coordinates)) {
       polyline.setPath(coordArray);
     }
