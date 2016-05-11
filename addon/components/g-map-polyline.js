@@ -44,55 +44,12 @@ const GMapPolylineComponent = Ember.Component.extend({
     this.get('mapContext').unregisterPolyline(this);
   },
 
-  registerInfowindow(infowindow, openEvent, closeEvent) {
-    this.set('infowindow', infowindow);
-    this.attachOpenCloseEvents(infowindow, openEvent, closeEvent);
-  },
-
-  unregisterInfowindow() {
-    this.set('infowindow', null);
-  },
-
   registerCoordinate(coordinate) {
     this.get('coordinates').addObject(coordinate);
   },
 
   unregisterCoordinate(coordinate) {
     this.get('coordinates').removeObject(coordinate);
-  },
-
-  attachOpenCloseEvents(infowindow, openEvent, closeEvent) {
-    const polyline = this.get('polyline');
-    if (openEvent === closeEvent) {
-      this.attachTogglingInfowindowEvent(polyline, infowindow, openEvent);
-    } else {
-      this.attachOpenInfowindowEvent(polyline, infowindow, openEvent);
-      this.attachCloseInfowindowEvent(polyline, infowindow, closeEvent);
-    }
-  },
-
-  attachOpenInfowindowEvent(polyline, infowindow, event) {
-    if (isPresent(event)) {
-      polyline.addListener(event, () => infowindow.open());
-    }
-  },
-
-  attachCloseInfowindowEvent(polyline, infowindow, event) {
-    if (isPresent(event)) {
-      polyline.addListener(event, () => infowindow.close());
-    }
-  },
-
-  attachTogglingInfowindowEvent(polyline, infowindow, event) {
-    if (isPresent(event)) {
-      polyline.addListener(event, () => {
-        if (infowindow.get('isOpen')) {
-          infowindow.close();
-        } else {
-          infowindow.open();
-        }
-      });
-    }
   },
 
   unsetPolylineFromMap() {

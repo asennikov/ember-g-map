@@ -63,7 +63,7 @@ test('it triggers `unsetPolylineFromMap` on `willDestroyElement` event', functio
   sinon.assert.calledOnce(component.unsetPolylineFromMap);
 });
 
-test('it triggers `setMap` of polyline with null during `fakePolylineObject` if polyline is set', function() {
+test('it triggers `setMap` of polyline with null during `unsetPolylineFromMap` if polyline is set', function() {
   fakePolylineObject.setMap = sinon.stub();
 
   run(() => component.set('polyline', fakePolylineObject));
@@ -73,7 +73,7 @@ test('it triggers `setMap` of polyline with null during `fakePolylineObject` if 
   sinon.assert.calledWith(fakePolylineObject.setMap, null);
 });
 
-test('it doesn\'t trigger `setMap` of polyline during `fakePolylineObject` if there is no polyline', function() {
+test('it doesn\'t trigger `setMap` of polyline during `unsetPolylineFromMap` if there is no polyline', function() {
   fakePolylineObject.setMap = sinon.stub();
 
   run(() => component.set('polyline', undefined));
