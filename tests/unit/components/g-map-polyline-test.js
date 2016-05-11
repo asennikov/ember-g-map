@@ -19,7 +19,6 @@ moduleForComponent('g-map-polyline', 'Unit | Component | g map polyline', {
       setPath: sinon.stub(),
       setMap: sinon.stub(),
       setOptions: sinon.stub(),
-      setOnClick: sinon.stub(),
       addListener: sinon.stub()
     };
     sinon.stub(google.maps, 'Polyline').returns(fakePolylineObject);
