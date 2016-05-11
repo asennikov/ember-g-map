@@ -122,9 +122,9 @@ const GMapPolylineComponent = Ember.Component.extend({
     let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
     if (coordArray.length > 1 && isPresent(polyline) && isPresent(coordinates)) {
       polyline.setPath(coordArray);
-    }
-    if (isPresent(polyline) && isPresent(options)) {
-      polyline.setOptions(options);
+      if (isPresent(options)) {
+        polyline.setOptions(options);
+      }
     }
   },
 
@@ -136,19 +136,6 @@ const GMapPolylineComponent = Ember.Component.extend({
     const polyline = this.get('polyline');
     if (isPresent(polyline)) {
       polyline.addListener('click', () => this.sendOnClick());
-    }
-  },
-
-  labelChanged: observer('label', function() {
-    run.once(this, 'setLabel');
-  }),
-
-  setLabel() {
-    const polyline = this.get('polyline');
-    const label = this.get('label');
-
-    if (isPresent(polyline) && isPresent(label)) {
-      polyline.setLabel(label);
     }
   },
 
@@ -167,19 +154,12 @@ const GMapPolylineComponent = Ember.Component.extend({
 
   sendOnClick() {
     const { onClick } = this.attrs;
-    // const mapContext = this.get('mapContext');
-    // const group = this.get('group');
 
     if (typeOf(onClick) === 'function') {
       onClick();
     } else {
       this.sendAction('onClick');
     }
-
-    // TODO: add logic for polyline clicked
-    // if (isPresent(group)) {
-    //   mapContext.groupPolylineClicked(this, group);
-    // }
   },
 
   closeInfowindow() {

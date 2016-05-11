@@ -28,6 +28,10 @@ const GMapPolylineCoordinateComponent = Ember.Component.extend({
     this.setPosition();
   },
 
+  willDestroyElement() {
+    this.get('polylineContext').unregisterCoordinate(this);
+  },
+
   coordsChanged: observer('lat', 'lng', function() {
     run.once(this, 'setPosition');
   }),
