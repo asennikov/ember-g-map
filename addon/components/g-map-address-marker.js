@@ -11,7 +11,7 @@ const GMapAddressMarkerComponent = Ember.Component.extend({
   map: computed.alias('mapContext.map'),
 
   didInsertElement() {
-    this._super();
+    this._super(...arguments);
     this.initPlacesService();
   },
 
@@ -23,7 +23,9 @@ const GMapAddressMarkerComponent = Ember.Component.extend({
     const map = this.get('map');
     let service = this.get('placesService');
 
-    if (isPresent(map) && isEmpty(service)) {
+    if (isPresent(map) &&
+      isEmpty(service) &&
+      (typeof FastBoot === 'undefined')) {
       service = new google.maps.places.PlacesService(map);
       this.set('placesService', service);
       this.searchLocation();
@@ -38,11 +40,13 @@ const GMapAddressMarkerComponent = Ember.Component.extend({
     const service = this.get('placesService');
     const address = this.get('address');
 
-    if (isPresent(service) && isPresent(address)) {
+    if (isPresent(service) &&
+        isPresent(address) &&
+        (typeof FastBoot === 'undefined')) {
       const request = { query: address };
 
       service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
+        if (google && status === google.maps.places.PlacesServiceStatus.OK) {
           this.updateLocation(results);
         }
       });

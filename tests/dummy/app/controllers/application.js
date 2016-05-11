@@ -10,7 +10,9 @@ export default Ember.Controller.extend({
   routeColor: 'red',
 
   customOptions: {
-    mapTypeId: google.maps.MapTypeId.TERRAIN
+    mapTypeId: computed(function() {
+      return google ? google.maps.MapTypeId.TERRAIN : null;
+    })
   },
 
   actions: {

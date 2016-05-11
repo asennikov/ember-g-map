@@ -65,14 +65,16 @@ const GMapInfowindowComponent = Ember.Component.extend({
   },
 
   buildInfowindow() {
-    const infowindow = new google.maps.InfoWindow({
-      content: this.get('element')
-    });
+    if (google) {
+      const infowindow = new google.maps.InfoWindow({
+        content: this.get('element')
+      });
 
-    if (isPresent(this.get('attrs.onClose'))) {
-      infowindow.addListener('closeclick', () => this.handleCloseClickEvent());
+      if (isPresent(this.get('attrs.onClose'))) {
+        infowindow.addListener('closeclick', () => this.handleCloseClickEvent());
+      }
+      return infowindow;
     }
-    return infowindow;
   },
 
   handleCloseClickEvent() {
@@ -141,7 +143,10 @@ const GMapInfowindowComponent = Ember.Component.extend({
     const lat = this.get('lat');
     const lng = this.get('lng');
 
-    if (isPresent(infowindow) && isPresent(lat) && isPresent(lng)) {
+    if (isPresent(infowindow) &&
+        isPresent(lat) &&
+        isPresent(lng) &&
+        (typeof FastBoot === 'undefined')) {
       const position = new google.maps.LatLng(lat, lng);
       infowindow.setPosition(position);
     }

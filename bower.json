@@ -1,19 +1,13 @@
 {
   "name": "ember-g-map",
   "dependencies": {
-    "ember": "1.13.7",
-    "ember-cli-shims": "ember-cli/ember-cli-shims#0.0.6",
-    "ember-cli-test-loader": "ember-cli-test-loader#0.2.1",
-    "ember-load-initializers": "ember-cli/ember-load-initializers#0.1.7",
-    "ember-qunit": "0.4.16",
-    "ember-qunit-notifications": "0.0.7",
-    "ember-resolver": "~0.1.18",
-    "jquery": "^2.1.4",
-    "loader.js": "ember-cli/loader.js#3.2.1",
-    "qunit": "~1.18.0",
+    "ember": "~2.5.0",
+    "ember-cli-shims": "0.1.1",
+    "ember-cli-test-loader": "0.2.2",
+    "ember-qunit-notifications": "0.1.0",
     "sinonjs": "~1.17.1"
   },
   "devDependencies": {
-    "blanket": "~1.1.5"
+    "blanket": "5e94fc30f2e694bb5c3718ddcbf60d467f4b4d26"
   }
 }

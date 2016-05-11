@@ -8,10 +8,10 @@ const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
 const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex']);
 
 const TRAVEL_MODES = {
-  walking: google.maps.TravelMode.WALKING,
-  bicycling: google.maps.TravelMode.BICYCLING,
-  transit: google.maps.TravelMode.TRANSIT,
-  driving: google.maps.TravelMode.DRIVING
+  walking: Ember.get(window, 'google.maps.TravelMode.WALKING'),
+  bicycling: Ember.get(window, 'google.maps.TravelMode.BICYCLING'),
+  transit: Ember.get(window, 'google.maps.TravelMode.TRANSIT'),
+  driving: Ember.get(window, 'google.maps.TravelMode.DRIVING')
 };
 
 const GMapRouteComponent = Ember.Component.extend({
@@ -49,7 +49,10 @@ const GMapRouteComponent = Ember.Component.extend({
     let service = this.get('directionsService');
     let renderer = this.get('directionsRenderer');
 
-    if (isPresent(map) && isEmpty(service) && isEmpty(renderer)) {
+    if (isPresent(map) &&
+        isEmpty(service) &&
+        isEmpty(renderer) &&
+        (typeof FastBoot === 'undefined')) {
       const rendererOptions = {
         map: map,
         suppressMarkers: true,
@@ -81,7 +84,8 @@ const GMapRouteComponent = Ember.Component.extend({
 
     if (isPresent(service) && isPresent(renderer) &&
       isPresent(originLat) && isPresent(originLng) &&
-      isPresent(destinationLat) && isPresent(destinationLng)) {
+      isPresent(destinationLat) && isPresent(destinationLng) &&
+      (typeof FastBoot === 'undefined')) {
       const origin = new google.maps.LatLng(this.get('originLat'), this.get('originLng'));
       const destination = new google.maps.LatLng(this.get('destinationLat'), this.get('destinationLng'));
       const travelMode = this.retrieveTravelMode(this.get('travelMode'));
