@@ -123,9 +123,6 @@ const GMapPolylineComponent = Ember.Component.extend({
     if (coordArray.length > 1 && isPresent(polyline) && isPresent(coordinates)) {
       polyline.setPath(coordArray);
     }
-    else{
-      //Unset Path?
-    }
     if (isPresent(polyline) && isPresent(options)) {
       polyline.setOptions(options);
     }
@@ -170,8 +167,8 @@ const GMapPolylineComponent = Ember.Component.extend({
 
   sendOnClick() {
     const { onClick } = this.attrs;
-    const mapContext = this.get('mapContext');
-    const group = this.get('group');
+    // const mapContext = this.get('mapContext');
+    // const group = this.get('group');
 
     if (typeOf(onClick) === 'function') {
       onClick();
@@ -179,7 +176,7 @@ const GMapPolylineComponent = Ember.Component.extend({
       this.sendAction('onClick');
     }
 
-    //TODO: add logic for polyline clicked
+    // TODO: add logic for polyline clicked
     // if (isPresent(group)) {
     //   mapContext.groupPolylineClicked(this, group);
     // }

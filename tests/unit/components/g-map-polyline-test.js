@@ -1,10 +1,10 @@
-import Ember from 'ember';
+// import Ember from 'ember';
 import { moduleForComponent } from 'ember-qunit';
 import test from '../../ember-sinon-qunit/test';
 import GMapComponent from 'ember-g-map/components/g-map';
 import sinon from 'sinon';
 
-const { run } = Ember;
+// const { run } = Ember;
 
 let fakePolylineObject;
 let component;
@@ -18,9 +18,11 @@ moduleForComponent('g-map-polyline', 'Unit | Component | g map polyline', {
     fakePolylineObject = {
       setPath: sinon.stub(),
       setMap: sinon.stub(),
-      setOnClick: sinon.stub()
+      setOptions: sinon.stub(),
+      setOnClick: sinon.stub(),
+      addListener: sinon.stub()
     };
-    sinon.stub(google.maps, 'polyline').returns(fakePolylineObject);
+    sinon.stub(google.maps, 'Polyline').returns(fakePolylineObject);
     component = this.subject({
       mapContext: new GMapComponent()
     });
