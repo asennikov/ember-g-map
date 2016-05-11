@@ -77,9 +77,7 @@ test('it calls `setPath` of google polyline on `setPosition` with coordinates pr
     lng: 100,
     polylineContext: fakePolylineObject
   }));
-
   run(() => component.setPosition());
-
   sinon.assert.called(fakePolylineObject.setPath, 2);
 });
 
