@@ -96,19 +96,6 @@ const GMapPolylineComponent = Ember.Component.extend({
     }
   },
 
-  titleChanged: observer('title', function() {
-    run.once(this, 'setTitle');
-  }),
-
-  setTitle() {
-    const polyline = this.get('polyline');
-    const title = this.get('title');
-
-    if (isPresent(polyline) && isPresent(title)) {
-      polyline.setTitle(title);
-    }
-  },
-
   sendOnClick() {
     const { onClick } = this.attrs;
 
