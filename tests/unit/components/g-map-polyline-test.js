@@ -50,6 +50,49 @@ test('it triggers `setMap` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setMap);
 });
 
+test('it triggers `updatePolylineOptions` on `didInsertElement` event', function() {
+  component.updatePolylineOptions = sinon.spy();
+
+  run(() => component.set('map', {}));
+  component.trigger('didInsertElement');
+
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it triggers `updatePolylineOptions` on `strokeColor` change', function() {
+  component.updatePolylineOptions = sinon.spy();
+  run(() => component.set('strokeColor', '#000000'));
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it triggers `updatePolylineOptions` on `strokeWeight` change', function() {
+  component.updatePolylineOptions = sinon.spy();
+  run(() => component.set('strokeWeight', 5));
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it triggers `updatePolylineOptions` on `strokeOpacity` change', function() {
+  component.updatePolylineOptions = sinon.spy();
+  run(() => component.set('strokeOpacity', 0.1));
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it triggers `updatePolylineOptions` on `zIndex` change', function() {
+  component.updatePolylineOptions = sinon.spy();
+  run(() => component.set('zIndex', 2));
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
+test('it triggers `updatePolylineOptions` only once on several option changes', function() {
+  component.updatePolylineOptions = sinon.spy();
+  run(() => component.setProperties({
+    strokeWeight: 2,
+    strokeOpacity: 0.5,
+    zIndex: 4
+  }));
+  sinon.assert.calledOnce(component.updatePolylineOptions);
+});
+
 test('it triggers `setOnClick` on `didInsertElement` event', function() {
   component.setOnClick = sinon.stub();
   component.trigger('didInsertElement');
@@ -113,6 +156,28 @@ test('it doesn\'t call `setMap` of google polyline on `setMap` when no `map` pre
   fakePolylineObject.setMap = sinon.stub();
   run(() => component.setMap());
   sinon.assert.notCalled(fakePolylineObject.setMap);
+});
+
+test('it calls `setOptions` of google polyline on `updatePolylineOptions`', function() {
+  const polylineOptions = {
+    strokeColor: '#ffffff',
+    strokeWeight: 2,
+    strokeOpacity: 1,
+    zIndex: 1
+  };
+  run(() => component.setProperties(polylineOptions));
+  run(() => component.set('polyline', fakePolylineObject));
+
+  run(() => component.updatePolylineOptions());
+
+  sinon.assert.calledOnce(fakePolylineObject.setOptions);
+  sinon.assert.calledWith(fakePolylineObject.setOptions, polylineOptions);
+});
+
+test('it doesn\'t call `setOptions` of google polyline on `updatePolylineOptions` if no options are provided', function() {
+  run(() => component.set('polyline', fakePolylineObject));
+  run(() => component.updatePolylineOptions());
+  sinon.assert.notCalled(fakePolylineObject.setOptions);
 });
 
 test('it registers itself in parent\'s `polylines` array on `init` event', function() {

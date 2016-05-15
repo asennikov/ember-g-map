@@ -34,8 +34,9 @@ const GMapPolylineComponent = Ember.Component.extend({
       const polyline = new google.maps.Polyline(options);
       this.set('polyline', polyline);
     }
-    this.setPath();
     this.setMap();
+    this.setPath();
+    this.updatePolylineOptions();
     this.setOnClick();
   },
 
@@ -75,19 +76,26 @@ const GMapPolylineComponent = Ember.Component.extend({
   setPath() {
     const polyline = this.get('polyline');
     const coordinates = this.get('coordinates');
-    const options = compact(this.getProperties(allowedPolylineOptions));
     let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
     if (coordArray.length > 1 && isPresent(polyline) && isPresent(coordinates)) {
       polyline.setPath(coordArray);
-      if (isPresent(options)) {
-        polyline.setOptions(options);
-      }
     }
   },
 
   iconChanged: observer('icon', function() {
     run.once(this, 'setIcon');
+  polylineOptionsChanged: observer(...allowedPolylineOptions, function() {
+    run.once(this, 'updatePolylineOptions');
   }),
+
+  updatePolylineOptions() {
+    const polyline = this.get('polyline');
+    const options = compact(this.getProperties(allowedPolylineOptions));
+
+    if (isPresent(polyline) && isPresent(Object.keys(options))) {
+      polyline.setOptions(options);
+    }
+  },
 
   setOnClick() {
     const polyline = this.get('polyline');
