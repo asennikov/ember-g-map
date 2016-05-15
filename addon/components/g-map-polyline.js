@@ -51,6 +51,7 @@ const GMapPolylineComponent = Ember.Component.extend({
 
   unregisterCoordinate(coordinate) {
     this.get('coordinates').removeObject(coordinate);
+    this.setPath();
   },
 
   unsetPolylineFromMap() {
@@ -76,8 +77,9 @@ const GMapPolylineComponent = Ember.Component.extend({
   setPath() {
     const polyline = this.get('polyline');
     const coordinates = this.get('coordinates');
-    let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
-    if (coordArray.length > 1 && isPresent(polyline) && isPresent(coordinates)) {
+
+    if (isPresent(polyline) && isPresent(coordinates)) {
+      let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
       polyline.setPath(coordArray);
     }
   },
