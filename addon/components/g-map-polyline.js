@@ -82,8 +82,6 @@ const GMapPolylineComponent = Ember.Component.extend({
     }
   },
 
-  iconChanged: observer('icon', function() {
-    run.once(this, 'setIcon');
   polylineOptionsChanged: observer(...allowedPolylineOptions, function() {
     run.once(this, 'updatePolylineOptions');
   }),
@@ -111,13 +109,6 @@ const GMapPolylineComponent = Ember.Component.extend({
       onClick();
     } else {
       this.sendAction('onClick');
-    }
-  },
-
-  closeInfowindow() {
-    const infowindow = this.get('infowindow');
-    if (isPresent(infowindow)) {
-      infowindow.close();
     }
   }
 });

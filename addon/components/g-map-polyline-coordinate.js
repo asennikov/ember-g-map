@@ -14,7 +14,8 @@ const GMapPolylineCoordinateComponent = Ember.Component.extend({
     this._super(arguments);
 
     const polylineContext = this.get('polylineContext');
-    assert('Must be inside {{#g-map-polyline}} component with context set', polylineContext instanceof GMapPolylineComponent);
+    assert('Must be inside {{#g-map-polyline}} component with context set',
+      polylineContext instanceof GMapPolylineComponent);
 
     polylineContext.registerCoordinate(this);
   },
