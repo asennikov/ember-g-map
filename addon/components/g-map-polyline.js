@@ -34,8 +34,9 @@ const GMapPolylineComponent = Ember.Component.extend({
       const polyline = new google.maps.Polyline(options);
       this.set('polyline', polyline);
     }
-    this.setPath();
     this.setMap();
+    this.setPath();
+    this.updatePolylineOptions();
     this.setOnClick();
   },
 
@@ -50,6 +51,7 @@ const GMapPolylineComponent = Ember.Component.extend({
 
   unregisterCoordinate(coordinate) {
     this.get('coordinates').removeObject(coordinate);
+    this.setPath();
   },
 
   unsetPolylineFromMap() {
@@ -75,19 +77,25 @@ const GMapPolylineComponent = Ember.Component.extend({
   setPath() {
     const polyline = this.get('polyline');
     const coordinates = this.get('coordinates');
-    const options = compact(this.getProperties(allowedPolylineOptions));
-    let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
-    if (coordArray.length > 1 && isPresent(polyline) && isPresent(coordinates)) {
+
+    if (isPresent(polyline) && isPresent(coordinates)) {
+      let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
       polyline.setPath(coordArray);
-      if (isPresent(options)) {
-        polyline.setOptions(options);
-      }
     }
   },
 
-  iconChanged: observer('icon', function() {
-    run.once(this, 'setIcon');
+  polylineOptionsChanged: observer(...allowedPolylineOptions, function() {
+    run.once(this, 'updatePolylineOptions');
   }),
+
+  updatePolylineOptions() {
+    const polyline = this.get('polyline');
+    const options = compact(this.getProperties(allowedPolylineOptions));
+
+    if (isPresent(polyline) && isPresent(Object.keys(options))) {
+      polyline.setOptions(options);
+    }
+  },
 
   setOnClick() {
     const polyline = this.get('polyline');
@@ -103,13 +111,6 @@ const GMapPolylineComponent = Ember.Component.extend({
       onClick();
     } else {
       this.sendAction('onClick');
-    }
-  },
-
-  closeInfowindow() {
-    const infowindow = this.get('infowindow');
-    if (isPresent(infowindow)) {
-      infowindow.close();
     }
   }
 });
