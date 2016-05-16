@@ -8,12 +8,13 @@ export default Ember.Controller.extend({
   addressQuery: 'SF, Lafayette Park',
   addressQueryInput: computed.reads('addressQuery'),
   routeColor: 'red',
+  showingAllPolylineCoords: true,
 
-  customOptions: {
-    mapTypeId: computed(function() {
-      return google ? google.maps.MapTypeId.TERRAIN : null;
-    })
-  },
+  customOptions: computed(function() {
+    if (google) {
+      return { mapTypeId: google.maps.MapTypeId.TERRAIN };
+    }
+  }),
 
   actions: {
     refresh() {
@@ -34,6 +35,10 @@ export default Ember.Controller.extend({
       } else {
         this.set('routeColor', 'red');
       }
+    },
+
+    togglePolylineCoords() {
+      this.toggleProperty('showingAllPolylineCoords');
     }
   }
 });

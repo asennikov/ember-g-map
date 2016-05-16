@@ -11,9 +11,21 @@
   <p>
     <button {{action "toggleRouteColor"}}> Toggle route color </button>
   </p>
+  <p>
+    <button {{action "togglePolylineCoords"}}> Toggle polyline coords </button>
+  </p>
 </form>
 
 {{#g-map markersFitMode="live" options=customOptions as |context|}}
+
+  {{#g-map-polyline context strokeColor="green" strokeWeight="10" strokeOpacity="0.3" as |coordinateContext|}}
+    {{g-map-polyline-coordinate coordinateContext lat=37.7833 lng=-122.4667}}
+    {{#if showingAllPolylineCoords}}
+      {{g-map-polyline-coordinate coordinateContext lat=37.7933 lng=-122.4567}}
+      {{g-map-polyline-coordinate coordinateContext lat=37.7933 lng=-122.4667}}
+    {{/if}}
+  {{/g-map-polyline}}
+
   {{g-map-marker context lat=37.7933 lng=-122.4467}}
 
   {{#g-map-marker context lat=37.7433 lng=-122.3867 as |markerContext|}}
