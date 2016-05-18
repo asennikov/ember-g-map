@@ -210,7 +210,7 @@ actions: {
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
   {{g-map-address-marker context address="San Francisco, Russian Hill"}}
-  {{#g-map-address-marker context address="Delft, The Netherlands"}}
+  {{#g-map-address-marker context address="Delft, The Netherlands" as |markerContext|}}
     {{#g-map-infowindow markerContext}}
       Works in block form too.
     {{/g-map-infowindow}}
