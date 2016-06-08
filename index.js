@@ -26,6 +26,11 @@ module.exports = {
       if (libraries && libraries.length) {
         params.push('libraries=' + encodeURIComponent(libraries.join(',')));
       }
+      
+      var language = gMapConfig.language;
+      if (language) {
+        params.push('language=' + encodeURIComponent(language));
+      }
 
       var protocol = gMapConfig.protocol;
       if (protocol) {
