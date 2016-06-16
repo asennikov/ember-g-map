@@ -21,14 +21,18 @@ Simply add something similar to this to your styles:
 }
 ```
 
-In `config/environment.js` you can specify additional Google Maps libraries
-to be loaded along with this add-on (check the full list [here](https://developers.google.com/maps/documentation/javascript/libraries)),
-optional API key for your application (additional info could be found [here](https://developers.google.com/maps/web/)) and optional explicit protocol setting.
+In `config/environment.js` you can specify:
+- additional Google Maps libraries to be loaded along with this add-on
+  (check the full list [here](https://developers.google.com/maps/documentation/javascript/libraries)),
+- optional API key for your application (additional info could be found [here](https://developers.google.com/maps/web/)),
+- optional language for map localization,
+- optional explicit protocol setting.
 
 ```javascript
 ENV['g-map'] = {
   libraries: ['places', 'geometry'],
   key: 'your-unique-google-map-api-key',
+  language: 'ru',
   protocol: 'https'
 }
 ```
