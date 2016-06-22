@@ -328,15 +328,35 @@ You can optionally set following custom polyline options as attributes:
 - `strokeWeight`
 - `strokeOpacity`
 - `zIndex`
+- `clickable`
+- `draggable`
+- `geodesic`
+- `visible`
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
-  {{#g-map-polyline context strokeColor="green" strokeWeight="10" strokeOpacity="0.3" as |coordinateContext|}}
+  {{#g-map-polyline context strokeColor="green" strokeWeight="10" strokeOpacity="0.3" geodesic=true draggable=true onDrag=(action "dragPolyline") as |coordinateContext|}}
     {{g-map-polyline-coordinate coordinateContext lat=37.7833 lng=-122.4667}}
     {{g-map-polyline-coordinate coordinateContext lat=37.7933 lng=-122.4567}}
     {{g-map-polyline-coordinate coordinateContext lat=37.7933 lng=-122.4667}}
   {{/g-map-polyline}}
 {{/g-map}}
+```
+
+For both the `onClick` and `onDrag` actions, the arguments are `event` and `polyline`.
+
+```javascript
+actions: {
+  dragPolyline : function (event, polyline) {
+		var bounds = new window.google.maps.LatLngBounds();
+
+		polyline.getPath().forEach(function (e) {
+			bounds.extend(e);
+		});
+
+		polyline.map.fitBounds(bounds);
+	}
+}
 ```
 
 ## Demo
