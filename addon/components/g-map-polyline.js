@@ -38,6 +38,7 @@ const GMapPolylineComponent = Ember.Component.extend({
     this.setPath();
     this.updatePolylineOptions();
     this.setOnClick();
+    this.setOnDrag();
   },
 
   willDestroyElement() {
@@ -113,23 +114,23 @@ const GMapPolylineComponent = Ember.Component.extend({
       this.sendAction('onClick');
     }
   },
-  
+
   setOnDrag() {
-		const polyline = this.get('polyline');
-		if (isPresent(polyline)) {
-			polyline.addListener('dragend', () => this.sendOnDrag());
-		}
-	},
+    const polyline = this.get('polyline');
+    if (isPresent(polyline)) {
+      polyline.addListener('dragend', () => this.sendOnDrag());
+    }
+  },
 
-	sendOnDrag() {
-		const { onDrag } = this.attrs;
+  sendOnDrag() {
+    const { onDrag } = this.attrs;
 
-		if (typeOf(onDrag) === 'function') {
-			onDrag(this);
-		} else {
-			this.sendAction('onDrag');
-		}
-	}
+    if (typeOf(onDrag) === 'function') {
+      onDrag(this);
+    } else {
+      this.sendAction('onDrag');
+    }
+  }
 });
 
 GMapPolylineComponent.reopenClass({
