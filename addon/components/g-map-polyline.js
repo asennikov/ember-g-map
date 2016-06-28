@@ -5,7 +5,7 @@ import compact from '../utils/compact';
 
 const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
 
-const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex']);
+const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex', 'geodesic', 'clickable', 'draggable', 'visible']);
 
 const GMapPolylineComponent = Ember.Component.extend({
   layout: layout,
@@ -38,6 +38,7 @@ const GMapPolylineComponent = Ember.Component.extend({
     this.setPath();
     this.updatePolylineOptions();
     this.setOnClick();
+    this.setOnDrag();
   },
 
   willDestroyElement() {
@@ -100,17 +101,36 @@ const GMapPolylineComponent = Ember.Component.extend({
   setOnClick() {
     const polyline = this.get('polyline');
     if (isPresent(polyline)) {
-      polyline.addListener('click', () => this.sendOnClick());
+      polyline.addListener('click', (e) => this.sendOnClick(e));
     }
   },
 
-  sendOnClick() {
+  sendOnClick(e) {
     const { onClick } = this.attrs;
+    const polyline = this.get('polyline');
 
     if (typeOf(onClick) === 'function') {
-      onClick();
+      onClick(e, polyline);
     } else {
-      this.sendAction('onClick');
+      this.sendAction('onClick', e, polyline);
+    }
+  },
+
+  setOnDrag() {
+    const polyline = this.get('polyline');
+    if (isPresent(polyline)) {
+      polyline.addListener('dragend', (e) => this.sendOnDrag(e));
+    }
+  },
+
+  sendOnDrag(e) {
+    const { onDrag } = this.attrs;
+    const polyline = this.get('polyline');
+
+    if (typeOf(onDrag) === 'function') {
+      onDrag(e, polyline);
+    } else {
+      this.sendAction('onDrag', e, polyline);
     }
   }
 });
