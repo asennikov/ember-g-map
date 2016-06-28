@@ -99,6 +99,12 @@ test('it triggers `setOnClick` on `didInsertElement` event', function() {
   sinon.assert.calledOnce(component.setOnClick);
 });
 
+test('it triggers `setOnDrag` on `didInsertElement` event', function() {
+  component.setOnDrag = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setOnDrag);
+});
+
 test('it triggers `unsetPolylineFromMap` on `willDestroyElement` event', function() {
   component.unsetPolylineFromMap = sinon.stub();
   component.trigger('willDestroyElement');
@@ -203,7 +209,8 @@ test('it unregisters itself in parent\'s `polylines` array on `willDestroyElemen
 });
 
 test('it calls `addListener` of google polyline on `setOnClick` with `polyline` present', function() {
-  fakePolylineObject.addListener = sinon.stub().callsArg(1);
+  const fakeEventObject = { name: 'click' };
+  fakePolylineObject.addListener = sinon.stub().callsArgWith(1, fakeEventObject);
   run(() => component.set('polyline', fakePolylineObject));
   component.sendOnClick = sinon.stub();
 
@@ -213,21 +220,64 @@ test('it calls `addListener` of google polyline on `setOnClick` with `polyline` 
   sinon.assert.calledWith(fakePolylineObject.addListener, 'click');
 
   sinon.assert.calledOnce(component.sendOnClick);
+  sinon.assert.calledWith(component.sendOnClick, fakeEventObject);
 });
 
 test('it sends action `onClick` on callback for `click` event', function() {
+  const fakeEventObject = { name: 'click' };
   component.sendAction = sinon.stub();
 
   run(() => component.set('attrs', { onClick: 'action' }));
-  run(() => component.sendOnClick());
+  run(() => component.set('polyline', fakePolylineObject));
+  run(() => component.sendOnClick(fakeEventObject));
 
   sinon.assert.calledOnce(component.sendAction);
-  sinon.assert.calledWith(component.sendAction, 'onClick');
+  sinon.assert.calledWith(component.sendAction, 'onClick', fakeEventObject, fakePolylineObject);
 });
 
 test('it runs closure action `attrs.onClick` directly on callback for `click` event', function() {
+  const fakeEventObject = { name: 'click' };
   run(() => component.set('attrs', { onClick: sinon.stub() }));
-  run(() => component.sendOnClick());
+  run(() => component.set('polyline', fakePolylineObject));
+  run(() => component.sendOnClick(fakeEventObject));
 
   sinon.assert.calledOnce(component.attrs.onClick);
+  sinon.assert.calledWith(component.attrs.onClick, fakeEventObject, fakePolylineObject);
+});
+
+test('it calls `addListener` of google polyline on `setOnDrag` with `polyline` present', function() {
+  const fakeEventObject = { name: 'dragend' };
+  fakePolylineObject.addListener = sinon.stub().callsArgWith(1, fakeEventObject);
+  run(() => component.set('polyline', fakePolylineObject));
+  component.sendOnDrag = sinon.stub();
+
+  run(() => component.setOnDrag());
+
+  sinon.assert.calledOnce(fakePolylineObject.addListener);
+  sinon.assert.calledWith(fakePolylineObject.addListener, 'dragend');
+
+  sinon.assert.calledOnce(component.sendOnDrag);
+  sinon.assert.calledWith(component.sendOnDrag, fakeEventObject);
+});
+
+test('it sends action `onDrag` on callback for `dragend` event', function() {
+  const fakeEventObject = { name: 'dragend' };
+  component.sendAction = sinon.stub();
+
+  run(() => component.set('attrs', { onDrag: 'action' }));
+  run(() => component.set('polyline', fakePolylineObject));
+  run(() => component.sendOnDrag(fakeEventObject));
+
+  sinon.assert.calledOnce(component.sendAction);
+  sinon.assert.calledWith(component.sendAction, 'onDrag', fakeEventObject, fakePolylineObject);
+});
+
+test('it runs closure action `attrs.onDrag` directly on callback for `dragend` event', function() {
+  const fakeEventObject = { name: 'dragend' };
+  run(() => component.set('attrs', { onDrag: sinon.stub() }));
+  run(() => component.set('polyline', fakePolylineObject));
+  run(() => component.sendOnDrag(fakeEventObject));
+
+  sinon.assert.calledOnce(component.attrs.onDrag);
+  sinon.assert.calledWith(component.attrs.onDrag, fakeEventObject, fakePolylineObject);
 });
