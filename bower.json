@@ -1,13 +1,13 @@
 {
   "name": "ember-g-map",
   "dependencies": {
-    "ember": "~2.5.0",
+    "ember": "~2.6.0",
     "ember-cli-shims": "0.1.1",
     "ember-cli-test-loader": "0.2.2",
-    "ember-qunit-notifications": "0.1.0",
     "sinonjs": "~1.17.1"
   },
   "devDependencies": {
-    "blanket": "5e94fc30f2e694bb5c3718ddcbf60d467f4b4d26"
+    "blanket": "5e94fc30f2e694bb5c3718ddcbf60d467f4b4d26",
+    "ember-qunit-notifications": "0.1.0"
   }
 }
