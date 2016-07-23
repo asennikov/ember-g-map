@@ -21,6 +21,16 @@ module.exports = {
       if (key) {
         params.push('key=' + encodeURIComponent(key));
       }
+      
+      var version = gMapConfig.version;
+      if (version) {
+        params.push('v=' + encodeURIComponent(version));
+      }
+      
+      var client = gMapConfig.client;
+      if (client) {
+        params.push('client=' + encodeURIComponent(client));
+      }
 
       var libraries = gMapConfig.libraries;
       if (libraries && libraries.length) {
@@ -39,6 +49,11 @@ module.exports = {
 
       src += '?' + params.join('&');
       content = '<script type="text/javascript" src="' + src + '"></script>';
+      
+      var exclude = gMapConfig.exclude;
+      if (exclude) {
+        content = ''
+      }
     }
 
     return content;
