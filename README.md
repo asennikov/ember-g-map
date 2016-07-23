@@ -30,8 +30,11 @@ In `config/environment.js` you can specify:
 
 ```javascript
 ENV['g-map'] = {
+  exclude: true,
   libraries: ['places', 'geometry'],
   key: 'your-unique-google-map-api-key',
+  client: 'gme-your-unique-google-client-id',
+  version: '3.26',
   language: 'ru',
   protocol: 'https'
 }
