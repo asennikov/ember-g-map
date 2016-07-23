@@ -30,9 +30,6 @@ module.exports = {
       var client = gMapConfig.client;
       if (client) {
         params.push('client=' + encodeURIComponent(client));
-        if (!version) {
-          params.push('v=3');
-        }
       }
 
       var libraries = gMapConfig.libraries;
