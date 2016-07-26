@@ -152,11 +152,15 @@ const GMapMarkerComponent = Ember.Component.extend({
     }
   },
 
+  zIndexChanged: observer('zIndex', function() {
+    run.once(this, 'setZIndex');
+  }),
+
   setZIndex() {
-  const marker = this.get('marker');
-  const zIndex = this.get('zIndex');
-  if (isPresent(marker) && isPresent(zIndex)) {
-    marker.setZIndex(zIndex);
+    const marker = this.get('marker');
+    const zIndex = this.get('zIndex');
+    if (isPresent(marker) && isPresent(zIndex)) {
+      marker.setZIndex(zIndex);
     }
   },
 
