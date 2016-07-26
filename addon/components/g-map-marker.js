@@ -32,6 +32,7 @@ const GMapMarkerComponent = Ember.Component.extend({
     }
     this.setPosition();
     this.setIcon();
+    this.setDraggable();
     this.setLabel();
     this.setTitle();
     this.setMap();
@@ -104,6 +105,18 @@ const GMapMarkerComponent = Ember.Component.extend({
     if (isPresent(marker) && isPresent(map)) {
       marker.setMap(map);
     }
+
+    if (isPresent(marker) && isPresent(marker.draggable) && isPresent(map)) {
+      google.maps.event.addListener(marker, 'dragend', function(event) {
+        let lat = event.latLng.lat();
+        let lng = event.latLng.lng();
+        console.log('moved to: %s & %s', lat, lng);
+        if(isPresent(lat) && isPresent(lng) && isPresent(marker)) {
+          const position = new google.maps.LatLng(lat, lng);
+          marker.setPosition(position);
+        }
+      });
+    }
   },
 
   coordsChanged: observer('lat', 'lng', function() {
@@ -134,6 +147,14 @@ const GMapMarkerComponent = Ember.Component.extend({
 
     if (isPresent(marker) && isPresent(icon)) {
       marker.setIcon(icon);
+    }
+  },
+
+  setDraggable() {
+    const marker = this.get('marker');
+    const draggable = this.get('draggable');
+    if(isPresent(marker) && isPresent(draggable)) {
+      marker.setDraggable(draggable);
     }
   },
 
