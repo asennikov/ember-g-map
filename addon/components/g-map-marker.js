@@ -31,6 +31,7 @@ const GMapMarkerComponent = Ember.Component.extend({
       this.set('marker', marker);
     }
     this.setPosition();
+    this.setZIndex();
     this.setIcon();
     this.setDraggable();
     this.setLabel();
@@ -148,6 +149,14 @@ const GMapMarkerComponent = Ember.Component.extend({
 
     if (isPresent(marker) && isPresent(icon)) {
       marker.setIcon(icon);
+    }
+  },
+
+  setZIndex() {
+  const marker = this.get('marker');
+  const zIndex = this.get('zIndex');
+  if (isPresent(marker) && isPresent(zIndex)) {
+    marker.setZIndex(zIndex);
     }
   },
 
