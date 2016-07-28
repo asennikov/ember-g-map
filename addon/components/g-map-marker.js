@@ -132,7 +132,9 @@ const GMapMarkerComponent = Ember.Component.extend({
         isPresent(lng) &&
         (typeof FastBoot === 'undefined')) {
       const position = new google.maps.LatLng(lat, lng);
-      marker.setPosition(position);
+      if (isPresent(position)) {
+        marker.setPosition(position);
+      }
     }
   },
 
