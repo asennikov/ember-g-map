@@ -110,7 +110,7 @@ const GMapMarkerComponent = Ember.Component.extend({
       google.maps.event.addListener(marker, 'dragend', function(event) {
         let lat = event.latLng.lat();
         let lng = event.latLng.lng();
-        if(isPresent(lat) && isPresent(lng)) {
+        if (isPresent(lat) && isPresent(lng)) {
           const position = new google.maps.LatLng(lat, lng);
           marker.setPosition(position);
         }
