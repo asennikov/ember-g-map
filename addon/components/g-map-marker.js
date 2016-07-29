@@ -154,7 +154,7 @@ const GMapMarkerComponent = Ember.Component.extend({
   setDraggable() {
     const marker = this.get('marker');
     const draggable = this.get('draggable');
-    if(isPresent(marker) && isPresent(draggable)) {
+    if (isPresent(marker) && isPresent(draggable)) {
       marker.setDraggable(draggable);
     }
   },
