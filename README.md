@@ -84,6 +84,25 @@ You can assign custom images to your markers by pointing the `icon` attribute to
 {{g-map-marker context lat=lat lng=lng icon="/assets/images/driver-icon.svg" }}
 ```
 
+### Complex Marker Icons
+
+You can also create a [complex marker icon](https://developers.google.com/maps/documentation/javascript/markers#complex_icons) by defining an icon object and passing it to the `icon` attribute 
+
+```javascript
+myIcon: {
+  url: "/assets/images/driver-icon.svg",
+  size: new google.maps.size(30,30),
+  scaledSize: new google.maps.size(20,20),
+  anchor: new google.maps.point(15, 15),
+  origin: new google.maps.point(0, 0),
+  labelOrigin: new google.maps.point(30, 15),
+}
+```
+
+```handlebars
+{{g-map-marker context lat=lat lng=lng icon=myIcon }}
+```
+
 ## Map with Info Windows
 
 These Info Windows will be open right after component is rendered
