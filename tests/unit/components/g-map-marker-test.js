@@ -21,6 +21,7 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
       setLabel: sinon.stub(),
       setTitle: sinon.stub(),
       setMap: sinon.stub(),
+      setZIndex: sinon.stub(),
       addListener: sinon.stub()
     };
     sinon.stub(google.maps, 'Marker').returns(fakeMarkerObject);
@@ -419,6 +420,44 @@ test('it doesn\'t call `setLabel` of google marker on `setLabel` when no label p
   run(() => component.setLabel());
 
   sinon.assert.notCalled(fakeMarkerObject.setLabel);
+});
+
+test('it triggers `setZIndex` on `didInsertElement` event', function() {
+  component.setZIndex = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setZIndex);
+});
+
+test('it triggers `setZIndex` on `zIndex` change', function() {
+  component.setZIndex = sinon.stub();
+  run(() => component.set('zIndex', 11));
+  sinon.assert.calledOnce(component.setZIndex);
+});
+
+test('it calls `setZIndex` of google marker on `setZIndex` with zIndex present', function() {
+  run(() => component.setProperties({
+    zIndex: 10,
+    marker: fakeMarkerObject
+  }));
+
+  fakeMarkerObject.setZIndex = sinon.stub();
+
+  run(() => component.setZIndex());
+
+  sinon.assert.calledOnce(fakeMarkerObject.setZIndex);
+  sinon.assert.calledWith(fakeMarkerObject.setZIndex, 10);
+});
+
+test('it doesn\'t call `setZIndex` of google marker on `setZIndex` when no zIndex present', function() {
+  fakeMarkerObject.setZIndex = sinon.stub();
+
+  run(() => component.setProperties({
+    zIndex: undefined,
+    marker: fakeMarkerObject
+  }));
+  run(() => component.setZIndex());
+
+  sinon.assert.notCalled(fakeMarkerObject.setZIndex);
 });
 
 test('it triggers `setTitle` on `didInsertElement` event', function() {
