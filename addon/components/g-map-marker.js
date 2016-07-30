@@ -107,17 +107,6 @@ const GMapMarkerComponent = Ember.Component.extend({
     if (isPresent(marker) && isPresent(map)) {
       marker.setMap(map);
     }
-
-    if (isPresent(marker) && isPresent(marker.draggable) && isPresent(map)) {
-      google.maps.event.addListener(marker, 'dragend', function(event) {
-        let lat = event.latLng.lat();
-        let lng = event.latLng.lng();
-        if (isPresent(lat) && isPresent(lng)) {
-          const position = new google.maps.LatLng(lat, lng);
-          marker.setPosition(position);
-        }
-      });
-    }
   },
 
   coordsChanged: observer('lat', 'lng', function() {
@@ -172,7 +161,7 @@ const GMapMarkerComponent = Ember.Component.extend({
   setDraggable() {
     const marker = this.get('marker');
     const draggable = this.get('draggable');
-    if(isPresent(marker) && isPresent(draggable)) {
+    if (isPresent(marker) && isPresent(draggable)) {
       marker.setDraggable(draggable);
     }
   },
@@ -189,7 +178,7 @@ const GMapMarkerComponent = Ember.Component.extend({
     marker.addListener('dragend', (event) => {
       const lat = event.latLng.lat();
       const lng = event.latLng.lng();
-      if(isPresent(lat) && isPresent(lng) && isPresent(marker)) {
+      if (isPresent(lat) && isPresent(lng) && isPresent(marker)) {
         const position = new google.maps.LatLng(lat, lng);
         marker.setPosition(position);
         this.sendOnDrag(lat, lng);

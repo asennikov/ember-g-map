@@ -22,6 +22,7 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
       setTitle: sinon.stub(),
       setMap: sinon.stub(),
       setZIndex: sinon.stub(),
+      setDraggable: sinon.stub(),
       addListener: sinon.stub()
     };
     sinon.stub(google.maps, 'Marker').returns(fakeMarkerObject);
@@ -57,6 +58,12 @@ test('it triggers `setOnClick` on `didInsertElement` event', function() {
   component.setOnClick = sinon.stub();
   component.trigger('didInsertElement');
   sinon.assert.calledOnce(component.setOnClick);
+});
+
+test('it triggers `setOnDrag` on `didInsertElement` event', function() {
+  component.setOnDrag = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setOnDrag);
 });
 
 test('it triggers `unsetMarkerFromMap` on `willDestroyElement` event', function() {
@@ -460,6 +467,44 @@ test('it doesn\'t call `setZIndex` of google marker on `setZIndex` when no zInde
   sinon.assert.notCalled(fakeMarkerObject.setZIndex);
 });
 
+test('it triggers `setDraggable` on `didInsertElement` event', function() {
+  component.setDraggable = sinon.stub();
+  component.trigger('didInsertElement');
+  sinon.assert.calledOnce(component.setDraggable);
+});
+
+test('it triggers `setDraggable` on `draggable` change', function() {
+  component.setDraggable = sinon.stub();
+  run(() => component.set('draggable', false));
+  sinon.assert.calledOnce(component.setDraggable);
+});
+
+test('it calls `setDraggable` of google marker on `setDraggable` with draggable present', function() {
+  run(() => component.setProperties({
+    draggable: true,
+    marker: fakeMarkerObject
+  }));
+
+  fakeMarkerObject.setDraggable = sinon.stub();
+
+  run(() => component.setDraggable());
+
+  sinon.assert.calledOnce(fakeMarkerObject.setDraggable);
+  sinon.assert.calledWith(fakeMarkerObject.setDraggable, true);
+});
+
+test('it doesn\'t call `setDraggable` of google marker on `setDraggable` when no draggable present', function() {
+  fakeMarkerObject.setDraggable = sinon.stub();
+
+  run(() => component.setProperties({
+    draggable: undefined,
+    marker: fakeMarkerObject
+  }));
+  run(() => component.setDraggable());
+
+  sinon.assert.notCalled(fakeMarkerObject.setDraggable);
+});
+
 test('it triggers `setTitle` on `didInsertElement` event', function() {
   component.setTitle = sinon.stub();
   component.trigger('didInsertElement');
@@ -573,6 +618,44 @@ test('it doesn\'t call `groupMarkerClicked` of google marker on `sendOnClick` wh
   run(() => component.set('attrs', {}));
   run(() => component.sendOnClick());
   sinon.assert.notCalled(mapContext.groupMarkerClicked);
+});
+
+test('it calls `addListener` of google marker on `setOnDrag` with `marker` present', function() {
+  const fakeDragEvent = {
+    latLng: {
+      lat: () => 101,
+      lng: () => 11
+    }
+  };
+  fakeMarkerObject.addListener = sinon.stub().callsArgWith(1, fakeDragEvent);
+  run(() => component.set('marker', fakeMarkerObject));
+  component.sendOnDrag = sinon.stub();
+
+  run(() => component.setOnDrag());
+
+  sinon.assert.calledOnce(fakeMarkerObject.addListener);
+  sinon.assert.calledWith(fakeMarkerObject.addListener, 'dragend');
+
+  sinon.assert.calledOnce(component.sendOnDrag);
+  sinon.assert.calledWith(component.sendOnDrag, 101, 11);
+});
+
+test('it sends action `onDrag` on callback for `dragend` event', function() {
+  component.sendAction = sinon.stub();
+
+  run(() => component.set('attrs', { onDrag: 'action' }));
+  run(() => component.sendOnDrag(66, 77));
+
+  sinon.assert.calledOnce(component.sendAction);
+  sinon.assert.calledWith(component.sendAction, 'onDrag', 66, 77);
+});
+
+test('it runs closure action `attrs.onDrag` directly on callback for `dragend` event', function() {
+  run(() => component.set('attrs', { onDrag: sinon.stub() }));
+  run(() => component.sendOnDrag(111, 55));
+
+  sinon.assert.calledOnce(component.attrs.onDrag);
+  sinon.assert.calledWith(component.attrs.onDrag, 111, 55);
 });
 
 test('it calls `close` of infowindow on `closeInfowindow`', function() {
