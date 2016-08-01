@@ -66,7 +66,7 @@ Mandatory `context` attribute ties child-elements
 with the main `g-map` component. You can also set optional attributes:
 - simple title appearing on hover using `title` attribute,
 - marker label using `label`,
-- `draggable` boelean option,
+- `draggable` boolean option,
 - `onClick` action to track all `click` events on that marker,
 - `onDrag` action to track all `dragend` events on that marker (callback receives new `lat` and `lng` in attributes).
 
