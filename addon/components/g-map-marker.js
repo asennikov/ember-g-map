@@ -33,10 +33,12 @@ const GMapMarkerComponent = Ember.Component.extend({
     this.setPosition();
     this.setZIndex();
     this.setIcon();
+    this.setDraggable();
     this.setLabel();
     this.setTitle();
     this.setMap();
     this.setOnClick();
+    this.setOnDrag();
   },
 
   willDestroyElement() {
@@ -121,7 +123,9 @@ const GMapMarkerComponent = Ember.Component.extend({
         isPresent(lng) &&
         (typeof FastBoot === 'undefined')) {
       const position = new google.maps.LatLng(lat, lng);
-      marker.setPosition(position);
+      if (isPresent(position)) {
+        marker.setPosition(position);
+      }
     }
   },
 
@@ -150,11 +154,36 @@ const GMapMarkerComponent = Ember.Component.extend({
     }
   },
 
+  draggableChanged: observer('draggable', function() {
+    run.once(this, 'setDraggable');
+  }),
+
+  setDraggable() {
+    const marker = this.get('marker');
+    const draggable = this.get('draggable');
+    if (isPresent(marker) && isPresent(draggable)) {
+      marker.setDraggable(draggable);
+    }
+  },
+
   setOnClick() {
     const marker = this.get('marker');
     if (isPresent(marker)) {
       marker.addListener('click', () => this.sendOnClick());
     }
+  },
+
+  setOnDrag() {
+    const marker = this.get('marker');
+    marker.addListener('dragend', (event) => {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+      if (isPresent(lat) && isPresent(lng) && isPresent(marker)) {
+        const position = new google.maps.LatLng(lat, lng);
+        marker.setPosition(position);
+        this.sendOnDrag(lat, lng);
+      }
+    });
   },
 
   labelChanged: observer('label', function() {
@@ -196,6 +225,16 @@ const GMapMarkerComponent = Ember.Component.extend({
 
     if (isPresent(group)) {
       mapContext.groupMarkerClicked(this, group);
+    }
+  },
+
+  sendOnDrag(lat, lng) {
+    const { onDrag } = this.attrs;
+
+    if (typeOf(onDrag) === 'function') {
+      onDrag(lat, lng);
+    } else {
+      this.sendAction('onDrag', lat, lng);
     }
   },
 
