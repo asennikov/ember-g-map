@@ -357,6 +357,7 @@ You can optionally set following custom polyline options as attributes:
 - `clickable`
 - `draggable`
 - `geodesic`
+- `icons`
 - `visible`
 
 ```handlebars
