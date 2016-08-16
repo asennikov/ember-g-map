@@ -84,7 +84,8 @@ const GMapPolylineComponent = Ember.Component.extend({
       let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
       polyline.setPath(coordArray);
     }
-    else if (isPresent(polyline) && isPresent(path)) {
+    
+    if (isPresent(polyline) && isPresent(path)) {
       polyline.setPath(path);
     }
   },
