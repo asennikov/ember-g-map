@@ -5,7 +5,7 @@ import compact from '../utils/compact';
 
 const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
 
-const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex', 'geodesic', 'clickable', 'draggable', 'visible', 'path']);
+const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex', 'geodesic', 'clickable', 'draggable', 'visible', 'path', 'icons']);
 
 const GMapPolylineComponent = Ember.Component.extend({
   layout: layout,
