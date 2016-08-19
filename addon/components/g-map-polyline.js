@@ -5,7 +5,7 @@ import compact from '../utils/compact';
 
 const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
 
-const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex', 'geodesic', 'clickable', 'draggable', 'visible']);
+const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex', 'geodesic', 'clickable', 'draggable', 'visible', 'path', 'icons']);
 
 const GMapPolylineComponent = Ember.Component.extend({
   layout: layout,
@@ -78,10 +78,15 @@ const GMapPolylineComponent = Ember.Component.extend({
   setPath() {
     const polyline = this.get('polyline');
     const coordinates = this.get('coordinates');
+    const path = this.get('path');
 
     if (isPresent(polyline) && isPresent(coordinates)) {
       let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
       polyline.setPath(coordArray);
+    }
+
+    if (isPresent(polyline) && isPresent(path)) {
+      polyline.setPath(path);
     }
   },
 

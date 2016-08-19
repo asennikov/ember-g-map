@@ -88,7 +88,7 @@ You can assign custom images to your markers by pointing the `icon` attribute to
 
 ### Complex Marker Icons
 
-You can also create a [complex marker icon](https://developers.google.com/maps/documentation/javascript/markers#complex_icons) by defining an icon object and passing it to the `icon` attribute 
+You can also create a [complex marker icon](https://developers.google.com/maps/documentation/javascript/markers#complex_icons) by defining an icon object and passing it to the `icon` attribute
 
 ```javascript
 myIcon: {
@@ -358,6 +358,7 @@ You can optionally set following custom polyline options as attributes:
 - `draggable`
 - `geodesic`
 - `visible`
+- `path`
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
@@ -368,6 +369,8 @@ You can optionally set following custom polyline options as attributes:
     {{g-map-polyline-coordinate coordinateContext lat=37.7933 lng=-122.4567}}
     {{g-map-polyline-coordinate coordinateContext lat=37.7933 lng=-122.4667}}
   {{/g-map-polyline}}
+
+  {{g-map-polyline context path=decodedPolyline}}
 {{/g-map}}
 ```
 
