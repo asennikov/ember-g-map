@@ -80,13 +80,17 @@ const GMapPolylineComponent = Ember.Component.extend({
     const coordinates = this.get('coordinates');
     const path = this.get('path');
 
-    if (isPresent(polyline) && isPresent(coordinates)) {
-      let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
-      polyline.setPath(coordArray);
-    }
+    if (isPresent(polyline)) {
 
-    if (isPresent(polyline) && isPresent(path)) {
-      polyline.setPath(path);
+      if (isPresent(coordinates) && isEmpty(path)) {
+        let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
+        polyline.setPath(coordArray);
+      }
+
+      if (isPresent(path) && isEmpty(coordinates)) {
+        polyline.setPath(path);
+      }
+
     }
   },
 
