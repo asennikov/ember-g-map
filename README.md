@@ -20,6 +20,17 @@ Simply add something similar to this to your styles:
   height: 400px;
 }
 ```
+In case you want to make the google map to have full width and height as the parent div, you can do the following:
+
+```css
+.g-map{
+  height:100%;
+}
+.g-map-canvas {
+  width:100%;
+  height: 100%;
+}
+```
 
 In `config/environment.js` you can specify:
 - additional Google Maps libraries to be loaded along with this add-on
