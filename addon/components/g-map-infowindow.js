@@ -73,6 +73,10 @@ const GMapInfowindowComponent = Ember.Component.extend({
       if (isPresent(this.get('attrs.onClose'))) {
         infowindow.addListener('closeclick', () => this.handleCloseClickEvent());
       }
+      if (isPresent(this.get('attrs.onOpen'))) {
+        infowindow.addListener('domready', () => this.handleOpenClickEvent());
+      }
+
       return infowindow;
     }
   },
@@ -85,7 +89,14 @@ const GMapInfowindowComponent = Ember.Component.extend({
       this.sendAction('onClose');
     }
   },
-
+  handleOpenClickEvent() {
+  const { onOpen } = this.attrs;
+  if (typeOf(onOpen) === 'function') {
+    onClose();
+  } else {
+    this.sendAction('onOpen', this.context);
+    }
+  },
   open() {
     const infowindow = this.get('infowindow');
     const map = this.get('map');
