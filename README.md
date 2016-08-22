@@ -93,11 +93,11 @@ You can also create a [complex marker icon](https://developers.google.com/maps/d
 ```javascript
 myIcon: {
   url: "/assets/images/driver-icon.svg",
-  size: new google.maps.size(30,30),
-  scaledSize: new google.maps.size(20,20),
-  anchor: new google.maps.point(15, 15),
-  origin: new google.maps.point(0, 0),
-  labelOrigin: new google.maps.point(30, 15),
+  size: new google.maps.Size(30,30),
+  scaledSize: new google.maps.Size(20,20),
+  anchor: new google.maps.Point(15, 15),
+  origin: new google.maps.Point(0, 0),
+  labelOrigin: new google.maps.Point(30, 15),
 }
 ```
 
