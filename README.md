@@ -24,10 +24,10 @@ In case you want to make the google map to have full width and height as the par
 
 ```css
 .g-map{
-  height:100%;
+  height: 100%;
 }
 .g-map-canvas {
-  width:100%;
+  width: 100%;
   height: 100%;
 }
 ```
