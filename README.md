@@ -20,6 +20,17 @@ Simply add something similar to this to your styles:
   height: 400px;
 }
 ```
+In case you want to make the google map to have full width and height as the parent div, you can do the following:
+
+```css
+.g-map{
+  height: 100%;
+}
+.g-map-canvas {
+  width: 100%;
+  height: 100%;
+}
+```
 
 In `config/environment.js` you can specify:
 - additional Google Maps libraries to be loaded along with this add-on
@@ -93,11 +104,11 @@ You can also create a [complex marker icon](https://developers.google.com/maps/d
 ```javascript
 myIcon: {
   url: "/assets/images/driver-icon.svg",
-  size: new google.maps.size(30,30),
-  scaledSize: new google.maps.size(20,20),
-  anchor: new google.maps.point(15, 15),
-  origin: new google.maps.point(0, 0),
-  labelOrigin: new google.maps.point(30, 15),
+  size: new google.maps.Size(30,30),
+  scaledSize: new google.maps.Size(20,20),
+  anchor: new google.maps.Point(15, 15),
+  origin: new google.maps.Point(0, 0),
+  labelOrigin: new google.maps.Point(30, 15),
 }
 ```
 
