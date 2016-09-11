@@ -154,12 +154,12 @@ const GMapInfowindowComponent = Ember.Component.extend({
 
   retrieveOpenEvent() {
     const openEvent = this.get('openOn');
-    return OPEN_CLOSE_EVENTS.contains(openEvent) ? openEvent : 'click';
+    return OPEN_CLOSE_EVENTS.includes(openEvent) ? openEvent : 'click';
   },
 
   retrieveCloseEvent() {
     const closeEvent = this.get('closeOn');
-    return OPEN_CLOSE_EVENTS.contains(closeEvent) ? closeEvent : null;
+    return OPEN_CLOSE_EVENTS.includes(closeEvent) ? closeEvent : null;
   }
 });
 
