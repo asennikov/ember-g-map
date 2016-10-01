@@ -21,7 +21,7 @@ export default Ember.Component.extend({
     const { options, bannedOptions } = this.getProperties(['options', 'bannedOptions']);
     const permittedOptions = {};
     for (let option in options) {
-      if (options.hasOwnProperty(option) && !bannedOptions.contains(option)) {
+      if (options.hasOwnProperty(option) && !bannedOptions.includes(option)) {
         permittedOptions[option] = options[option];
       }
     }
@@ -102,7 +102,7 @@ export default Ember.Component.extend({
   },
 
   shouldFit: computed('markersFitMode', function() {
-    return Ember.A(['init', 'live']).contains(this.get('markersFitMode'));
+    return Ember.A(['init', 'live']).includes(this.get('markersFitMode'));
   }),
 
   markersChanged: observer('markers.@each.lat', 'markers.@each.lng', function() {
