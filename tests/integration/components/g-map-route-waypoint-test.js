@@ -18,7 +18,7 @@ test('it renders', function(assert) {
       {{/g-map-route}}
     {{/g-map}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  assert.ok(this.$());
 
   // Template block usage:
   this.render(hbs`
@@ -31,5 +31,5 @@ test('it renders', function(assert) {
     {{/g-map}}
   `);
 
-  assert.equal(this.$().text().trim(), 'template block text');
+  assert.ok(this.$());
 });

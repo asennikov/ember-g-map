@@ -21,5 +21,5 @@ test('it renders', function(assert) {
     {{/g-map}}
   `);
 
-  assert.equal(this.$().text().trim(), '');
+  assert.ok(this.$());
 });

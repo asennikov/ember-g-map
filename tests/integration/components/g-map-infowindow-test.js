@@ -14,7 +14,7 @@ test('it renders inside {{g-map}} component', function(assert) {
     {{/g-map}}
   `);
 
-  assert.equal(this.$().text().trim(), '');
+  assert.ok(this.$());
 
   this.render(hbs`
     {{#g-map as |context|}}
@@ -24,7 +24,7 @@ test('it renders inside {{g-map}} component', function(assert) {
     {{/g-map}}
   `);
 
-  assert.equal(this.$().text().trim(), 'template block text');
+  assert.ok(this.$());
 });
 
 test('it renders inside {{g-map-marker}} component', function(assert) {
@@ -38,7 +38,7 @@ test('it renders inside {{g-map-marker}} component', function(assert) {
     {{/g-map}}
   `);
 
-  assert.equal(this.$().text().trim(), '');
+  assert.ok(this.$());
 
   this.render(hbs`
     {{#g-map as |context|}}
@@ -50,5 +50,5 @@ test('it renders inside {{g-map-marker}} component', function(assert) {
     {{/g-map}}
   `);
 
-  assert.equal(this.$().text().trim(), 'template block text');
+  assert.ok(this.$());
 });
