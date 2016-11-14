@@ -4,7 +4,7 @@ import GMapComponent from './g-map';
 import GMapMarkerComponent from './g-map-marker';
 import compact from '../utils/compact';
 
-const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
+const { isEmpty, isPresent, computed, run, assert, typeOf } = Ember;
 
 const allowedOptions = Ember.A(['disableAutoPan', 'maxWidth', 'pixelOffset']);
 
@@ -37,23 +37,22 @@ const GMapInfowindowComponent = Ember.Component.extend({
       const infowindow = this.buildInfowindow();
       this.set('infowindow', infowindow);
     }
-    this.setPosition();
-    this.setMap();
-    this.setMarker();
-    this.setOptions();
   },
 
-  willDestroyElement() {
-    this.close();
-
-    if (this.get('hasMarker')) {
-      this.get('mapContext').unregisterInfowindow();
+  didRender() {
+    this.setPosition();
+    this.setMap();
+    this.setOptions();
+    if (this.get('open')) {
+      this._open();
+    } else {
+      this._close();
     }
   },
 
-  optionsChanged: observer(...allowedOptions, function() {
-    run.once(this, 'setOptions');
-  }),
+  willDestroyElement() {
+    this._close();
+  },
 
   setOptions() {
     const infowindow = this.get('infowindow');
@@ -86,7 +85,7 @@ const GMapInfowindowComponent = Ember.Component.extend({
     }
   },
 
-  open() {
+  _open() {
     const infowindow = this.get('infowindow');
     const map = this.get('map');
     const marker = this.get('marker');
@@ -99,7 +98,7 @@ const GMapInfowindowComponent = Ember.Component.extend({
     }
   },
 
-  close() {
+  _close() {
     const infowindow = this.get('infowindow');
     if (isPresent(infowindow)) {
       this.set('isOpen', false);
@@ -107,36 +106,11 @@ const GMapInfowindowComponent = Ember.Component.extend({
     }
   },
 
-  mapWasSet: observer('map', function() {
-    run.once(this, 'setMap');
-  }),
-
   setMap() {
     if (this.get('hasMarker') === false) {
-      this.open();
+      this._open();
     }
   },
-
-  markerWasSet: observer('marker', function() {
-    run.once(this, 'setMarker');
-  }),
-
-  setMarker() {
-    const map = this.get('map');
-    const marker = this.get('marker');
-    const context = this.get('mapContext');
-    const infowindow = this.get('infowindow');
-
-    if (isPresent(infowindow) && isPresent(map) && isPresent(marker)) {
-      const openEvent = this.retrieveOpenEvent();
-      const closeEvent = this.retrieveCloseEvent();
-      context.registerInfowindow(this, openEvent, closeEvent);
-    }
-  },
-
-  coordsChanged: observer('lat', 'lng', function() {
-    run.once(this, 'setPosition');
-  }),
 
   setPosition() {
     const infowindow = this.get('infowindow');
