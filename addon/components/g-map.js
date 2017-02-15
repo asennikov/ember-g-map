@@ -29,18 +29,20 @@ export default Ember.Component.extend({
   }),
 
   didInsertElement() {
-    this._super();
-    if (isEmpty(this.get('map')) &&
-      (typeof FastBoot === 'undefined')) {
-      const canvas = this.$().find('.g-map-canvas').get(0);
-      const options = this.get('permittedOptions');
-      this.set('map', new google.maps.Map(canvas, options));
-    }
-    this.setZoom();
-    this.setCenter();
-    if (this.get('shouldFit')) {
-      this.fitToMarkers();
-    }
+    this._super(...arguments);
+    Ember.run.next(() => {
+      if (isEmpty(this.get('map')) &&
+        (typeof FastBoot === 'undefined')) {
+        const canvas = this.$().find('.g-map-canvas').get(0);
+        const options = this.get('permittedOptions');
+        this.set('map', new google.maps.Map(canvas, options));
+      }
+      this.setZoom();
+      this.setCenter();
+      if (this.get('shouldFit')) {
+        this.fitToMarkers();
+      }
+    }, this);
   },
 
   permittedOptionsChanged: observer('permittedOptions', function() {
