@@ -32,10 +32,10 @@ install:
   - bower install
 
 script:
-  - ember try $EMBER_TRY_SCENARIO test
+  - COVERAGE=true ember try $EMBER_TRY_SCENARIO test
 
 after_script:
-  - cat lcov.dat | node_modules/coveralls/bin/coveralls.js
+  - cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
 
 -notifications:
   email:
