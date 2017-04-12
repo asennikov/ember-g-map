@@ -9,11 +9,11 @@ const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
 const allowedOptions = Ember.A(['disableAutoPan', 'maxWidth', 'pixelOffset']);
 
 const OPEN_CLOSE_EVENTS = Ember.A(
-  [ 'click', 'dblclick', 'rightclick', 'mouseover', 'mouseout' ]
+  ['click', 'dblclick', 'rightclick', 'mouseover', 'mouseout']
 );
 
 const GMapInfowindowComponent = Ember.Component.extend({
-  layout: layout,
+  layout,
   classNames: ['g-map-marker'],
 
   map: computed.alias('mapContext.map'),
@@ -143,10 +143,10 @@ const GMapInfowindowComponent = Ember.Component.extend({
     const lat = this.get('lat');
     const lng = this.get('lng');
 
-    if (isPresent(infowindow) &&
-        isPresent(lat) &&
-        isPresent(lng) &&
-        (typeof FastBoot === 'undefined')) {
+    if (isPresent(infowindow)
+      && isPresent(lat)
+      && isPresent(lng)
+      && (typeof FastBoot === 'undefined')) {
       const position = new google.maps.LatLng(lat, lng);
       infowindow.setPosition(position);
     }

@@ -6,8 +6,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-let fakeInfowindowObject;
-let component;
+let fakeInfowindowObject, component;
 
 moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
   // Specify the other units that are required for this test

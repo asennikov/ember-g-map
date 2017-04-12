@@ -6,8 +6,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-let fakePolylineObject;
-let component;
+let fakePolylineObject, component;
 
 moduleForComponent('g-map-polyline', 'Unit | Component | g map polyline', {
   // Specify the other units that are required for this test

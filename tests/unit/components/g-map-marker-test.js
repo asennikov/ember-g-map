@@ -6,8 +6,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-let fakeMarkerObject;
-let component;
+let fakeMarkerObject, component;
 
 moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
   // Specify the other units that are required for this test

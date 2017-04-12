@@ -8,7 +8,7 @@ const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
 const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex', 'geodesic', 'icons', 'clickable', 'draggable', 'visible', 'path']);
 
 const GMapPolylineComponent = Ember.Component.extend({
-  layout: layout,
+  layout,
   classNames: ['g-map-polyline'],
 
   map: computed.alias('mapContext.map'),

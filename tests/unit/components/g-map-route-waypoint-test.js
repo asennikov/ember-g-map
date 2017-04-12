@@ -7,9 +7,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-let fakeMarkerObject;
-let routeComponent;
-let component;
+let fakeMarkerObject, routeComponent, component;
 
 moduleForComponent('g-map-route-waypoint', 'Unit | Component | g map route waypoint', {
   // Specify the other units that are required for this test

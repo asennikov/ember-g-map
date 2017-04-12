@@ -7,8 +7,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-let fakePlacesService;
-let component;
+let fakePlacesService, component;
 
 moduleForComponent('g-map-route-address-waypoint', 'Unit | Component | g map route address waypoint', {
   // Specify the other units that are required for this test

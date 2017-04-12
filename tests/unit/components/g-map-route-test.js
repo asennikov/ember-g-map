@@ -6,9 +6,7 @@ import sinon from 'sinon';
 
 const { run } = Ember;
 
-let fakeDirectionsService;
-let fakeDirectionsRenderer;
-let component;
+let fakeDirectionsService, fakeDirectionsRenderer, component;
 
 moduleForComponent('g-map-route', 'Unit | Component | g map route', {
   // Specify the other units that are required for this test
@@ -173,8 +171,8 @@ test('it calls `route` of directionsService on `updateRoute`', function() {
   run(() => component.updateRoute());
 
   const correctRequest = {
-    origin: origin,
-    destination: destination,
+    origin,
+    destination,
     travelMode: google.maps.TravelMode.DRIVING,
     waypoints: []
   };

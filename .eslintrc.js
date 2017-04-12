@@ -12,10 +12,6 @@ module.exports = {
     browser: true
   },
   rules: {
-    'array-bracket-spacing': 'off',
-    'one-var': 'off',
-    'object-shorthand': 'off',
-    'operator-linebreak': 'off',
     'ember-suave/no-const-outside-module-scope': 'off',
     'ember-suave/no-direct-property-access': 'off'
   },
