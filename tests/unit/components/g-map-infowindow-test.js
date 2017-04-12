@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import { moduleForComponent } from 'ember-qunit';
 import test from 'ember-sinon-qunit/test-support/test';
-import GMapComponent from 'ember-g-map/components/g-map';
 import sinon from 'sinon';
 
 const { run } = Ember;
@@ -12,6 +11,7 @@ moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
   // Specify the other units that are required for this test
   // needs: ['component:foo', 'helper:bar'],
   unit: true,
+  needs: ['component:g-map'],
 
   beforeEach() {
     fakeInfowindowObject = {
@@ -23,8 +23,8 @@ moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
     };
     sinon.stub(google.maps, 'InfoWindow').returns(fakeInfowindowObject);
 
-    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
-    const mapContext = GMapComponent.create({ renderer });
+    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
+    const mapContext = GMapComponent.create();
     mapContext.registerInfowindow = sinon.stub();
     mapContext.unregisterInfowindow = sinon.stub();
 

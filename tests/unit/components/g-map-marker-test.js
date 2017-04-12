@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import { moduleForComponent } from 'ember-qunit';
 import test from 'ember-sinon-qunit/test-support/test';
-import GMapComponent from 'ember-g-map/components/g-map';
 import sinon from 'sinon';
 
 const { run } = Ember;
@@ -12,6 +11,7 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
   // Specify the other units that are required for this test
   // needs: ['component:foo', 'helper:bar'],
   unit: true,
+  needs: ['component:g-map'],
 
   beforeEach() {
     fakeMarkerObject = {
@@ -25,9 +25,9 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
       addListener: sinon.stub()
     };
     sinon.stub(google.maps, 'Marker').returns(fakeMarkerObject);
-    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
+    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
     component = this.subject({
-      mapContext: GMapComponent.create({ renderer })
+      mapContext: GMapComponent.create()
     });
   },
 

@@ -1,8 +1,6 @@
 import Ember from 'ember';
 import { moduleForComponent } from 'ember-qunit';
 import test from 'ember-sinon-qunit/test-support/test';
-import GMapComponent from 'ember-g-map/components/g-map';
-import GMapPolylineComponent from 'ember-g-map/components/g-map-polyline';
 import sinon from 'sinon';
 
 const { run } = Ember;
@@ -11,18 +9,19 @@ let fakePolylineCoordinateObject, component;
 
 moduleForComponent('g-map-polyline-coordinate', 'Unit | Component | g map polyline coordinate', {
   // Specify the other units that are required for this test
-  needs: ['component:g-map-polyline'],
   unit: true,
+  needs: ['component:g-map', 'component:g-map-polyline'],
 
   beforeEach() {
     fakePolylineCoordinateObject = {
       setPosition: sinon.stub()
     };
     sinon.stub(google.maps, 'LatLng').returns(fakePolylineCoordinateObject);
-    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
-    const mapComponent = GMapComponent.create({ renderer });
+    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
+    const GMapPolylineComponent = Ember.getOwner(this).factoryFor('component:g-map-polyline');
+    const mapComponent = GMapComponent.create();
     component = this.subject({
-      polylineContext: GMapPolylineComponent.create({ mapContext: mapComponent, renderer })
+      polylineContext: GMapPolylineComponent.create({ mapContext: mapComponent })
     });
   },
 

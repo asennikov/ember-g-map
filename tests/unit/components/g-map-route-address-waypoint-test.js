@@ -1,8 +1,6 @@
 import Ember from 'ember';
 import { moduleForComponent } from 'ember-qunit';
 import test from 'ember-sinon-qunit/test-support/test';
-import GMapComponent from 'ember-g-map/components/g-map';
-import GMapRouteComponent from 'ember-g-map/components/g-map-route';
 import sinon from 'sinon';
 
 const { run } = Ember;
@@ -13,6 +11,7 @@ moduleForComponent('g-map-route-address-waypoint', 'Unit | Component | g map rou
   // Specify the other units that are required for this test
   // needs: ['component:foo', 'helper:bar'],
   unit: true,
+  needs: ['component:g-map', 'component:g-map-route'],
 
   beforeEach() {
     fakePlacesService = {
@@ -20,10 +19,11 @@ moduleForComponent('g-map-route-address-waypoint', 'Unit | Component | g map rou
     };
     sinon.stub(google.maps.places, 'PlacesService').returns(fakePlacesService);
 
-    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
-    const mapComponent = GMapComponent.create({ renderer });
+    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
+    const GMapRouteComponent = Ember.getOwner(this).factoryFor('component:g-map-route');
+    const mapComponent = GMapComponent.create();
     component = this.subject({
-      routeContext: GMapRouteComponent.create({ mapContext: mapComponent, renderer })
+      routeContext: GMapRouteComponent.create({ mapContext: mapComponent })
     });
   },
 
