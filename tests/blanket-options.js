@@ -1,4 +1,5 @@
 /* globals blanket, module */
+/* eslint no-var: "off", prefer-template: "off" */
 
 var options = {
   modulePrefix: 'ember-g-map',
@@ -11,7 +12,7 @@ var options = {
     autostart: true,
     lcovOptions: {
       outputFile: 'lcov.dat',
-      renamer: function(moduleName){
+      renamer: function(moduleName) {
         var expression = /^ember-g-map/;
         return moduleName.replace(expression, 'addon') + '.js';
       }

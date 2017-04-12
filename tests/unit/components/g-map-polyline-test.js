@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { moduleForComponent } from 'ember-qunit';
-import test from '../../ember-sinon-qunit/test';
+import test from 'ember-sinon-qunit/test-support/test';
 import GMapComponent from 'ember-g-map/components/g-map';
 import sinon from 'sinon';
 

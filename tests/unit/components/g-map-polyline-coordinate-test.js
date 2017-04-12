@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { moduleForComponent } from 'ember-qunit';
-import test from '../../ember-sinon-qunit/test';
+import test from 'ember-sinon-qunit/test-support/test';
 import GMapComponent from 'ember-g-map/components/g-map';
 import GMapPolylineComponent from 'ember-g-map/components/g-map-polyline';
 import sinon from 'sinon';
@@ -78,7 +78,7 @@ test('it calls `setPath` of google polyline on `setPosition` with coordinates pr
     polylineContext: fakePolylineObject
   }));
   run(() => component.setPosition());
-  sinon.assert.called(fakePolylineObject.setPath, 2);
+  sinon.assert.called(fakePolylineObject.setPath);
 });
 
 test('it doesn\'t call `setPosition` of google polyline on `setPosition` when no lat present', function() {
