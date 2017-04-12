@@ -26,8 +26,9 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
       addListener: sinon.stub()
     };
     sinon.stub(google.maps, 'Marker').returns(fakeMarkerObject);
+    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
     component = this.subject({
-      mapContext: new GMapComponent()
+      mapContext: GMapComponent.create({ renderer })
     });
   },
 

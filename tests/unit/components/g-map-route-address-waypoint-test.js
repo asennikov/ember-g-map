@@ -21,9 +21,10 @@ moduleForComponent('g-map-route-address-waypoint', 'Unit | Component | g map rou
     };
     sinon.stub(google.maps.places, 'PlacesService').returns(fakePlacesService);
 
-    const mapComponent = GMapComponent.create();
+    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
+    const mapComponent = GMapComponent.create({ renderer });
     component = this.subject({
-      routeContext: GMapRouteComponent.create({ mapContext: mapComponent })
+      routeContext: GMapRouteComponent.create({ mapContext: mapComponent, renderer })
     });
   },
 

@@ -27,8 +27,9 @@ moduleForComponent('g-map-route', 'Unit | Component | g map route', {
     };
     sinon.stub(google.maps, 'DirectionsRenderer').returns(fakeDirectionsRenderer);
     sinon.stub(google.maps, 'DirectionsService').returns(fakeDirectionsService);
+    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
     component = this.subject({
-      mapContext: new GMapComponent()
+      mapContext: GMapComponent.create({ renderer })
     });
   },
 

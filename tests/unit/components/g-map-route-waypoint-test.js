@@ -17,9 +17,11 @@ moduleForComponent('g-map-route-waypoint', 'Unit | Component | g map route waypo
   unit: true,
 
   beforeEach() {
-    const mapComponent = GMapComponent.create();
+    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
+    const mapComponent = GMapComponent.create({ renderer });
     routeComponent = GMapRouteComponent.create({
       mapContext: mapComponent,
+      renderer,
       registerWaypoint: sinon.stub(),
       unregisterWaypoint: sinon.stub()
     });

@@ -20,10 +20,10 @@ moduleForComponent('g-map-polyline-coordinate', 'Unit | Component | g map polyli
       setPosition: sinon.stub()
     };
     sinon.stub(google.maps, 'LatLng').returns(fakePolylineCoordinateObject);
-
-    const mapComponent = GMapComponent.create();
+    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
+    const mapComponent = GMapComponent.create({ renderer });
     component = this.subject({
-      polylineContext: GMapPolylineComponent.create({ mapContext: mapComponent })
+      polylineContext: GMapPolylineComponent.create({ mapContext: mapComponent, renderer })
     });
   },
 

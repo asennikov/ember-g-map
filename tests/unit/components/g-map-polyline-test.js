@@ -22,8 +22,9 @@ moduleForComponent('g-map-polyline', 'Unit | Component | g map polyline', {
       addListener: sinon.stub()
     };
     sinon.stub(google.maps, 'Polyline').returns(fakePolylineObject);
+    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
     component = this.subject({
-      mapContext: new GMapComponent()
+      mapContext: GMapComponent.create({ renderer })
     });
   },
 

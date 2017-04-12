@@ -24,7 +24,8 @@ moduleForComponent('g-map-infowindow', 'Unit | Component | g map infowindow', {
     };
     sinon.stub(google.maps, 'InfoWindow').returns(fakeInfowindowObject);
 
-    const mapContext = new GMapComponent();
+    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
+    const mapContext = GMapComponent.create({ renderer });
     mapContext.registerInfowindow = sinon.stub();
     mapContext.unregisterInfowindow = sinon.stub();
 

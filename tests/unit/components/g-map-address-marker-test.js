@@ -19,8 +19,9 @@ moduleForComponent('g-map-address-marker', 'Unit | Component | g map address mar
       textSearch: sinon.stub()
     };
     sinon.stub(google.maps.places, 'PlacesService').returns(fakePlacesService);
+    const renderer = Ember.getOwner(this).lookup('renderer:-dom');
     component = this.subject({
-      mapContext: new GMapComponent()
+      mapContext: GMapComponent.create({ renderer })
     });
   },
 
