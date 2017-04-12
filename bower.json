@@ -1,7 +1,6 @@
 {
   "name": "ember-g-map",
   "dependencies": {
-    "ember": "2.9.1",
     "sinonjs": "~1.17.1"
   }
 }
