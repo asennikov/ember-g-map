@@ -32,6 +32,11 @@ module.exports = {
         params.push('client=' + encodeURIComponent(client));
       }
 
+      var channel = gMapConfig.channel;
+      if (channel) {
+        params.push('channel=' + encodeURIComponent(channel));
+      }
+
       var libraries = gMapConfig.libraries;
       if (libraries && libraries.length) {
         params.push('libraries=' + encodeURIComponent(libraries.join(',')));
