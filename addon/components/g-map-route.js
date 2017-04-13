@@ -15,7 +15,7 @@ const TRAVEL_MODES = {
 };
 
 const GMapRouteComponent = Ember.Component.extend({
-  layout: layout,
+  layout,
   classNames: ['g-map-marker'],
   positionalParams: ['mapContext'],
 
@@ -49,12 +49,12 @@ const GMapRouteComponent = Ember.Component.extend({
     let service = this.get('directionsService');
     let renderer = this.get('directionsRenderer');
 
-    if (isPresent(map) &&
-        isEmpty(service) &&
-        isEmpty(renderer) &&
-        (typeof FastBoot === 'undefined')) {
+    if (isPresent(map)
+      && isEmpty(service)
+      && isEmpty(renderer)
+      && (typeof FastBoot === 'undefined')) {
       const rendererOptions = {
-        map: map,
+        map,
         suppressMarkers: true,
         preserveViewport: true
       };
@@ -82,18 +82,18 @@ const GMapRouteComponent = Ember.Component.extend({
     const destinationLng = this.get('destinationLng');
     const waypoints = this.get('waypoints').mapBy('waypoint');
 
-    if (isPresent(service) && isPresent(renderer) &&
-      isPresent(originLat) && isPresent(originLng) &&
-      isPresent(destinationLat) && isPresent(destinationLng) &&
-      (typeof FastBoot === 'undefined')) {
+    if (isPresent(service) && isPresent(renderer)
+      && isPresent(originLat) && isPresent(originLng)
+      && isPresent(destinationLat) && isPresent(destinationLng)
+      && (typeof FastBoot === 'undefined')) {
       const origin = new google.maps.LatLng(this.get('originLat'), this.get('originLng'));
       const destination = new google.maps.LatLng(this.get('destinationLat'), this.get('destinationLng'));
       const travelMode = this.retrieveTravelMode(this.get('travelMode'));
       const request = {
-        origin: origin,
-        destination: destination,
-        travelMode: travelMode,
-        waypoints: waypoints
+        origin,
+        destination,
+        travelMode,
+        waypoints
       };
 
       service.route(request, (response, status) => {

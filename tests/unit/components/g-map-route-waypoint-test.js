@@ -1,22 +1,21 @@
 import Ember from 'ember';
 import { moduleForComponent } from 'ember-qunit';
-import test from '../../ember-sinon-qunit/test';
-import GMapComponent from 'ember-g-map/components/g-map';
-import GMapRouteComponent from 'ember-g-map/components/g-map-route';
+import test from 'ember-sinon-qunit/test-support/test';
 import sinon from 'sinon';
 
 const { run } = Ember;
 
-let fakeMarkerObject;
-let routeComponent;
-let component;
+let fakeMarkerObject, routeComponent, component;
 
 moduleForComponent('g-map-route-waypoint', 'Unit | Component | g map route waypoint', {
   // Specify the other units that are required for this test
   // needs: ['component:foo', 'helper:bar'],
   unit: true,
+  needs: ['component:g-map', 'component:g-map-route'],
 
   beforeEach() {
+    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
+    const GMapRouteComponent = Ember.getOwner(this).factoryFor('component:g-map-route');
     const mapComponent = GMapComponent.create();
     routeComponent = GMapRouteComponent.create({
       mapContext: mapComponent,
