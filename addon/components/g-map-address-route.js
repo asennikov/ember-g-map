@@ -5,7 +5,7 @@ import layout from '../templates/components/g-map-address-route';
 const { computed, observer, run, isPresent, isEmpty, typeOf } = Ember;
 
 const GMapAddressRouteComponent = Ember.Component.extend({
-  layout: layout,
+  layout,
   classNames: ['g-map-address-route'],
 
   map: computed.alias('mapContext.map'),
@@ -23,9 +23,9 @@ const GMapAddressRouteComponent = Ember.Component.extend({
     const map = this.get('map');
     let service = this.get('placesService');
 
-    if (isPresent(map) &&
-        isEmpty(service) &&
-        (typeof FastBoot === 'undefined')) {
+    if (isPresent(map)
+      && isEmpty(service)
+      && (typeof FastBoot === 'undefined')) {
       service = new google.maps.places.PlacesService(map);
       this.set('placesService', service);
       this.searchLocations();
@@ -41,9 +41,9 @@ const GMapAddressRouteComponent = Ember.Component.extend({
     const originAddress = this.get('originAddress');
     const destinationAddress = this.get('destinationAddress');
 
-    if (isPresent(service) &&
-        isPresent(originAddress) &&
-        (typeof FastBoot === 'undefined')) {
+    if (isPresent(service)
+      && isPresent(originAddress)
+      && (typeof FastBoot === 'undefined')) {
       const originRequest = { query: originAddress };
 
       service.textSearch(originRequest, (results, status) => {
@@ -53,9 +53,9 @@ const GMapAddressRouteComponent = Ember.Component.extend({
       });
     }
 
-    if (isPresent(service) &&
-        isPresent(destinationAddress) &&
-        (typeof FastBoot === 'undefined')) {
+    if (isPresent(service)
+      && isPresent(destinationAddress)
+      && (typeof FastBoot === 'undefined')) {
       const destinationRequest = { query: destinationAddress };
 
       service.textSearch(destinationRequest, (results, status) => {

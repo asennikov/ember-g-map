@@ -4,7 +4,7 @@ import layout from '../templates/components/g-map-route-address-waypoint';
 const { isEmpty, isPresent, observer, computed, run } = Ember;
 
 const GMapRouteAddressWaypointComponent = Ember.Component.extend({
-  layout: layout,
+  layout,
   classNames: ['g-map-route-address-waypoint'],
 
   map: computed.alias('routeContext.map'),
@@ -18,9 +18,9 @@ const GMapRouteAddressWaypointComponent = Ember.Component.extend({
     const map = this.get('map');
     let service = this.get('placesService');
 
-    if (isPresent(map) &&
-        isEmpty(service) &&
-        (typeof FastBoot === 'undefined')) {
+    if (isPresent(map)
+      && isEmpty(service)
+      && (typeof FastBoot === 'undefined')) {
       service = new google.maps.places.PlacesService(map);
       this.set('placesService', service);
 
