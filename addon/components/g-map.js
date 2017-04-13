@@ -4,7 +4,7 @@ import layout from '../templates/components/g-map';
 const { isEmpty, isPresent, computed, observer, run } = Ember;
 
 export default Ember.Component.extend({
-  layout: layout,
+  layout,
   classNames: ['g-map'],
   bannedOptions: Ember.A(['center', 'zoom']),
 
@@ -31,8 +31,8 @@ export default Ember.Component.extend({
   didInsertElement() {
     this._super(...arguments);
     Ember.run.next(() => {
-      if (isEmpty(this.get('map')) &&
-        (typeof FastBoot === 'undefined')) {
+      if (isEmpty(this.get('map')) 
+        && (typeof FastBoot === 'undefined')) {
         const canvas = this.$().find('.g-map-canvas').get(0);
         const options = this.get('permittedOptions');
         this.set('map', new google.maps.Map(canvas, options));
@@ -78,10 +78,10 @@ export default Ember.Component.extend({
     const lat = this.get('lat');
     const lng = this.get('lng');
 
-    if (isPresent(map) &&
-        isPresent(lat) &&
-        isPresent(lng) &&
-        (typeof FastBoot === 'undefined')) {
+    if (isPresent(map)
+      && isPresent(lat)
+      && isPresent(lng)
+      && (typeof FastBoot === 'undefined')) {
       const center = new google.maps.LatLng(lat, lng);
       map.setCenter(center);
     }
@@ -118,8 +118,8 @@ export default Ember.Component.extend({
       return isPresent(marker.get('lat')) && isPresent(marker.get('lng'));
     });
 
-    if (markers.length > 0 &&
-        (typeof FastBoot === 'undefined')) {
+    if (markers.length > 0
+      && (typeof FastBoot === 'undefined')) {
       const map = this.get('map');
       const bounds = new google.maps.LatLngBounds();
       const points = markers.map((marker) => {
