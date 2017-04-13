@@ -48,6 +48,7 @@ ENV['g-map'] = {
   libraries: ['places', 'geometry'],
   key: 'your-unique-google-map-api-key',
   client: 'gme-your-unique-google-client-id',
+  channel: 'my-google-map-api-channel',
   version: '3.26',
   language: 'ru',
   protocol: 'https'
@@ -120,8 +121,7 @@ myIcon: {
 ## Map with Info Windows
 
 These Info Windows will be open right after component is rendered
-and will be closed forever after user closes them. You can specify
-optional `onClose` action to tear down anything you need when Info Window
+and will be closed forever after user closes them. You can specify optional `onOpen` action to trigger anything you need to when the Info Window has been opened by the user. You can specify optional `onClose` action to tear down anything you need when Info Window
 has been closed by user.
 
 Available options (see details [in docs](https://developers.google.com/maps/documentation/javascript/3.exp/reference#InfoWindowOptions)):
@@ -140,9 +140,11 @@ Available options (see details [in docs](https://developers.google.com/maps/docu
                      title="Blockless form" message="Plain text."}}
   {{g-map-infowindow context lat=37.7733 lng=-122.4067
                      title="With action set"
+                     onOpen="myOnOpenAction"
                      onClose="myOnCloseAction"}}
   {{g-map-infowindow context lat=37.7733 lng=-122.4067
                      title="With closure action set"
+                     onClose=(action "myOnOpenAction")
                      onClose=(action "myOnCloseAction")}}
 {{/g-map}}
 ```
