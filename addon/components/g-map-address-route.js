@@ -67,21 +67,25 @@ const GMapAddressRouteComponent = Ember.Component.extend({
   },
 
   updateOriginLocation(results) {
-    const lat = results[0].geometry.location.lat();
-    const lng = results[0].geometry.location.lng();
+    if (!this.isDestroyed) {
+      const lat = results[0].geometry.location.lat();
+      const lng = results[0].geometry.location.lng();
 
-    this.set('originLat', lat);
-    this.set('originLng', lng);
-    this.sendOnLocationsChange(lat, lng, results);
+      this.set('originLat', lat);
+      this.set('originLng', lng);
+      this.sendOnLocationsChange(lat, lng, results);
+    }
   },
 
   updateDestinationLocation(results) {
-    const lat = results[0].geometry.location.lat();
-    const lng = results[0].geometry.location.lng();
+    if (!this.isDestroyed) {
+      const lat = results[0].geometry.location.lat();
+      const lng = results[0].geometry.location.lng();
 
-    this.set('destinationLat', lat);
-    this.set('destinationLng', lng);
-    this.sendOnLocationsChange(lat, lng, results);
+      this.set('destinationLat', lat);
+      this.set('destinationLng', lng);
+      this.sendOnLocationsChange(lat, lng, results);
+    }
   },
 
   sendOnLocationsChange() {

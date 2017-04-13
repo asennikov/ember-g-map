@@ -48,11 +48,13 @@ const GMapRouteAddressWaypointComponent = Ember.Component.extend({
   },
 
   updateLocation(results) {
-    const lat = results[0].geometry.location.lat();
-    const lng = results[0].geometry.location.lng();
+    if (!this.isDestroyed) {
+      const lat = results[0].geometry.location.lat();
+      const lng = results[0].geometry.location.lng();
 
-    this.set('lat', lat);
-    this.set('lng', lng);
+      this.set('lat', lat);
+      this.set('lng', lng);
+    }
   }
 });
 

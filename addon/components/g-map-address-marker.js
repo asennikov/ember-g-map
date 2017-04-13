@@ -54,12 +54,14 @@ const GMapAddressMarkerComponent = Ember.Component.extend({
   },
 
   updateLocation(results) {
-    const lat = results[0].geometry.location.lat();
-    const lng = results[0].geometry.location.lng();
+    if (!this.destroyed) {
+      const lat = results[0].geometry.location.lat();
+      const lng = results[0].geometry.location.lng();
 
-    this.set('lat', lat);
-    this.set('lng', lng);
-    this.sendOnLocationChange(lat, lng, results);
+      this.set('lat', lat);
+      this.set('lng', lng);
+      this.sendOnLocationChange(lat, lng, results);
+    }
   },
 
   sendOnLocationChange() {
