@@ -144,7 +144,7 @@ Available options (see details [in docs](https://developers.google.com/maps/docu
                      onClose="myOnCloseAction"}}
   {{g-map-infowindow context lat=37.7733 lng=-122.4067
                      title="With closure action set"
-                     onClose=(action "myOnOpenAction")
+                     onOpen=(action "myOnOpenAction")
                      onClose=(action "myOnCloseAction")}}
 {{/g-map}}
 ```
