@@ -13,9 +13,8 @@
 /connect.lock
 /coverage/*
 /libpeerconnection.log
-npm-debug.log
+npm-debug.log*
 testem.log
-lcov.dat
 
 # IDE misc
 /.idea
