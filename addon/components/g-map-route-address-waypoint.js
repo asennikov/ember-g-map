@@ -10,7 +10,7 @@ const GMapRouteAddressWaypointComponent = Ember.Component.extend({
   map: computed.alias('routeContext.map'),
 
   didInsertElement() {
-    this._super();
+    this._super(...arguments);
     this.initPlacesService();
   },
 

@@ -11,7 +11,7 @@ const GMapRouteWaypointComponent = Ember.Component.extend({
   map: computed.alias('routeContext.map'),
 
   init() {
-    this._super(arguments);
+    this._super(...arguments);
     if (isEmpty(this.stopover)) {
       this.stopover = true;
     }
@@ -22,7 +22,7 @@ const GMapRouteWaypointComponent = Ember.Component.extend({
   },
 
   didInsertElement() {
-    this._super();
+    this._super(...arguments);
     this.updateWaypoint();
   },
 

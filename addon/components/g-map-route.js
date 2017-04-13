@@ -22,14 +22,14 @@ const GMapRouteComponent = Ember.Component.extend({
   map: computed.alias('mapContext.map'),
 
   init() {
-    this._super(arguments);
+    this._super(...arguments);
     this.set('waypoints', Ember.A());
     const mapContext = this.get('mapContext');
     assert('Must be inside {{#g-map}} component with context set', mapContext instanceof GMapComponent);
   },
 
   didInsertElement() {
-    this._super();
+    this._super(...arguments);
     this.initDirectionsService();
   },
 
