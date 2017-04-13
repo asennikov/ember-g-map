@@ -1,4 +1,4 @@
-/* jshint node: true */
+/* eslint-env node */
 'use strict';
 
 module.exports = {
@@ -21,12 +21,12 @@ module.exports = {
       if (key) {
         params.push('key=' + encodeURIComponent(key));
       }
-      
+
       var version = gMapConfig.version;
       if (version) {
         params.push('v=' + encodeURIComponent(version));
       }
-      
+
       var client = gMapConfig.client;
       if (client) {
         params.push('client=' + encodeURIComponent(client));
@@ -36,7 +36,7 @@ module.exports = {
       if (libraries && libraries.length) {
         params.push('libraries=' + encodeURIComponent(libraries.join(',')));
       }
-      
+
       var language = gMapConfig.language;
       if (language) {
         params.push('language=' + encodeURIComponent(language));
@@ -49,7 +49,7 @@ module.exports = {
 
       src += '?' + params.join('&');
       content = '<script type="text/javascript" src="' + src + '"></script>';
-      
+
       var exclude = gMapConfig.exclude;
       if (exclude) {
         content = ''
