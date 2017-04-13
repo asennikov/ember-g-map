@@ -1,7 +1,7 @@
 {{#if hasBlock}}
-  {{#g-map-marker mapContext lat=lat lng=lng icon=icon label=label group=group title=title as |markerContext|}}
+  {{#g-map-marker mapContext lat=lat lng=lng icon=icon label=label group=group title=title onClick=onClick onDrag=onDrag as |markerContext|}}
     {{yield markerContext}}
   {{/g-map-marker}}
 {{else}}
-  {{g-map-marker mapContext lat=lat lng=lng icon=icon label=label title=title group=group}}
+  {{g-map-marker mapContext lat=lat lng=lng icon=icon label=label title=title group=group onClick=onClick onDrag=onDrag}}
 {{/if}}
