@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { moduleForComponent } from 'ember-qunit';
-import test from '../../ember-sinon-qunit/test';
+import test from 'ember-sinon-qunit/test-support/test';
 import sinon from 'sinon';
 
 const { run } = Ember;
@@ -365,7 +365,7 @@ test('it calls `closeInfowindow` for each marker in group on `groupMarkerClicked
   const secondMarker = Ember.Object.create({ group: 'black' });
   const thirdMarker = Ember.Object.create({ group: 'blue' });
   const fourthMarker = Ember.Object.create({ group: 'blue' });
-  const markers = Ember.A([ firstMarker, secondMarker, thirdMarker, fourthMarker ]);
+  const markers = Ember.A([firstMarker, secondMarker, thirdMarker, fourthMarker]);
   markers.forEach((marker) => marker.closeInfowindow = sinon.stub());
 
   const component = this.subject();

@@ -5,7 +5,7 @@ import GMapPolylineComponent from './g-map-polyline';
 const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
 
 const GMapPolylineCoordinateComponent = Ember.Component.extend({
-  layout: layout,
+  layout,
   classNames: ['g-map-polyline-coordinate'],
 
   polyline: computed.alias('polylineContext.polyline'),

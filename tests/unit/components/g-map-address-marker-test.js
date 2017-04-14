@@ -1,26 +1,26 @@
 import Ember from 'ember';
 import { moduleForComponent } from 'ember-qunit';
-import test from '../../ember-sinon-qunit/test';
-import GMapComponent from 'ember-g-map/components/g-map';
+import test from 'ember-sinon-qunit/test-support/test';
 import sinon from 'sinon';
 
 const { run } = Ember;
 
-let fakePlacesService;
-let component;
+let fakePlacesService, component;
 
 moduleForComponent('g-map-address-marker', 'Unit | Component | g map address marker', {
   // Specify the other units that are required for this test
   // needs: ['component:foo', 'helper:bar'],
   unit: true,
+  needs: ['component:g-map'],
 
   beforeEach() {
     fakePlacesService = {
       textSearch: sinon.stub()
     };
     sinon.stub(google.maps.places, 'PlacesService').returns(fakePlacesService);
+    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
     component = this.subject({
-      mapContext: new GMapComponent()
+      mapContext: GMapComponent.create()
     });
   },
 
