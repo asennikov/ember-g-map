@@ -305,7 +305,7 @@ test('it calls `fitBounds` of google map on `fitToMarkers`', function() {
   stubbedLatLng.onCall(0).returns(firstMarker);
   stubbedLatLng.onCall(1).returns(secondMarker);
 
-  run(() => component.set('markers', [ firstMarker, secondMarker, thirdMarker ]));
+  run(() => component.set('markers', [firstMarker, secondMarker, thirdMarker]));
   run(() => component.fitToMarkers());
   sinon.assert.calledOnce(google.maps.LatLngBounds);
 

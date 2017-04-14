@@ -116,8 +116,8 @@ export default Ember.Component.extend({
       return isPresent(marker.get('lat')) && isPresent(marker.get('lng'));
     });
 
-    if (markers.length === 0 ||
-        (typeof FastBoot !== 'undefined')) {
+    if (markers.length === 0
+        || (typeof FastBoot !== 'undefined')) {
       return;
     }
 
