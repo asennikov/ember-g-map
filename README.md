@@ -121,7 +121,7 @@ myIcon: {
 ## Map with Info Windows
 
 These Info Windows will be open right after component is rendered
-and will be closed forever after user closes them. You can specify optional `onOpen` action to trigger anything you need to when the Info Window has been opened by the user. You can specify optional `onClose` action to tear down anything you need when Info Window
+and will be closed forever after user closes them. You can specify optional `onOpen` action to trigger anything you need to when the Info Window opens. The infowindow is passed as the only argument to the `onOpen` action.  You can specify optional `onClose` action to tear down anything you need when Info Window
 has been closed by user.
 
 Available options (see details [in docs](https://developers.google.com/maps/documentation/javascript/3.exp/reference#InfoWindowOptions)):
