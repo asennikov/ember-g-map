@@ -9,7 +9,7 @@ export default Ember.Component.extend({
   bannedOptions: Ember.A(['center', 'zoom']),
 
   init() {
-    this._super();
+    this._super(...arguments);
     this.set('markers', Ember.A());
     this.set('polylines', Ember.A());
     if (isEmpty(this.get('options'))) {
@@ -29,7 +29,7 @@ export default Ember.Component.extend({
   }),
 
   didInsertElement() {
-    this._super();
+    this._super(...arguments);
     if (isEmpty(this.get('map'))
       && (typeof FastBoot === 'undefined')) {
       const canvas = this.$().find('.g-map-canvas').get(0);
