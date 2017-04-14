@@ -81,7 +81,7 @@ with the main `g-map` component. You can also set optional attributes:
 - `draggable` boolean option,
 - `onClick` action to track all `click` events on that marker,
 - `onDrag` action to track all `dragend` events on that marker (callback receives new `lat` and `lng` in attributes).
-- viewport optional, provide a better representation for the marker
+- `viewport` optional google.maps.LatLngBounds, provides an optimized map viewport for the marker. This is generally provided by the [google geocoder](https://developers.google.com/maps/documentation/javascript/3.exp/reference#PlaceGeometry)
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
