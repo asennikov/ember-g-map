@@ -11,7 +11,7 @@ const GMapPolylineCoordinateComponent = Ember.Component.extend({
   polyline: computed.alias('polylineContext.polyline'),
 
   init() {
-    this._super(arguments);
+    this._super(...arguments);
 
     const polylineContext = this.get('polylineContext');
     assert('Must be inside {{#g-map-polyline}} component with context set',
@@ -21,7 +21,7 @@ const GMapPolylineCoordinateComponent = Ember.Component.extend({
   },
 
   didInsertElement() {
-    this._super();
+    this._super(...arguments);
     if (isEmpty(this.get('coordinate'))) {
       const coordinate = new google.maps.LatLng();
       this.set('coordinate', coordinate);

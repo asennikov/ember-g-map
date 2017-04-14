@@ -11,7 +11,7 @@ const GMapAddressRouteComponent = Ember.Component.extend({
   map: computed.alias('mapContext.map'),
 
   didInsertElement() {
-    this._super();
+    this._super(...arguments);
     this.initPlacesService();
   },
 
