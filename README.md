@@ -82,6 +82,7 @@ with the main `g-map` component. You can also set optional attributes:
 - `draggable` boolean option,
 - `onClick` action to track all `click` events on that marker,
 - `onDrag` action to track all `dragend` events on that marker (callback receives new `lat` and `lng` in attributes).
+- `viewport` optional google.maps.LatLngBounds, provides an optimized map viewport for the marker. This is generally provided by the [google geocoder](https://developers.google.com/maps/documentation/javascript/3.exp/reference#PlaceGeometry)
 
 ```handlebars
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
@@ -227,7 +228,8 @@ one Info Window is open at each moment for Markers of each group.
 ## Marker bound to address query
 
 Proxy `g-map-address-marker` component takes address string as parameter
-and translates it to lat/lng under the hood.
+and translates it to lat/lng/viewport under the hood.
+The viewport is used internally to fit the map and can be passed as optional parameter.
 
 Optional `onLocationChange` action hook will send you back coordinates
 of the latest address search result and the raw array of
@@ -245,7 +247,9 @@ ENV['g-map'] = {
 ```javascript
 actions: {
   onLocationChangeHandler(lat, lng, results) {
+    const { viewport } = results[0].geometry;
     Ember.Logger.log(`lat: ${lat}, lng: ${lng}`);
+    Ember.Logger.log(`viewport: ${viewport}`);
     Ember.Logger.debug(results);
   }
 }

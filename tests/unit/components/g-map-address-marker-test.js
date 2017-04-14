@@ -125,8 +125,31 @@ test('it sets `lat` & `lng` of the first provided result on `updateLocation`', f
 
   assert.equal(component.get('lat'), 12);
   assert.equal(component.get('lng'), -20);
+  assert.equal(component.get('viewport'), undefined);
 });
 
+test('it sets `lat` & `lng` & `viewport` on `updateLocation`', function(assert) {
+  const results = [{
+    geometry: {
+      location: {
+        lat: () => 12,
+        lng: () => -20
+      },
+      viewport: {
+        b: 14,
+        f: 15
+      }
+    }
+  }];
+
+  run(() => component.set('attrs', {}));
+  run(() => component.updateLocation(results));
+
+  assert.equal(component.get('lat'), 12);
+  assert.equal(component.get('lng'), -20);
+  assert.equal(component.get('viewport.b'), 14);
+  assert.equal(component.get('viewport.f'), 15);
+});
 test('it calls `sendOnLocationChange` on `updateLocation`', function() {
   const results = [{
     geometry: {

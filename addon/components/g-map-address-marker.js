@@ -57,9 +57,11 @@ const GMapAddressMarkerComponent = Ember.Component.extend({
     if (!this.destroyed) {
       const lat = results[0].geometry.location.lat();
       const lng = results[0].geometry.location.lng();
+      const { viewport } = results[0].geometry;
 
       this.set('lat', lat);
       this.set('lng', lng);
+      this.set('viewport', viewport);
       this.sendOnLocationChange(lat, lng, results);
     }
   },

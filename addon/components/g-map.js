@@ -116,17 +116,22 @@ export default Ember.Component.extend({
       return isPresent(marker.get('lat')) && isPresent(marker.get('lng'));
     });
 
-    if (markers.length > 0
-      && (typeof FastBoot === 'undefined')) {
-      const map = this.get('map');
-      const bounds = new google.maps.LatLngBounds();
-      const points = markers.map((marker) => {
-        return new google.maps.LatLng(marker.get('lat'), marker.get('lng'));
-      });
-
-      points.forEach((point) => bounds.extend(point));
-      map.fitBounds(bounds);
+    if (markers.length === 0
+        || (typeof FastBoot !== 'undefined')) {
+      return;
     }
+
+    const map = this.get('map');
+    const bounds = new google.maps.LatLngBounds();
+
+    markers.forEach((marker) => {
+      if (isPresent(marker.get('viewport'))) {
+        bounds.union(marker.get('viewport'));
+      } else {
+        bounds.extend(new google.maps.LatLng(marker.get('lat'), marker.get('lng')));
+      }
+    });
+    map.fitBounds(bounds);
   },
 
   groupMarkerClicked(marker, group) {
