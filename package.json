@@ -1,6 +1,6 @@
 {
   "name": "ember-g-map",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "An ember-cli addon for integration with google maps.",
   "directories": {
     "doc": "doc",
