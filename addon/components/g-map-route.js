@@ -73,6 +73,7 @@ const GMapRouteComponent = Ember.Component.extend({
     run.once(this, 'updateRoute');
   }),
 
+  onUpdateRoute() {},
   updateRoute() {
     const service = this.get('directionsService');
     const renderer = this.get('directionsRenderer');
@@ -98,6 +99,7 @@ const GMapRouteComponent = Ember.Component.extend({
 
       service.route(request, (response, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
+          this.get('onUpdateRoute')(response.routes[0].legs[0]);
           renderer.setDirections(response);
         }
       });
