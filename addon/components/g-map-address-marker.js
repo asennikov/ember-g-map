@@ -69,7 +69,7 @@ const GMapAddressMarkerComponent = Ember.Component.extend({
   sendOnLocationChange() {
     const { onLocationChange } = this.attrs;
 
-    if (typeOf(onLocationChange) === 'function') {
+    if (typeof(onLocationChange) === 'function') {
       onLocationChange(...arguments);
     } else {
       this.sendAction('onLocationChange', ...arguments);
