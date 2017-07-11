@@ -142,7 +142,7 @@ const GMapRouteComponent = Ember.Component.extend({
   sendOnDirectionChange() {
     const { onDirectionChange } = this.attrs;
 
-    if (typeOf(onDirectionChange) === 'function') {
+    if (typeof(onDirectionChange) === 'function') {
       onDirectionChange(...arguments);
     } else {
       this.sendAction('onDirectionChange', ...arguments);
