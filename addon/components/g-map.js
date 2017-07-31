@@ -30,11 +30,20 @@ export default Ember.Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
-    if (isEmpty(this.get('map'))
+
+    let map = this.get('map');
+
+    if (isEmpty(map)
       && (typeof FastBoot === 'undefined')) {
       const canvas = this.$().find('.g-map-canvas').get(0);
       const options = this.get('permittedOptions');
-      this.set('map', new google.maps.Map(canvas, options));
+      map = new google.maps.Map(canvas, options);
+
+      google.maps.event.addListener(map, 'idle', () => {
+        google.maps.event.trigger(map, 'resize');
+      });
+
+      this.set('map', map);
     }
     this.setZoom();
     this.setCenter();
@@ -117,7 +126,7 @@ export default Ember.Component.extend({
     });
 
     if (markers.length === 0
-        || (typeof FastBoot !== 'undefined')) {
+      || (typeof FastBoot !== 'undefined')) {
       return;
     }
 
