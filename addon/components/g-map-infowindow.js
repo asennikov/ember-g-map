@@ -115,7 +115,6 @@ const GMapInfowindowComponent = Ember.Component.extend({
   close() {
     const infowindow = this.get('infowindow');
     if (isPresent(infowindow)) {
-      this.set('isOpen', false);
       infowindow.close();
     }
   },
