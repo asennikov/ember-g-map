@@ -88,7 +88,7 @@ with the main `g-map` component. You can also set optional attributes:
 {{#g-map lat=37.7833 lng=-122.4167 zoom=12 as |context|}}
   {{g-map-marker context lat=37.7933 lng=-122.4167 onClick=(action "handleClick")}}
   {{g-map-marker context lat=37.7833 lng=-122.4267 onClick="handleClick" title=titleForSecondMarker}}
-  {{g-map-marker context lat=37.7733 lng=-122.4067 onDrag=(action "handleDrag") label="3" title="Marker #3"}}
+  {{g-map-marker context lat=37.7733 lng=-122.4067 draggable=true onDrag=(action "handleDrag") label="3" title="Marker #3"}}
 {{/g-map}}
 ```
 
