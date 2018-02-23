@@ -33,14 +33,14 @@ In case you want to make the google map to have full width and height as the par
 ```
 
 In `config/environment.js` you can specify:
-- additional Google Maps libraries to be loaded along with this add-on
+- additional Google Maps `libraries` to be loaded along with this add-on
   (check the full list [here](https://developers.google.com/maps/documentation/javascript/libraries)),
-- optional API key or client ID for your application (additional info could be found [here](https://developers.google.com/maps/web/)),
-- optional [channel](https://developers.google.com/maps/premium/reports/usage-reports#channels),
-- optional version number,
-- optional exclude parameter, which prevents inclusion of the google maps api script tag into the index.html (in case one wants to handle loading of google maps lib by himself),
-- optional language for map localization,
-- optional explicit protocol setting.
+- optional API `key` or `client` ID for your application (additional info could be found [here](https://developers.google.com/maps/web/)),
+- optional [`channel`](https://developers.google.com/maps/premium/reports/usage-reports#channels),
+- optional `version` number,
+- optional `exclude` parameter, which prevents the addon from injecting the google maps api script tag into your app's index.html. This is useful if you need a custom strategy for loading the google maps script.
+- optional `language` for map localization,
+- optional explicit `protocol` setting.
 
 ```javascript
 ENV['g-map'] = {
@@ -54,6 +54,9 @@ ENV['g-map'] = {
   protocol: 'https'
 }
 ```
+
+### Loading Google Maps API In China
+The default Google Maps API library [does not load in China](https://developers.google.com/maps/documentation/javascript/localization#GoogleMapsChina), if your app needs to work in China you will need to implement a custom loading strategy for the Google Maps API. 
 
 # Usage
 
