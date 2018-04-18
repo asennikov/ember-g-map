@@ -22,7 +22,8 @@ const GMapPolylineCoordinateComponent = Ember.Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
-    if (isEmpty(this.get('coordinate'))) {
+    if (isEmpty(this.get('coordinate'))
+      && (typeof google !== 'undefined')) {
       const coordinate = new google.maps.LatLng();
       this.set('coordinate', coordinate);
     }
@@ -42,7 +43,10 @@ const GMapPolylineCoordinateComponent = Ember.Component.extend({
     const lat = this.get('lat');
     const lng = this.get('lng');
 
-    if (isPresent(polylineContext) && isPresent(lat) && isPresent(lng)) {
+    if (isPresent(polylineContext)
+      && isPresent(lat)
+      && isPresent(lng)
+      && (typeof google !== 'undefined')) {
       const coordinate = new google.maps.LatLng(lat, lng);
       this.set('coordinate', coordinate);
       polylineContext.setPath();

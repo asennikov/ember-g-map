@@ -52,7 +52,8 @@ const GMapRouteComponent = Ember.Component.extend({
     if (isPresent(map)
       && isEmpty(service)
       && isEmpty(renderer)
-      && (typeof FastBoot === 'undefined')) {
+      && (typeof FastBoot === 'undefined')
+      && (typeof google !== 'undefined')) {
       const rendererOptions = {
         map,
         suppressMarkers: true,

@@ -65,7 +65,7 @@ const GMapInfowindowComponent = Ember.Component.extend({
   },
 
   buildInfowindow() {
-    if (google) {
+    if (typeof google !== 'undefined') {
       const infowindow = new google.maps.InfoWindow({
         content: this.get('element')
       });
