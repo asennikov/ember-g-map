@@ -29,7 +29,8 @@ const GMapPolylineComponent = Ember.Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
-    if (isEmpty(this.get('polyline'))) {
+    if (isEmpty(this.get('polyline'))
+      && (typeof google !== 'undefined')) {
       const options = compact(this.getProperties(allowedPolylineOptions));
       const polyline = new google.maps.Polyline(options);
       this.set('polyline', polyline);

@@ -26,7 +26,8 @@ const GMapMarkerComponent = Ember.Component.extend({
   didInsertElement() {
     this._super(...arguments);
     if (isEmpty(this.get('marker'))
-      && (typeof FastBoot === 'undefined')) {
+      && (typeof FastBoot === 'undefined')
+      && (typeof google !== 'undefined')) {
       const marker = new google.maps.Marker();
       this.set('marker', marker);
     }

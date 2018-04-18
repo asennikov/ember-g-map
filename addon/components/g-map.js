@@ -31,7 +31,8 @@ export default Ember.Component.extend({
   didInsertElement() {
     this._super(...arguments);
     if (isEmpty(this.get('map'))
-      && (typeof FastBoot === 'undefined')) {
+      && (typeof FastBoot === 'undefined')
+      && (typeof google !== 'undefined')) {
       const canvas = this.$().find('.g-map-canvas').get(0);
       const options = this.get('permittedOptions');
       this.set('map', new google.maps.Map(canvas, options));
@@ -79,7 +80,8 @@ export default Ember.Component.extend({
     if (isPresent(map)
       && isPresent(lat)
       && isPresent(lng)
-      && (typeof FastBoot === 'undefined')) {
+      && (typeof FastBoot === 'undefined')
+      && (typeof google !== 'undefined')) {
       const center = new google.maps.LatLng(lat, lng);
       map.setCenter(center);
     }
