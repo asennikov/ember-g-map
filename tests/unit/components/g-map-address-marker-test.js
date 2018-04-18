@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import { moduleForComponent } from 'ember-qunit';
 import test from 'ember-sinon-qunit/test-support/test';
 import sinon from 'sinon';
-
-const { run } = Ember;
 
 let fakePlacesService, component;
 
@@ -18,7 +17,7 @@ moduleForComponent('g-map-address-marker', 'Unit | Component | g map address mar
       textSearch: sinon.stub()
     };
     sinon.stub(google.maps.places, 'PlacesService').returns(fakePlacesService);
-    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
+    const GMapComponent = getOwner(this).factoryFor('component:g-map');
     component = this.subject({
       mapContext: GMapComponent.create()
     });

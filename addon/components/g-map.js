@@ -1,17 +1,19 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import Component from '@ember/component';
+import { isPresent, isEmpty } from '@ember/utils';
+import { observer, computed } from '@ember/object';
+import { run } from '@ember/runloop';
 import layout from '../templates/components/g-map';
 
-const { isEmpty, isPresent, computed, observer, run } = Ember;
-
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
   classNames: ['g-map'],
-  bannedOptions: Ember.A(['center', 'zoom']),
+  bannedOptions: A(['center', 'zoom']),
 
   init() {
     this._super(...arguments);
-    this.set('markers', Ember.A());
-    this.set('polylines', Ember.A());
+    this.set('markers', A());
+    this.set('polylines', A());
     if (isEmpty(this.get('options'))) {
       this.set('options', {});
     }
@@ -104,7 +106,7 @@ export default Ember.Component.extend({
   },
 
   shouldFit: computed('markersFitMode', function() {
-    return Ember.A(['init', 'live']).includes(this.get('markersFitMode'));
+    return A(['init', 'live']).includes(this.get('markersFitMode'));
   }),
 
   markersChanged: observer('markers.@each.lat', 'markers.@each.lng', function() {

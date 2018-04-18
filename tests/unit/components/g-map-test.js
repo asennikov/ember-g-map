@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+import { A } from '@ember/array';
+import { run } from '@ember/runloop';
 import { moduleForComponent } from 'ember-qunit';
 import test from 'ember-sinon-qunit/test-support/test';
 import sinon from 'sinon';
-
-const { run } = Ember;
 
 let fakeMapObject;
 
@@ -48,7 +48,7 @@ test('it constructs new `Map` object with given custom options', function() {
 
 test('it constructs new `Map` object with custom options except banned', function() {
   this.subject({
-    bannedOptions: Ember.A(['bannedOption']),
+    bannedOptions: A(['bannedOption']),
     options: {
       firstOption: 111,
       secondOption: 222,
@@ -247,8 +247,8 @@ test('it doesn\'t call `fitToMarkers` object on `didInsertElement` if markersFit
 });
 
 test('it triggers `fitToMarkers` on new marker added with markersFitMode set to "live"', function() {
-  const firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
-  const secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
+  const firstMarker = EmberObject.create({ lat: 1, lng: 2 });
+  const secondMarker = EmberObject.create({ lat: 3, lng: 4 });
   const component = this.subject({ markersFitMode: 'live' });
   this.render();
 
@@ -259,8 +259,8 @@ test('it triggers `fitToMarkers` on new marker added with markersFitMode set to 
 });
 
 test('it triggers `fitToMarkers` only once on `lat`/`lng` change of markers with markersFitMode set to "live"', function() {
-  const firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
-  const secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
+  const firstMarker = EmberObject.create({ lat: 1, lng: 2 });
+  const secondMarker = EmberObject.create({ lat: 3, lng: 4 });
   const component = this.subject({ markersFitMode: 'live' });
   this.render();
 
@@ -274,8 +274,8 @@ test('it triggers `fitToMarkers` only once on `lat`/`lng` change of markers with
 });
 
 test('it doesn\'t trigger `fitToMarkers` with markersFitMode !== "live"', function() {
-  const firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
-  const secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
+  const firstMarker = EmberObject.create({ lat: 1, lng: 2 });
+  const secondMarker = EmberObject.create({ lat: 3, lng: 4 });
   const component = this.subject({ markersFitMode: 'init' });
   this.render();
 
@@ -287,9 +287,9 @@ test('it doesn\'t trigger `fitToMarkers` with markersFitMode !== "live"', functi
 });
 
 test('it calls `fitBounds` of google map on `fitToMarkers`', function() {
-  const firstMarker = Ember.Object.create({ lat: 1, lng: 2 });
-  const secondMarker = Ember.Object.create({ lat: 3, lng: 4 });
-  const thirdMarker = Ember.Object.create({ lat: 5, lng: 6, viewport: { b: 7, f: 8 } });
+  const firstMarker = EmberObject.create({ lat: 1, lng: 2 });
+  const secondMarker = EmberObject.create({ lat: 3, lng: 4 });
+  const thirdMarker = EmberObject.create({ lat: 5, lng: 6, viewport: { b: 7, f: 8 } });
   const component = this.subject();
   this.render();
 
@@ -361,11 +361,11 @@ test('it unregisters marker from `markers` array during `unregisterMarker`', fun
 });
 
 test('it calls `closeInfowindow` for each marker in group on `groupMarkerClicked`', function() {
-  const firstMarker = Ember.Object.create({ group: 'blue' });
-  const secondMarker = Ember.Object.create({ group: 'black' });
-  const thirdMarker = Ember.Object.create({ group: 'blue' });
-  const fourthMarker = Ember.Object.create({ group: 'blue' });
-  const markers = Ember.A([firstMarker, secondMarker, thirdMarker, fourthMarker]);
+  const firstMarker = EmberObject.create({ group: 'blue' });
+  const secondMarker = EmberObject.create({ group: 'black' });
+  const thirdMarker = EmberObject.create({ group: 'blue' });
+  const fourthMarker = EmberObject.create({ group: 'blue' });
+  const markers = A([firstMarker, secondMarker, thirdMarker, fourthMarker]);
   markers.forEach((marker) => marker.closeInfowindow = sinon.stub());
 
   const component = this.subject();

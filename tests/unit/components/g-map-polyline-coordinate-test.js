@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import { moduleForComponent } from 'ember-qunit';
 import test from 'ember-sinon-qunit/test-support/test';
 import sinon from 'sinon';
-
-const { run } = Ember;
 
 let fakePolylineCoordinateObject, component;
 
@@ -17,8 +16,8 @@ moduleForComponent('g-map-polyline-coordinate', 'Unit | Component | g map polyli
       setPosition: sinon.stub()
     };
     sinon.stub(google.maps, 'LatLng').returns(fakePolylineCoordinateObject);
-    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
-    const GMapPolylineComponent = Ember.getOwner(this).factoryFor('component:g-map-polyline');
+    const GMapComponent = getOwner(this).factoryFor('component:g-map');
+    const GMapPolylineComponent = getOwner(this).factoryFor('component:g-map-polyline');
     const mapComponent = GMapComponent.create();
     component = this.subject({
       polylineContext: GMapPolylineComponent.create({ mapContext: mapComponent })

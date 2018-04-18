@@ -1,14 +1,15 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { observer } from '@ember/object';
+import { run } from '@ember/runloop';
+import { typeOf, isEmpty, isPresent } from '@ember/utils';
 import layout from '../templates/components/g-map-address-route';
-/* global google */
 
-const { computed, observer, run, isPresent, isEmpty, typeOf } = Ember;
-
-const GMapAddressRouteComponent = Ember.Component.extend({
+const GMapAddressRouteComponent = Component.extend({
   layout,
   classNames: ['g-map-address-route'],
 
-  map: computed.alias('mapContext.map'),
+  map: alias('mapContext.map'),
 
   didInsertElement() {
     this._super(...arguments);
