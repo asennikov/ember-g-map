@@ -1,16 +1,16 @@
 module.exports = {
-  test_page: 'tests/index.html?hidepassed',
-  disable_watching: true,
-  launch_in_ci: [
+  'test_page': 'tests/index.html?hidepassed',
+  'disable_watching': true,
+  'launch_in_ci': [
     'Chrome'
   ],
-  launch_in_dev: [
+  'launch_in_dev': [
     'Chrome'
   ],
-  browser_args: {
-    Chrome: {
-      mode: 'ci',
-      args: [
+  'browser_args': {
+    'Chrome': {
+      'mode': 'ci',
+      'args': [
         // --no-sandbox is needed when running Chrome inside a container
         process.env.TRAVIS ? '--no-sandbox' : null,
 
