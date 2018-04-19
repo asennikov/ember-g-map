@@ -17,7 +17,8 @@ module.exports = {
   },
   rules: {
     'ember-suave/no-const-outside-module-scope': 'off',
-    'ember-suave/no-direct-property-access': 'off'
+    'ember-suave/no-direct-property-access': 'off',
+    'ember/closure-actions': 'off'
   },
   globals: {
     'google': true

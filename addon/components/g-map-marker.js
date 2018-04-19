@@ -217,7 +217,7 @@ const GMapMarkerComponent = Component.extend({
   },
 
   sendOnClick() {
-    const { onClick } = this.attrs;
+    const onClick = this.get('onClick');
     const mapContext = this.get('mapContext');
     const group = this.get('group');
 
@@ -233,7 +233,7 @@ const GMapMarkerComponent = Component.extend({
   },
 
   sendOnDrag(lat, lng) {
-    const { onDrag } = this.attrs;
+    const onDrag = this.get('onDrag');
 
     if (typeOf(onDrag) === 'function') {
       onDrag(lat, lng);

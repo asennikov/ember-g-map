@@ -120,7 +120,7 @@ const GMapPolylineComponent = Component.extend({
   },
 
   sendOnClick(e) {
-    const { onClick } = this.attrs;
+    const onClick = this.get('onClick');
     const polyline = this.get('polyline');
 
     if (typeOf(onClick) === 'function') {
@@ -138,7 +138,7 @@ const GMapPolylineComponent = Component.extend({
   },
 
   sendOnDrag(e) {
-    const { onDrag } = this.attrs;
+    const onDrag = this.get('onDrag');
     const polyline = this.get('polyline');
 
     if (typeOf(onDrag) === 'function') {

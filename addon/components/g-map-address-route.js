@@ -90,7 +90,7 @@ const GMapAddressRouteComponent = Component.extend({
   },
 
   sendOnLocationsChange() {
-    const { onLocationsChange } = this.attrs;
+    const onLocationsChange = this.get('onLocationsChange');
 
     if (typeOf(onLocationsChange) === 'function') {
       onLocationsChange(...arguments);

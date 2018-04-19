@@ -68,7 +68,7 @@ const GMapAddressMarkerComponent = Component.extend({
   },
 
   sendOnLocationChange() {
-    const { onLocationChange } = this.attrs;
+    const onLocationChange = this.get('onLocationChange');
 
     if (typeOf(onLocationChange) === 'function') {
       onLocationChange(...arguments);

@@ -86,7 +86,7 @@ const GMapInfowindowComponent = Component.extend({
   },
 
   handleOpenClickEvent() {
-    const { onOpen } = this.attrs;
+    const onOpen = this.get('onOpen');
     if (typeOf(onOpen) === 'function') {
       onOpen();
     } else {
@@ -95,7 +95,7 @@ const GMapInfowindowComponent = Component.extend({
   },
 
   handleCloseClickEvent() {
-    const { onClose } = this.attrs;
+    const onClose = this.get('onClose');
     if (typeOf(onClose) === 'function') {
       onClose();
     } else {
