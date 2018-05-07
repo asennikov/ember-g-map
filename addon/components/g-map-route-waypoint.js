@@ -1,14 +1,17 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { isPresent, isEmpty } from '@ember/utils';
+import { observer } from '@ember/object';
+import { run } from '@ember/runloop';
+import { assert } from '@ember/debug';
 import layout from '../templates/components/g-map-route-waypoint';
 import GMapRouteComponent from './g-map-route';
 
-const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
-
-const GMapRouteWaypointComponent = Ember.Component.extend({
+const GMapRouteWaypointComponent = Component.extend({
   layout,
   classNames: ['g-map-route-waypoint'],
 
-  map: computed.alias('routeContext.map'),
+  map: alias('routeContext.map'),
 
   init() {
     this._super(...arguments);

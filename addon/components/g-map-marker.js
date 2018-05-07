@@ -1,14 +1,17 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { observer } from '@ember/object';
+import { run } from '@ember/runloop';
+import { assert } from '@ember/debug';
+import { typeOf, isPresent, isEmpty } from '@ember/utils';
 import layout from '../templates/components/g-map-marker';
 import GMapComponent from './g-map';
 
-const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
-
-const GMapMarkerComponent = Ember.Component.extend({
+const GMapMarkerComponent = Component.extend({
   layout,
   classNames: ['g-map-marker'],
 
-  map: computed.alias('mapContext.map'),
+  map: alias('mapContext.map'),
 
   init() {
     this._super(...arguments);
@@ -214,7 +217,7 @@ const GMapMarkerComponent = Ember.Component.extend({
   },
 
   sendOnClick() {
-    const { onClick } = this.attrs;
+    const onClick = this.get('onClick');
     const mapContext = this.get('mapContext');
     const group = this.get('group');
 
@@ -230,7 +233,7 @@ const GMapMarkerComponent = Ember.Component.extend({
   },
 
   sendOnDrag(lat, lng) {
-    const { onDrag } = this.attrs;
+    const onDrag = this.get('onDrag');
 
     if (typeOf(onDrag) === 'function') {
       onDrag(lat, lng);

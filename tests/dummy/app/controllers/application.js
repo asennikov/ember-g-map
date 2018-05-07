@@ -1,12 +1,12 @@
-import Ember from 'ember';
+import { reads } from '@ember/object/computed';
+import Controller from '@ember/controller';
+import { computed } from '@ember/object';
 
-const { computed } = Ember;
-
-export default Ember.Controller.extend({
+export default Controller.extend({
   randomVariable: 111,
 
   addressQuery: 'SF, Lafayette Park',
-  addressQueryInput: computed.reads('addressQuery'),
+  addressQueryInput: reads('addressQuery'),
   routeColor: 'red',
   showingAllPolylineCoords: true,
 

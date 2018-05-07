@@ -1,29 +1,33 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { A } from '@ember/array';
+import { isPresent, isEmpty } from '@ember/utils';
+import { observer, get } from '@ember/object';
+import { run } from '@ember/runloop';
+import { assert } from '@ember/debug';
 import layout from '../templates/components/g-map-route';
 import GMapComponent from './g-map';
 import compact from '../utils/compact';
 
-const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
-
-const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex']);
+const allowedPolylineOptions = A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex']);
 
 const TRAVEL_MODES = {
-  walking: Ember.get(window, 'google.maps.TravelMode.WALKING'),
-  bicycling: Ember.get(window, 'google.maps.TravelMode.BICYCLING'),
-  transit: Ember.get(window, 'google.maps.TravelMode.TRANSIT'),
-  driving: Ember.get(window, 'google.maps.TravelMode.DRIVING')
+  walking: get(window, 'google.maps.TravelMode.WALKING'),
+  bicycling: get(window, 'google.maps.TravelMode.BICYCLING'),
+  transit: get(window, 'google.maps.TravelMode.TRANSIT'),
+  driving: get(window, 'google.maps.TravelMode.DRIVING')
 };
 
-const GMapRouteComponent = Ember.Component.extend({
+const GMapRouteComponent = Component.extend({
   layout,
   classNames: ['g-map-marker'],
   positionalParams: ['mapContext'],
 
-  map: computed.alias('mapContext.map'),
+  map: alias('mapContext.map'),
 
   init() {
     this._super(...arguments);
-    this.set('waypoints', Ember.A());
+    this.set('waypoints', A());
     const mapContext = this.get('mapContext');
     assert('Must be inside {{#g-map}} component with context set', mapContext instanceof GMapComponent);
   },

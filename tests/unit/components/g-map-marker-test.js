@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import { moduleForComponent } from 'ember-qunit';
 import test from 'ember-sinon-qunit/test-support/test';
 import sinon from 'sinon';
-
-const { run } = Ember;
 
 let fakeMarkerObject, component;
 
@@ -25,7 +25,7 @@ moduleForComponent('g-map-marker', 'Unit | Component | g map marker', {
       addListener: sinon.stub()
     };
     sinon.stub(google.maps, 'Marker').returns(fakeMarkerObject);
-    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
+    const GMapComponent = getOwner(this).factoryFor('component:g-map');
     component = this.subject({
       mapContext: GMapComponent.create()
     });
@@ -153,7 +153,7 @@ test('it calls `addListener` of google marker on `attachTogglingInfowindowEvent`
 });
 
 test('it doesn\'t call `addListener` of google marker on `attachTogglingInfowindowEvent` when no `event` present', function() {
-  const infowindowObject = Ember.Object.create({ infowindowProperty: 'value' });
+  const infowindowObject = EmberObject.create({ infowindowProperty: 'value' });
 
   run(() => component.set('marker', fakeMarkerObject));
   run(() => component.attachTogglingInfowindowEvent(
@@ -163,7 +163,7 @@ test('it doesn\'t call `addListener` of google marker on `attachTogglingInfowind
 });
 
 test('it calls `open` of infowindow on event attached during `attachTogglingInfowindowEvent` if `isOpen` is false', function() {
-  const infowindowObject = Ember.Object.create({
+  const infowindowObject = EmberObject.create({
     open: sinon.stub(),
     isOpen: false
   });
@@ -177,7 +177,7 @@ test('it calls `open` of infowindow on event attached during `attachTogglingInfo
 });
 
 test('it calls `close` of infowindow on event attached during `attachTogglingInfowindowEvent` if `isOpen` is true', function() {
-  const infowindowObject = Ember.Object.create({
+  const infowindowObject = EmberObject.create({
     close: sinon.stub(),
     isOpen: true
   });

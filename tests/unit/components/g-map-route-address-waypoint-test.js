@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import { moduleForComponent } from 'ember-qunit';
 import test from 'ember-sinon-qunit/test-support/test';
 import sinon from 'sinon';
-
-const { run } = Ember;
 
 let fakePlacesService, component;
 
@@ -19,8 +18,8 @@ moduleForComponent('g-map-route-address-waypoint', 'Unit | Component | g map rou
     };
     sinon.stub(google.maps.places, 'PlacesService').returns(fakePlacesService);
 
-    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
-    const GMapRouteComponent = Ember.getOwner(this).factoryFor('component:g-map-route');
+    const GMapComponent = getOwner(this).factoryFor('component:g-map');
+    const GMapRouteComponent = getOwner(this).factoryFor('component:g-map-route');
     const mapComponent = GMapComponent.create();
     component = this.subject({
       routeContext: GMapRouteComponent.create({ mapContext: mapComponent })

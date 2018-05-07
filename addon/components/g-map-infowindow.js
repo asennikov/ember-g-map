@@ -1,23 +1,27 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { A } from '@ember/array';
+import { observer } from '@ember/object';
+import { run } from '@ember/runloop';
+import { assert } from '@ember/debug';
+import { typeOf, isPresent, isEmpty } from '@ember/utils';
 import layout from '../templates/components/g-map-infowindow';
 import GMapComponent from './g-map';
 import GMapMarkerComponent from './g-map-marker';
 import compact from '../utils/compact';
 
-const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
+const allowedOptions = A(['disableAutoPan', 'maxWidth', 'pixelOffset']);
 
-const allowedOptions = Ember.A(['disableAutoPan', 'maxWidth', 'pixelOffset']);
-
-const OPEN_CLOSE_EVENTS = Ember.A(
+const OPEN_CLOSE_EVENTS = A(
   ['click', 'dblclick', 'rightclick', 'mouseover', 'mouseout']
 );
 
-const GMapInfowindowComponent = Ember.Component.extend({
+const GMapInfowindowComponent = Component.extend({
   layout,
   classNames: ['g-map-marker'],
 
-  map: computed.alias('mapContext.map'),
-  marker: computed.alias('mapContext.marker'),
+  map: alias('mapContext.map'),
+  marker: alias('mapContext.marker'),
 
   init() {
     this._super(...arguments);
@@ -82,7 +86,7 @@ const GMapInfowindowComponent = Ember.Component.extend({
   },
 
   handleOpenClickEvent() {
-    const { onOpen } = this.attrs;
+    const onOpen = this.get('onOpen');
     if (typeOf(onOpen) === 'function') {
       onOpen();
     } else {
@@ -91,7 +95,7 @@ const GMapInfowindowComponent = Ember.Component.extend({
   },
 
   handleCloseClickEvent() {
-    const { onClose } = this.attrs;
+    const onClose = this.get('onClose');
     if (typeOf(onClose) === 'function') {
       onClose();
     } else {

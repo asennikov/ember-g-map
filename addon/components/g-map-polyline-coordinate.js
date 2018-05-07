@@ -1,14 +1,17 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { isPresent, isEmpty } from '@ember/utils';
+import { observer } from '@ember/object';
+import { run } from '@ember/runloop';
+import { assert } from '@ember/debug';
 import layout from '../templates/components/g-map-polyline-coordinate';
 import GMapPolylineComponent from './g-map-polyline';
 
-const { isEmpty, isPresent, observer, computed, run, assert } = Ember;
-
-const GMapPolylineCoordinateComponent = Ember.Component.extend({
+const GMapPolylineCoordinateComponent = Component.extend({
   layout,
   classNames: ['g-map-polyline-coordinate'],
 
-  polyline: computed.alias('polylineContext.polyline'),
+  polyline: alias('polylineContext.polyline'),
 
   init() {
     this._super(...arguments);

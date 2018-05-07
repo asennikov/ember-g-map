@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+import { run } from '@ember/runloop';
 import { moduleForComponent } from 'ember-qunit';
 import test from 'ember-sinon-qunit/test-support/test';
 import sinon from 'sinon';
-
-const { run } = Ember;
 
 let fakeDirectionsService, fakeDirectionsRenderer, component;
 
@@ -25,7 +24,7 @@ moduleForComponent('g-map-route', 'Unit | Component | g map route', {
     };
     sinon.stub(google.maps, 'DirectionsRenderer').returns(fakeDirectionsRenderer);
     sinon.stub(google.maps, 'DirectionsService').returns(fakeDirectionsService);
-    const GMapComponent = Ember.getOwner(this).factoryFor('component:g-map');
+    const GMapComponent = getOwner(this).factoryFor('component:g-map');
     component = this.subject({
       mapContext: GMapComponent.create()
     });

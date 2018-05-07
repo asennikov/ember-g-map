@@ -1,22 +1,26 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
+import { A } from '@ember/array';
+import { observer } from '@ember/object';
+import { run } from '@ember/runloop';
+import { assert } from '@ember/debug';
+import { typeOf, isPresent, isEmpty } from '@ember/utils';
 import layout from '../templates/components/g-map-polyline';
 import GMapComponent from './g-map';
 import compact from '../utils/compact';
 
-const { isEmpty, isPresent, observer, computed, run, assert, typeOf } = Ember;
+const allowedPolylineOptions = A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex', 'geodesic', 'icons', 'clickable', 'draggable', 'visible', 'path']);
 
-const allowedPolylineOptions = Ember.A(['strokeColor', 'strokeWeight', 'strokeOpacity', 'zIndex', 'geodesic', 'icons', 'clickable', 'draggable', 'visible', 'path']);
-
-const GMapPolylineComponent = Ember.Component.extend({
+const GMapPolylineComponent = Component.extend({
   layout,
   classNames: ['g-map-polyline'],
 
-  map: computed.alias('mapContext.map'),
+  map: alias('mapContext.map'),
 
   init() {
     this._super(...arguments);
     this.infowindow = null;
-    this.set('coordinates', Ember.A());
+    this.set('coordinates', A());
     if (isEmpty(this.get('group'))) {
       this.set('group', null);
     }
@@ -84,7 +88,7 @@ const GMapPolylineComponent = Ember.Component.extend({
     if (isPresent(polyline)) {
 
       if (isPresent(coordinates) && isEmpty(path)) {
-        let coordArray = Ember.A(this.get('coordinates').mapBy('coordinate')).compact();
+        let coordArray = A(this.get('coordinates').mapBy('coordinate')).compact();
         polyline.setPath(coordArray);
       }
 
@@ -116,7 +120,7 @@ const GMapPolylineComponent = Ember.Component.extend({
   },
 
   sendOnClick(e) {
-    const { onClick } = this.attrs;
+    const onClick = this.get('onClick');
     const polyline = this.get('polyline');
 
     if (typeOf(onClick) === 'function') {
@@ -134,7 +138,7 @@ const GMapPolylineComponent = Ember.Component.extend({
   },
 
   sendOnDrag(e) {
-    const { onDrag } = this.attrs;
+    const onDrag = this.get('onDrag');
     const polyline = this.get('polyline');
 
     if (typeOf(onDrag) === 'function') {
