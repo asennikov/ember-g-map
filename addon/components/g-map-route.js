@@ -78,6 +78,27 @@ const GMapRouteComponent = Component.extend({
     run.once(this, 'updateRoute');
   }),
 
+  requestDirection() {
+    const origin = new google.maps.LatLng(this.get('originLat'), this.get('originLng'));
+    const destination = new google.maps.LatLng(this.get('destinationLat'), this.get('destinationLng'));
+    const travelMode = this.retrieveTravelMode(this.get('travelMode'));
+    const service = this.get('directionsService');
+    const renderer = this.get('directionsRenderer');
+    const waypoints = this.get('waypoints').mapBy('waypoint');
+    const request = {
+      origin,
+      destination,
+      travelMode,
+      waypoints
+    };
+
+    service.route(request, (response, status) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        renderer.setDirections(response);
+      }
+    });
+  },
+
   updateRoute() {
     const service = this.get('directionsService');
     const renderer = this.get('directionsRenderer');
@@ -85,27 +106,12 @@ const GMapRouteComponent = Component.extend({
     const originLng = this.get('originLng');
     const destinationLat = this.get('destinationLat');
     const destinationLng = this.get('destinationLng');
-    const waypoints = this.get('waypoints').mapBy('waypoint');
 
     if (isPresent(service) && isPresent(renderer)
       && isPresent(originLat) && isPresent(originLng)
       && isPresent(destinationLat) && isPresent(destinationLng)
       && (typeof FastBoot === 'undefined')) {
-      const origin = new google.maps.LatLng(this.get('originLat'), this.get('originLng'));
-      const destination = new google.maps.LatLng(this.get('destinationLat'), this.get('destinationLng'));
-      const travelMode = this.retrieveTravelMode(this.get('travelMode'));
-      const request = {
-        origin,
-        destination,
-        travelMode,
-        waypoints
-      };
-
-      service.route(request, (response, status) => {
-        if (status === google.maps.DirectionsStatus.OK) {
-          renderer.setDirections(response);
-        }
-      });
+      run.debounce(this, this.requestDirection, 100);
     }
   },
 
