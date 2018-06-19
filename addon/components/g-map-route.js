@@ -85,11 +85,15 @@ const GMapRouteComponent = Component.extend({
     const service = this.get('directionsService');
     const renderer = this.get('directionsRenderer');
     const waypoints = this.get('waypoints').mapBy('waypoint');
+    const avoidTolls = this.get('avoidTolls') || false;
+    const optimizeWaypoints = this.get('optimizeWaypoints') || false;
     const request = {
       origin,
       destination,
       travelMode,
-      waypoints
+      waypoints,
+      avoidTolls,
+      optimizeWaypoints
     };
 
     service.route(request, (response, status) => {
