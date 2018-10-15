@@ -139,7 +139,7 @@ export default Component.extend({
   },
 
   groupMarkerClicked(marker, group) {
-    let markers = this.get('markers').without(marker).filterBy('group', group);
+    let markers = A(this.get('markers').without(marker)).filterBy('group', group);
     markers.forEach((marker) => marker.closeInfowindow());
   }
 });
