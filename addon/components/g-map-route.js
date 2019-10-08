@@ -103,6 +103,7 @@ const GMapRouteComponent = Component.extend({
 
       service.route(request, (response, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
+          this.sendOnDirectionChange(response.routes[0].legs[0]);
           renderer.setDirections(response);
         }
       });
@@ -141,7 +142,17 @@ const GMapRouteComponent = Component.extend({
 
   waypointsChanged: observer('waypoints.@each.location', function() {
     run.once(this, 'updateRoute');
-  })
+  }),
+
+  sendOnDirectionChange() {
+    const { onDirectionChange } = this.attrs;
+
+    if (typeof(onDirectionChange) === 'function') {
+      onDirectionChange(...arguments);
+    } else {
+      this.sendAction('onDirectionChange', ...arguments);
+    }
+  }
 });
 
 GMapRouteComponent.reopenClass({
