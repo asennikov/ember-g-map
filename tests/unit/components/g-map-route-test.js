@@ -167,7 +167,12 @@ test('it calls `route` of directionsService on `updateRoute`', function() {
   stubbedLatLng.onCall(1).returns(destination);
 
   fakeDirectionsService.route = sinon.stub();
+  let clock = sinon.useFakeTimers();
+  clock.tick(0);
+
   run(() => component.updateRoute());
+
+  clock.tick(600);
 
   const correctRequest = {
     origin,
@@ -180,6 +185,8 @@ test('it calls `route` of directionsService on `updateRoute`', function() {
   sinon.assert.calledWith(fakeDirectionsService.route, correctRequest);
 
   google.maps.LatLng.restore();
+  clock.restore();
+
 });
 
 test('it calls `setDirections` of directionsRenderer on `updateRoute`', function() {
@@ -193,15 +200,22 @@ test('it calls `setDirections` of directionsRenderer on `updateRoute`', function
     destinationLng: 1,
     destinationLat: 11
   }));
+
   run(() => component.set('directionsService', fakeDirectionsService));
   run(() => component.set('directionsRenderer', fakeDirectionsRenderer));
 
   sinon.stub(google.maps, 'LatLng').returns({});
+
+  let clock = sinon.useFakeTimers();
+  clock.tick(0);
+
   run(() => component.updateRoute());
+  clock.tick(600);
 
   sinon.assert.calledOnce(fakeDirectionsRenderer.setDirections);
 
   google.maps.LatLng.restore();
+  clock.restore();
   fakeDirectionsService.route = sinon.stub();
 });
 
