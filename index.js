@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  name: 'ember-g-map',
+  name: require('./package').name,
 
   contentFor(type, config) {
     let content = '';
