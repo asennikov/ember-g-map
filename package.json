@@ -1,6 +1,6 @@
 {
   "name": "ember-g-map",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "An ember-cli addon for integration with google maps.",
   "scripts": {
     "build": "ember build",
@@ -69,8 +69,8 @@
     "test": "tests"
   },
   "dependencies": {
-    "ember-cli-babel": "^6.16.0",
-    "ember-cli-htmlbars": "^3.0.0"
+    "ember-cli-htmlbars": "^3.0.0",
+    "ember-cli-babel": "^6.18.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
